@@ -5,7 +5,7 @@ const TRADE_API = "https://www.pathofexile.com/api/trade2/search/poe2/Standard";
 const FETCH_TRADE_API = "https://www.pathofexile.com/api/trade2/fetch";
 
 type StatFiler = {
-  type: "and";
+  type: "and" | "count";
   filters: {
     id: string;
     value?: {
@@ -117,12 +117,14 @@ export const lookup = async (item: ItemData) => {
   };
 
   for (let affix of item.affixs) {
-    console.log(affix);
-    const poe_id = affix.affix[0].poe_id;
-
     query.query.stats.push({
-      type: "and",
-      filters: [{ id: poe_id, value: { min: affix.roll } }],
+      type: affix.affix.length === 1 ? "and" : "count",
+      filters: affix.affix.map((a) => ({
+        id: a.poe_id,
+        value: { min: affix.roll },
+      })),
+      ...(affix.affix.length > 1 && { value: { min: 1 } }),
+      // filters: [{ id: poe_id, value: { min: affix.roll } }],
     });
   }
 
