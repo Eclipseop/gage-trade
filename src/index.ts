@@ -1,4 +1,10 @@
-import { BrowserWindow, app, clipboard, globalShortcut } from "electron";
+import {
+  BrowserWindow,
+  app,
+  clipboard,
+  globalShortcut,
+  ipcMain,
+} from "electron";
 import { parse } from "./item-parser";
 import { join } from "node:path";
 
@@ -8,8 +14,8 @@ let mainWindow: BrowserWindow | null = null;
 
 const init = () => {
   mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 1000,
+    width: 500,
+    height: 550,
     show: false,
     webPreferences: {
       webSecurity: false,
@@ -32,6 +38,7 @@ const toggleWindow = async () => {
     console.log("Main Window somehow not loaded?");
     return;
   }
+  console.log("HOTKEY DETECTED");
   await ks.sendCombination(["control", "c"]);
   const parsedItemData = await parse(clipboard.readText());
   // console.log(lookup(parsedItemData));
@@ -42,5 +49,9 @@ const toggleWindow = async () => {
   mainWindow.show();
   mainWindow.focus();
 };
+
+ipcMain.on("search", async (event, args) => {
+  console.log(event);
+});
 
 app.on("ready", init);

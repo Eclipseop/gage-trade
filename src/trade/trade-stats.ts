@@ -72,7 +72,7 @@ class TradeStatsFetcher {
               return `(${sortedElements.join("|")})`;
             })
             .replaceAll("+", "\\+")
-            .replaceAll("#", "\\d+")
+            .replaceAll("#", "\\d+(?:\\.\\d+)?")
         ),
       }));
 
@@ -80,14 +80,7 @@ class TradeStatsFetcher {
 
       return parsedStats;
     } catch (error) {
-      if (this.cachedData) {
-        console.warn(
-          "Failed to fetch new data, returning cached version",
-          error
-        );
-      }
-
-      throw error;
+      throw new Error("Failed to get item stats info!");
     }
   }
 }

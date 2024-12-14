@@ -21,17 +21,27 @@ export type AffixInfo = {
   rawText?: string;
 };
 
+const getLastSection = (sections: string[]) => {
+  let idx = -1;
+  for (let i = 0; i < sections.length; i++) {
+    const section = sections[i];
+    if (!section.includes("Corrupted")) idx = i;
+  }
+  return idx;
+};
+
 export const parse = async (itemData: string): Promise<ItemData> => {
-  console.log(itemData);
   const itemDataParts = itemData.split(ITEM_SECTION_MARKET);
   const fetcher = TradeStatsFetcher.getInstance();
   const itemStats = await fetcher.fetchTradeStats();
 
   const parseData = { affixs: [] } as unknown as ItemData;
 
+  const nonCorruptSection = getLastSection(itemDataParts);
+
   for (let i = 0; i < itemDataParts.length; i++) {
     const section = itemDataParts[i];
-    if (i === itemDataParts.length - 1) {
+    if (i === nonCorruptSection) {
       // we're in the affix section hehe
       for (const x of section.split("\n")) {
         console.log(x);
