@@ -37,7 +37,7 @@ export enum ID {
 
 class TradeStatsFetcher {
   private static instance: TradeStatsFetcher;
-  private cachedData: TradeStatsResponse | null = null;
+  private cachedData: (Entry & { mappedRegex: RegExp })[] | null = null;
   private readonly API_URL =
     "https://www.pathofexile.com/api/trade2/data/stats";
 
@@ -48,8 +48,11 @@ class TradeStatsFetcher {
     return TradeStatsFetcher.instance;
   }
 
-  public async fetchTradeStats(): Promise<TradeStatsResponse> {
+  public async fetchTradeStats(): Promise<(Entry & { mappedRegex: RegExp })[]> {
     try {
+      if (this.cachedData) {
+        return this.cachedData;
+      }
       const response = await axios.get<TradeStatsResponse>(this.API_URL, {
         headers: {
           "User-Agent": "POE Trade Stats Fetcher",
@@ -57,14 +60,30 @@ class TradeStatsFetcher {
         },
       });
 
-      this.cachedData = response.data;
+      const parsedStats = response.data.result[0].entries.map((em) => ({
+        ...em,
+        mappedRegex: new RegExp(
+          em.text
+            .replace(/\[([^\]]+)\]/g, (match, group: string) => {
+              const sortedElements = group
+                .split(",")
+                .map((el: string) => el.trim())
+                .sort((a, b) => a.length - b.length);
+              return `(${sortedElements.join("|")})`;
+            })
+            .replaceAll("+", "\\+")
+            .replaceAll("#", "\\d+")
+        ),
+      }));
 
-      return response.data;
+      this.cachedData = parsedStats;
+
+      return parsedStats;
     } catch (error) {
       if (this.cachedData) {
         console.warn(
           "Failed to fetch new data, returning cached version",
-          error,
+          error
         );
       }
 

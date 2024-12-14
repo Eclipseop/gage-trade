@@ -18,12 +18,14 @@ export type AffixInfo = {
   poe_id: string;
   regex: RegExp;
   type: "EXPLICIT" | "IMPLICIT";
+  rawText?: string;
 };
 
 export const parse = async (itemData: string): Promise<ItemData> => {
   console.log(itemData);
   const itemDataParts = itemData.split(ITEM_SECTION_MARKET);
   const fetcher = TradeStatsFetcher.getInstance();
+  const itemStats = await fetcher.fetchTradeStats();
 
   const parseData = { affixs: [] } as unknown as ItemData;
 
@@ -39,37 +41,18 @@ export const parse = async (itemData: string): Promise<ItemData> => {
         const roll =
           rolls.map(Number).reduce((sum, num) => sum + num, 0) / rolls.length;
 
-        const itemStats = await fetcher.fetchTradeStats();
-
-        const explicitMods = itemStats.result[0].entries.map((em) => {
-          return {
-            ...em,
-            mappedRegex: new RegExp(
-              em.text
-                .replace(/\[([^\]]+)\]/g, (match, group: string) => {
-                  const sortedElements = group
-                    .split(",")
-                    .map((el: string) => el.trim())
-                    .sort((a, b) => a.length - b.length);
-                  return `(${sortedElements.join("|")})`;
-                })
-                .replaceAll("+", "\\+")
-                .replaceAll("#", "\\d+"),
-            ),
-          };
-        });
-
         const matchedMods = [] as AffixInfo[];
-        for (const explicitMod of explicitMods) {
+        for (const explicitMod of itemStats) {
           if (explicitMod.mappedRegex.exec(x) != null) {
             console.log(
-              `matched using ${explicitMod.mappedRegex}, poe_id: ${explicitMod.id}`,
+              `matched using ${explicitMod.mappedRegex}, poe_id: ${explicitMod.id}`
             );
             matchedMods.push({
               common_name: "idk hehe",
               type: "EXPLICIT",
               regex: explicitMod.mappedRegex,
               poe_id: explicitMod.id,
+              rawText: x,
             });
           }
         }
