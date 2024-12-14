@@ -8,7 +8,7 @@ export type ItemData = {
   itemClass: string; // TODO create enum hehe
   base: string; // todo create enum ehhe
   affixs: {
-    affix: AffixInfo;
+    affix: AffixInfo[];
     roll: number;
   }[];
 };
@@ -46,22 +46,43 @@ export const parse = async (itemData: string): Promise<ItemData> => {
             ...em,
             mappedRegex: new RegExp(
               em.text
-                .replace("+", "\\+")
-                .replace("[", "(")
-                .replace("]", ")")
-                .replace("#", "\\d+"),
-              "g"
+                .replace(/\[([^\]]+)\]/g, (match, group: string) => {
+                  const sortedElements = group
+                    .split(",")
+                    .map((el: string) => el.trim())
+                    .sort((a, b) => a.length - b.length);
+                  return `(${sortedElements.join("|")})`;
+                })
+                .replaceAll("+", "\\+")
+                .replaceAll("#", "\\d+")
             ),
           };
         });
-
+        // console.log(explicitMods.filter((em) => em.text.includes("Damage to")));
+        let matchedMods = [] as AffixInfo[];
         for (const explicitMod of explicitMods) {
-          if (explicitMod.mappedRegex.test(x)) {
+          const execedRegex = explicitMod.mappedRegex.exec(x);
+          // console.log(execedRegex);
+          if (explicitMod.mappedRegex.exec(x) != null) {
+            // console.log(execedRegex);
+            // console.log(
+            //   execedRegex?.[0] === x.replace("\r", "").replace("+", "")
+            // );
             console.log(
               `matched using ${explicitMod.mappedRegex}, poe_id: ${explicitMod.id}`
             );
+            matchedMods.push({
+              common_name: "idk hehe",
+              type: "EXPLICIT",
+              regex: explicitMod.mappedRegex,
+              poe_id: explicitMod.id,
+            });
           }
         }
+        if (matchedMods.length === 0) {
+          throw new Error(`COULD NOT MATCH ${x}`);
+        }
+        parseData.affixs.push({ roll: roll, affix: matchedMods });
 
         console.log("\n");
       }

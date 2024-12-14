@@ -117,7 +117,8 @@ export const lookup = async (item: ItemData) => {
   };
 
   for (let affix of item.affixs) {
-    const poe_id = affix.affix.poe_id;
+    console.log(affix);
+    const poe_id = affix.affix[0].poe_id;
 
     query.query.stats.push({
       type: "and",
@@ -132,6 +133,10 @@ export const lookup = async (item: ItemData) => {
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36",
     },
   });
+  console.log(`[DEBUG] Found ${data.result.length} items`);
+  if (data.result.length === 0) {
+    return undefined;
+  }
   const itemLookupRes = await axios.get<PoeItemLookupResult>(
     `${FETCH_TRADE_API}/${data.result.slice(0, 10).join(",")}`,
     {
