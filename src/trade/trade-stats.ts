@@ -64,7 +64,7 @@ class TradeStatsFetcher {
       if (this.cachedData) {
         console.warn(
           "Failed to fetch new data, returning cached version",
-          error
+          error,
         );
       }
 

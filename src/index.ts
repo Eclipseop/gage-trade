@@ -1,7 +1,7 @@
-import { app, BrowserWindow, clipboard, globalShortcut } from "electron";
+import { BrowserWindow, app, clipboard, globalShortcut } from "electron";
 import { parse } from "./item-parser";
 import { lookup } from "./trade/trade";
-var ks = require("node-key-sender");
+const ks = require("node-key-sender");
 
 let mainWindow: BrowserWindow | null = null;
 

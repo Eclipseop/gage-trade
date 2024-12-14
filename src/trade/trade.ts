@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ItemData } from "../item-parser";
+import type { ItemData } from "../item-parser";
 
 const TRADE_API = "https://www.pathofexile.com/api/trade2/search/poe2/Standard";
 const FETCH_TRADE_API = "https://www.pathofexile.com/api/trade2/fetch";
@@ -103,7 +103,7 @@ export type PoeItemLookupResult = {
 };
 
 export const lookup = async (item: ItemData) => {
-  let query = {
+  const query = {
     query: {
       status: {
         option: "online",
@@ -116,7 +116,7 @@ export const lookup = async (item: ItemData) => {
     },
   };
 
-  for (let affix of item.affixs) {
+  for (const affix of item.affixs) {
     query.query.stats.push({
       type: affix.affix.length === 1 ? "and" : "count",
       filters: affix.affix.map((a) => ({
@@ -145,9 +145,9 @@ export const lookup = async (item: ItemData) => {
         "User-Agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36",
       },
-    }
+    },
   );
-  for (let fetchLookup of itemLookupRes.data.result) {
+  for (const fetchLookup of itemLookupRes.data.result) {
     console.log(fetchLookup.listing.whisper);
   }
 };

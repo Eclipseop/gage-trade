@@ -31,7 +31,7 @@ export const parse = async (itemData: string): Promise<ItemData> => {
     const section = itemDataParts[i];
     if (i === itemDataParts.length - 1) {
       // we're in the affix section hehe
-      for (let x of section.split("\n")) {
+      for (const x of section.split("\n")) {
         console.log(x);
         const rolls = x.match(/\d+(?:\.\d+)?/g);
         if (!rolls) continue;
@@ -54,16 +54,16 @@ export const parse = async (itemData: string): Promise<ItemData> => {
                   return `(${sortedElements.join("|")})`;
                 })
                 .replaceAll("+", "\\+")
-                .replaceAll("#", "\\d+")
+                .replaceAll("#", "\\d+"),
             ),
           };
         });
 
-        let matchedMods = [] as AffixInfo[];
+        const matchedMods = [] as AffixInfo[];
         for (const explicitMod of explicitMods) {
           if (explicitMod.mappedRegex.exec(x) != null) {
             console.log(
-              `matched using ${explicitMod.mappedRegex}, poe_id: ${explicitMod.id}`
+              `matched using ${explicitMod.mappedRegex}, poe_id: ${explicitMod.id}`,
             );
             matchedMods.push({
               common_name: "idk hehe",
