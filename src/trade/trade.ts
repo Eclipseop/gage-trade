@@ -124,7 +124,6 @@ export const lookup = async (item: ItemData) => {
         value: { min: affix.roll },
       })),
       ...(affix.affix.length > 1 && { value: { min: 1 } }),
-      // filters: [{ id: poe_id, value: { min: affix.roll } }],
     });
   }
 
@@ -151,8 +150,4 @@ export const lookup = async (item: ItemData) => {
   for (let fetchLookup of itemLookupRes.data.result) {
     console.log(fetchLookup.listing.whisper);
   }
-
-  // const res = await axios.post(TRADE_API, {
-  //   query: {},
-  // });
 };

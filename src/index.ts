@@ -24,7 +24,7 @@ const init = () => {
 
 const toggleWindow = async () => {
   if (!mainWindow) {
-    console.log("this shit nuill as fuck");
+    console.log("Main Window somehow not loaded?");
     return;
   }
   await ks.sendCombination(["control", "c"]);

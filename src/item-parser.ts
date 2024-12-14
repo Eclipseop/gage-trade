@@ -58,16 +58,10 @@ export const parse = async (itemData: string): Promise<ItemData> => {
             ),
           };
         });
-        // console.log(explicitMods.filter((em) => em.text.includes("Damage to")));
+
         let matchedMods = [] as AffixInfo[];
         for (const explicitMod of explicitMods) {
-          const execedRegex = explicitMod.mappedRegex.exec(x);
-          // console.log(execedRegex);
           if (explicitMod.mappedRegex.exec(x) != null) {
-            // console.log(execedRegex);
-            // console.log(
-            //   execedRegex?.[0] === x.replace("\r", "").replace("+", "")
-            // );
             console.log(
               `matched using ${explicitMod.mappedRegex}, poe_id: ${explicitMod.id}`
             );
