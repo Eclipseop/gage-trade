@@ -37,6 +37,7 @@ const init = () => {
     event.preventDefault();
     mainWindow?.hide();
   });
+  mainWindow.on("blur", (event: unknown) => mainWindow?.hide());
 };
 
 const toggleWindow = async () => {
