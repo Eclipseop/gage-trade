@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "web:dev": "pnpm --filter web dev",
-    "electron:dev": "pnpm --filter electron dev"
+    "web:lint": "pnpm --filter web lint",
+    "electron:dev": "pnpm --filter electron dev",
+    "electron:lint": "pnpm --filter electron lint",
+    "lint": "pnpm web:lint && pnpm electron:lint"
   },
   "keywords": [],
   "author": "",

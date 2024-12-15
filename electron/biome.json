@@ -1,11 +1,7 @@
 {
-  "extends": [
-    "../biome.json"
-  ],
+  "extends": ["../biome.json"],
   "files": {
     "ignoreUnknown": false,
-    "ignore": [
-      "dist/**/*.js"
-    ]
+    "ignore": ["dist/**/*.js"]
   }
 }
