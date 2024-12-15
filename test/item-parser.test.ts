@@ -71,7 +71,7 @@ test("sample item 2", async () => {
   expect(parsedSampleItem.itemClass).toBe("Two Hand Maces");
   expect(parsedSampleItem.rarity).toBe("Magic");
   expect(parsedSampleItem.name).toBe(
-    "Reliable Expert Forge Maul of Nourishment"
+    "Reliable Expert Forge Maul of Nourishment",
   );
 
   const a1 = {

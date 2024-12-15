@@ -7,7 +7,7 @@
     "build": "tsc",
     "test": "vitest",
     "watch": "tsc -w",
-    "lint": "biome check --write src/",
+    "lint": "biome check --write",
     "dev": "tsc && electron ."
   },
   "keywords": [],
