@@ -72,6 +72,7 @@ class TradeStatsFetcher {
               return `(${sortedElements.join("|")})`;
             })
             .replaceAll("+", "\\+")
+            .replace("increased", "(increased|reduced)")
             .replaceAll("#", "\\d+(?:\\.\\d+)?")
         ),
       }));

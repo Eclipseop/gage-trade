@@ -48,13 +48,13 @@ const toggleWindow = async () => {
   console.log("HOTKEY DETECTED");
   await ks.sendCombination(["control", "c"]);
 
+  const parsedItemData = await parse(clipboard.readText());
+  mainWindow.webContents.send("item", JSON.stringify(parsedItemData));
+
   mainWindow.setAlwaysOnTop(true, "pop-up-menu");
   mainWindow.show();
   mainWindow.focus();
   mainWindow.setAlwaysOnTop(false);
-
-  const parsedItemData = await parse(clipboard.readText());
-  mainWindow.webContents.send("item", JSON.stringify(parsedItemData));
 };
 
 ipcMain.on("search", async (event, args) => {
