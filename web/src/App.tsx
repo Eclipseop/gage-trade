@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
+import { lookup, openTradeQuery } from "./trade/trade";
 import { api } from "./util/electron";
-import { openTradeQuery, lookup } from "./trade/trade";
 
 export type ItemData = {
   name: string;
@@ -27,7 +27,7 @@ const App = () => {
   const [itemRes, setItemRes] = useState<string[]>([]);
 
   useEffect(() => {
-    api.receive("item", (data: any) => {
+    api.receive("item", (data: string) => {
       setMods(undefined);
       setItemRes([]);
 
@@ -42,14 +42,15 @@ const App = () => {
     });
   }, []);
 
-  const toggleChecked = (e: any, affixIndex: number) => {
-    let existingMods = JSON.parse(JSON.stringify(mods));
-    console.log("yo", affixIndex, existingMods!.affixs[affixIndex].checked);
-    existingMods!.affixs[affixIndex].checked =
+  const toggleChecked = (affixIndex: number) => {
+    const existingMods = JSON.parse(JSON.stringify(mods));
+    console.log("yo", affixIndex, existingMods.affixs[affixIndex].checked);
+    existingMods.affixs[affixIndex].checked =
       !existingMods?.affixs[affixIndex].checked;
     setMods(existingMods);
   };
 
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const submitSearch = async (e: any) => {
     e.preventDefault();
     if (mods) {
@@ -59,14 +60,19 @@ const App = () => {
       };
       console.log("xD");
       const items = await lookup(filteredMods);
+      if (!items) {
+        console.log("wjat the sigma? lookup returned undefined!!");
+        return;
+      }
       setItemRes(
-        items!.map(
-          (i) => i.listing.price.amount + " " + i.listing.price.currency
-        )
+        items.map(
+          (i) => `${i.listing.price.amount} ${i.listing.price.currency}`,
+        ),
       );
     }
   };
 
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const submitTradeOpen = async (e: any) => {
     e.preventDefault();
     if (mods) {
@@ -89,28 +95,33 @@ const App = () => {
         <div className="pl-1">
           {mods?.affixs.map((a, idx) => (
             <div
-              key={idx}
+              key={a.affix[0].poe_id}
               className="space-x-1 flex items-center"
-              onClick={(e) => toggleChecked(e, idx)}
+              onClick={() => toggleChecked(idx)}
+              onKeyDown={() => toggleChecked(idx)}
             >
-              <input
-                type="checkbox"
-                checked={a.checked}
-                onChange={(e) => toggleChecked(e, idx)}
-              />
-              <label>{a.affix[0].rawText}</label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={a.checked}
+                  onChange={() => toggleChecked(idx)}
+                />
+                {a.affix[0].rawText}
+              </label>
             </div>
           ))}
         </div>
 
         <div className="flex space-x-1">
           <button
+            type="button"
             className="px-3 py-1 bg-black border border-white hover:bg-white hover:text-black rounded text-white w-full"
             onClick={submitSearch}
           >
             Submit
           </button>
           <button
+            type="button"
             className="px-3 py-1 bg-black border border-white hover:bg-white hover:text-black rounded text-white"
             onClick={submitTradeOpen}
           >
@@ -119,8 +130,15 @@ const App = () => {
         </div>
       </form>
       <span className="flex flex-col text-ms leading-tight">
-        {itemRes.map((ir) => (
-          <span>{ir}</span>
+        {itemRes.map((ir, idx) => (
+          <span
+            key={`res-${
+              // biome-ignore lint/suspicious/noArrayIndexKey: replace this once i am returing better info
+              idx
+            }`}
+          >
+            {ir}
+          </span>
         ))}
       </span>
     </div>

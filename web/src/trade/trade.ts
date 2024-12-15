@@ -222,7 +222,7 @@ const buildQuery = (item: ItemData) => {
   for (const affix of item.affixs) {
     query.query.stats.push({
       type: affix.affix.length === 1 ? "and" : "count",
-      filters: affix.affix.map((a: any) => ({
+      filters: affix.affix.map((a) => ({
         id: a.poe_id,
         value: { min: affix.roll },
       })),
@@ -245,24 +245,13 @@ export const lookup = async (item: ItemData) => {
   const query = buildQuery(item);
 
   console.log(JSON.stringify(query));
-  const { data } = await axios.post<PoeBaseSearchResult>(TRADE_API, query, {
-    // headers: {
-    //   "User-Agent":
-    //     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36",
-    // },
-  });
+  const { data } = await axios.post<PoeBaseSearchResult>(TRADE_API, query);
   console.log(`[DEBUG] Found ${data.result.length} items`);
   if (data.result.length === 0) {
     return undefined;
   }
   const itemLookupRes = await axios.get<PoeItemLookupResult>(
     `${FETCH_TRADE_API}/${data.result.slice(0, 10).join(",")}`,
-    {
-      // headers: {
-      //   "User-Agent":
-      //     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36",
-      // },
-    }
   );
   return itemLookupRes.data.result;
 };
