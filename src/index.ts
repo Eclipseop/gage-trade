@@ -57,8 +57,8 @@ const toggleWindow = async () => {
   mainWindow.setAlwaysOnTop(false);
 };
 
-ipcMain.on("search", async (event, args) => {
-  console.log(event);
+ipcMain.on("trade", async (event, args) => {
+  require("electron").shell.openExternal(args["url"]);
 });
 
 app.on("ready", init);
