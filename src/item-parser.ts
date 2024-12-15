@@ -42,7 +42,6 @@ export const parse = async (itemData: string): Promise<ParsedItemData> => {
     if (i === nonCorruptSection) {
       // we're in the affix section hehe
       for (const x of section.split("\n")) {
-        console.log(x);
         const rolls = x.match(/\d+(?:\.\d+)?/g);
         if (!rolls) continue;
 
@@ -53,7 +52,7 @@ export const parse = async (itemData: string): Promise<ParsedItemData> => {
         for (const explicitMod of itemStats) {
           if (explicitMod.mappedRegex.exec(x.replace("\r", "")) != null) {
             console.log(
-              `matched using ${explicitMod.mappedRegex}, poe_id: ${explicitMod.id}`
+              `${x} matched using ${explicitMod.mappedRegex}, poe_id: ${explicitMod.id}`
             );
             matchedMods.push({
               type: "EXPLICIT",
