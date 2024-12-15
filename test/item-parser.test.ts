@@ -1,37 +1,30 @@
 import { expect, test } from "vitest";
-import { parse } from "../src/item-parser";
+import { Affix, parse } from "../src/item-parser";
 
-const sample_item = `Item Class: Crossbows
+const sample_item = `Item Class: Body Armours
 Rarity: Rare
-Morbid Core
-Advanced Bombard Crossbow
+Tempest Cloak
+Advanced Vaal Cuirass
 --------
-[Quality]: +20% (augmented)
-[Physical] Damage: 95-267 (augmented)
-Fire Damage: 16-22 (augmented)
-[Critical|Critical Hit] Chance: 5.00%
-Attacks per Second: 1.65
-Reload Time: 0.75
+Quality: +3% (augmented)
+Armour: 497 (augmented)
 --------
 Requirements:
-Level: 59
-[Strength|Str]: 74
-[Dexterity|Dex]: 74 (unmet)
+Level: 62
+Str: 128
 --------
 Sockets: S S 
 --------
-Item Level: 60
+Item Level: 74
 --------
-40% increased [Physical] Damage (rune)
++24% to Fire Resistance (rune)
 --------
-[Grenade] Skills Fire an additional [Projectile|Projectile] (implicit)
---------
-62% increased [Physical] Damage
-Adds 20 to 33 [Physical|Physical] Damage
-Adds 16 to 22 [Fire|Fire] Damage
-+11 to [Dexterity|Dexterity]
-[LifeLeech|Leeches] 5.41% of [Physical|Physical] Damage as Life
-Gain 8 Life per Enemy Killed`;
+36% increased Armour
++212 to maximum Life
++38 to Spirit
++22% to Cold Resistance
++18% to Lightning Resistance
++45 to Stun Threshold`;
 
 const sample_item2 = `Item Class: Two Hand Maces
 Rarity: Magic
@@ -48,14 +41,29 @@ Str: 174
 Item Level: 67
 --------
 +38 to Accuracy Rating
-Grants 5 Life per Enemy Hit
-`;
+Grants 5 Life per Enemy Hit`;
 
 test("sample item 1", async () => {
   const parsedSampleItem = await parse(sample_item);
-  expect(parsedSampleItem.itemClass).toBe("Crossbows");
+  expect(parsedSampleItem.itemClass).toBe("Body Armours");
   expect(parsedSampleItem.rarity).toBe("Rare");
-  expect(parsedSampleItem.name).toBe("Morbid Core");
+  expect(parsedSampleItem.name).toBe("Tempest Cloak");
+
+  const a1 = {
+    affix: [
+      {
+        poe_id: "explicit.stat_3299347043",
+        rawText: "+212 to maximum Life",
+        regex: /\d+(?:\.\d+)? to maximum Life$/g,
+        type: "EXPLICIT",
+      },
+    ],
+    roll: 212,
+  };
+
+  const { affixs } = parsedSampleItem;
+  expect(affixs.length).toBe(6);
+  expect(affixs).toContainEqual(a1);
 });
 
 test("sample item 2", async () => {
@@ -65,4 +73,26 @@ test("sample item 2", async () => {
   expect(parsedSampleItem.name).toBe(
     "Reliable Expert Forge Maul of Nourishment"
   );
+
+  const a1 = {
+    affix: [
+      {
+        poe_id: "explicit.stat_803737631",
+        rawText: "+38 to Accuracy Rating",
+        regex: /\d+(?:\.\d+)? to (Accuracy|Accuracy) Rating$/g,
+        type: "EXPLICIT",
+      },
+      {
+        poe_id: "explicit.stat_691932474",
+        rawText: "+38 to Accuracy Rating",
+        regex: /\d+(?:\.\d+)? to (Accuracy|Accuracy) Rating$/g,
+        type: "EXPLICIT",
+      },
+    ],
+    roll: 38,
+  };
+
+  const { affixs } = parsedSampleItem;
+  expect(affixs.length).toBe(2);
+  expect(affixs).toContainEqual(a1);
 });
