@@ -8,8 +8,7 @@
     "test": "vitest run",
     "watch": "tsc -w",
     "lint": "biome check --write",
-    "dev": "tsc && electron .",
-    "prepare": "husky"
+    "dev": "tsc && electron ."
   },
   "keywords": [],
   "author": "",

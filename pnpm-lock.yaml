@@ -48,7 +48,7 @@ importers:
         specifier: ^2.1.8
         version: 2.1.8(@types/node@22.10.2)
 
-  frontend:
+  web:
     dependencies:
       axios:
         specifier: ^1.7.9
@@ -60,9 +60,6 @@ importers:
         specifier: ^19.0.0
         version: 19.0.0(react@19.0.0)
     devDependencies:
-      '@eslint/js':
-        specifier: ^9.15.0
-        version: 9.17.0
       '@types/react':
         specifier: ^19.0.1
         version: 19.0.1
@@ -75,15 +72,6 @@ importers:
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.49)
-      eslint:
-        specifier: ^9.15.0
-        version: 9.17.0(jiti@1.21.6)
-      eslint-plugin-react-hooks:
-        specifier: ^5.0.0
-        version: 5.1.0(eslint@9.17.0(jiti@1.21.6))
-      eslint-plugin-react-refresh:
-        specifier: ^0.4.14
-        version: 0.4.16(eslint@9.17.0(jiti@1.21.6))
       globals:
         specifier: ^15.12.0
         version: 15.13.0
@@ -1471,17 +1459,6 @@ packages:
   escape-string-regexp@4.0.0:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
-
-  eslint-plugin-react-hooks@5.1.0:
-    resolution: {integrity: sha512-mpJRtPgHN2tNAvZ35AMfqeB3Xqeo273QxrHJsbBEPWODRM4r0yB6jfoROqKEYrOn27UtRPpcpHc2UqyBSuUNTw==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
-
-  eslint-plugin-react-refresh@0.4.16:
-    resolution: {integrity: sha512-slterMlxAhov/DZO8NScf6mEeMBBXodFUolijDvrtTxyezyLoTQaa73FyYus/VbTdftd8wBgBxPMRk3poleXNQ==}
-    peerDependencies:
-      eslint: '>=8.40'
 
   eslint-scope@8.2.0:
     resolution: {integrity: sha512-PHlWUfG6lvPc3yvP5A4PNyBL1W8fkDUccmI21JUu/+GKZBoH/W5u6usENXUrWFRsyoW5ACUjFGgAFQp5gUlb/A==}
@@ -4413,14 +4390,6 @@ snapshots:
   escalade@3.2.0: {}
 
   escape-string-regexp@4.0.0: {}
-
-  eslint-plugin-react-hooks@5.1.0(eslint@9.17.0(jiti@1.21.6)):
-    dependencies:
-      eslint: 9.17.0(jiti@1.21.6)
-
-  eslint-plugin-react-refresh@0.4.16(eslint@9.17.0(jiti@1.21.6)):
-    dependencies:
-      eslint: 9.17.0(jiti@1.21.6)
 
   eslint-scope@8.2.0:
     dependencies:
