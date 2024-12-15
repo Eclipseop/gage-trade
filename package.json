@@ -2,33 +2,11 @@
   "name": "gage-trade",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "test": "vitest run",
-    "watch": "tsc -w",
-    "lint": "biome check --write",
-    "dev": "tsc && electron .",
-    "prepare": "husky"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@types/electron": "^1.6.12",
-    "@types/node": "^22.10.2",
-    "concurrently": "^9.1.0",
-    "electron": "^33.2.1",
-    "electron-builder": "^25.1.8",
-    "husky": "^9.1.7",
-    "nodemon": "^3.1.9",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
-  },
-  "dependencies": {
-    "axios": "^1.7.9",
-    "node-key-sender": "^1.0.11"
-  }
+  "license": "ISC"
 }
