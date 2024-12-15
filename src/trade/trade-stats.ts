@@ -73,7 +73,8 @@ class TradeStatsFetcher {
             })
             .replaceAll("+", "\\+")
             .replace("increased", "(increased|reduced)")
-            .replaceAll("#", "\\d+(?:\\.\\d+)?")
+            .replaceAll("#", "\\d+(?:\\.\\d+)?") + "$",
+          "g"
         ),
       }));
 

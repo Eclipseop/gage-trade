@@ -53,7 +53,7 @@ export const parse = async (itemData: string): Promise<ItemData> => {
 
         const matchedMods = [] as AffixInfo[];
         for (const explicitMod of itemStats) {
-          if (explicitMod.mappedRegex.exec(x) != null) {
+          if (explicitMod.mappedRegex.exec(x.replace("\r", "")) != null) {
             console.log(
               `matched using ${explicitMod.mappedRegex}, poe_id: ${explicitMod.id}`
             );
