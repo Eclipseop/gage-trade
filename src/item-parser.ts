@@ -52,7 +52,7 @@ export const parse = async (itemData: string): Promise<ParsedItemData> => {
         for (const explicitMod of itemStats) {
           if (explicitMod.mappedRegex.exec(x.replace("\r", "")) != null) {
             console.log(
-              `${x} matched using ${explicitMod.mappedRegex}, poe_id: ${explicitMod.id}`
+              `${x} matched using ${explicitMod.mappedRegex}, poe_id: ${explicitMod.id}`,
             );
             matchedMods.push({
               type: "EXPLICIT",

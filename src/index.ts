@@ -1,3 +1,4 @@
+import { join } from "node:path";
 import {
   BrowserWindow,
   app,
@@ -6,7 +7,6 @@ import {
   ipcMain,
 } from "electron";
 import { parse } from "./item-parser";
-import { join } from "node:path";
 
 const ks = require("node-key-sender");
 

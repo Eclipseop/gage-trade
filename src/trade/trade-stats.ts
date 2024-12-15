@@ -63,7 +63,7 @@ class TradeStatsFetcher {
       const parsedStats = response.data.result[0].entries.map((em) => ({
         ...em,
         mappedRegex: new RegExp(
-          em.text
+          `${em.text
             .replace(/\[([^\]]+)\]/g, (match, group: string) => {
               const sortedElements = group
                 .split(",")
@@ -73,8 +73,8 @@ class TradeStatsFetcher {
             })
             .replaceAll("+", "\\+")
             .replace("increased", "(increased|reduced)")
-            .replaceAll("#", "\\d+(?:\\.\\d+)?") + "$",
-          "g"
+            .replaceAll("#", "\\d+(?:\\.\\d+)?")}$`,
+          "g",
         ),
       }));
 
