@@ -58,7 +58,7 @@ const toggleWindow = async () => {
 };
 
 ipcMain.on("trade", async (event, args) => {
-  require("electron").shell.openExternal(args["url"]);
+  require("electron").shell.openExternal(args.url);
 });
 
 app.on("ready", init);
