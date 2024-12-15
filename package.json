@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "vitest",
+    "test": "vitest run",
     "watch": "tsc -w",
     "lint": "biome check --write",
     "dev": "tsc && electron .",
