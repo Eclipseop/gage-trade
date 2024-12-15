@@ -13,10 +13,16 @@ const ks = require("node-key-sender");
 let mainWindow: BrowserWindow | null = null;
 
 const init = () => {
+  ks.setOption("startDelayMillisec", 1);
+  ks.setOption("globalDelayBetweenMillisec", 1);
+  ks.setOption("globalDelayPressMillisec", 1);
+
   mainWindow = new BrowserWindow({
+    title: "Gage Trade",
     width: 500,
     height: 550,
     show: false,
+    autoHideMenuBar: true,
     webPreferences: {
       webSecurity: false,
       preload: join(__dirname, "preload.js"),
@@ -38,16 +44,17 @@ const toggleWindow = async () => {
     console.log("Main Window somehow not loaded?");
     return;
   }
+
   console.log("HOTKEY DETECTED");
   await ks.sendCombination(["control", "c"]);
-  const parsedItemData = await parse(clipboard.readText());
-  // console.log(lookup(parsedItemData));
-  mainWindow.webContents.send("item", JSON.stringify(parsedItemData));
 
-  // const tradeItems = lookup(parsedItemData);
-
+  mainWindow.setAlwaysOnTop(true, "pop-up-menu");
   mainWindow.show();
   mainWindow.focus();
+  mainWindow.setAlwaysOnTop(false);
+
+  const parsedItemData = await parse(clipboard.readText());
+  mainWindow.webContents.send("item", JSON.stringify(parsedItemData));
 };
 
 ipcMain.on("search", async (event, args) => {
