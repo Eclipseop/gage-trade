@@ -2,19 +2,18 @@ import TradeStatsFetcher from "./trade/trade-stats";
 
 const ITEM_SECTION_MARKET = "--------";
 
-export type ItemData = {
+export type ParsedItemData = {
   name: string;
   rarity: string;
   itemClass: string; // TODO create enum hehe
   base: string; // todo create enum ehhe
   affixs: {
-    affix: AffixInfo[];
+    affix: Affix[];
     roll: number;
   }[];
 };
 
-export type AffixInfo = {
-  common_name: string;
+export type Affix = {
   poe_id: string;
   regex: RegExp;
   type: "EXPLICIT" | "IMPLICIT";
@@ -30,12 +29,11 @@ const getLastSection = (sections: string[]) => {
   return idx;
 };
 
-export const parse = async (itemData: string): Promise<ItemData> => {
+export const parse = async (itemData: string): Promise<ParsedItemData> => {
   const itemDataParts = itemData.split(ITEM_SECTION_MARKET);
   const fetcher = TradeStatsFetcher.getInstance();
   const itemStats = await fetcher.fetchTradeStats();
-
-  const parseData = { affixs: [] } as unknown as ItemData;
+  const parseData = { affixs: [] } as unknown as ParsedItemData;
 
   const nonCorruptSection = getLastSection(itemDataParts);
 
@@ -51,14 +49,13 @@ export const parse = async (itemData: string): Promise<ItemData> => {
         const roll =
           rolls.map(Number).reduce((sum, num) => sum + num, 0) / rolls.length;
 
-        const matchedMods = [] as AffixInfo[];
+        const matchedMods = [] as Affix[];
         for (const explicitMod of itemStats) {
           if (explicitMod.mappedRegex.exec(x.replace("\r", "")) != null) {
             console.log(
               `matched using ${explicitMod.mappedRegex}, poe_id: ${explicitMod.id}`
             );
             matchedMods.push({
-              common_name: "idk hehe",
               type: "EXPLICIT",
               regex: explicitMod.mappedRegex,
               poe_id: explicitMod.id,
@@ -98,5 +95,5 @@ export const parse = async (itemData: string): Promise<ItemData> => {
     }
   }
 
-  return parseData as ItemData;
+  return parseData;
 };

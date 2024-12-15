@@ -51,21 +51,18 @@ Item Level: 67
 Grants 5 Life per Enemy Hit
 `;
 
-test("sample item 1", () => {
-  const parsedSampleItem = parse(sample_item);
+test("sample item 1", async () => {
+  const parsedSampleItem = await parse(sample_item);
   expect(parsedSampleItem.itemClass).toBe("Crossbows");
   expect(parsedSampleItem.rarity).toBe("Rare");
   expect(parsedSampleItem.name).toBe("Morbid Core");
-
-  console.log(parsedSampleItem.affixs);
-  // expect(parse(sample_item).base).toBe("Advanced Bombard Crossbow");
 });
 
-test("sample item 2", () => {
-  expect(parse(sample_item2).itemClass).toBe("Two Hand Maces");
-  expect(parse(sample_item2).rarity).toBe("Magic");
-  expect(parse(sample_item2).name).toBe(
+test("sample item 2", async () => {
+  const parsedSampleItem = await parse(sample_item2);
+  expect(parsedSampleItem.itemClass).toBe("Two Hand Maces");
+  expect(parsedSampleItem.rarity).toBe("Magic");
+  expect(parsedSampleItem.name).toBe(
     "Reliable Expert Forge Maul of Nourishment"
   );
-  // expect(parse(sample_item2).base).toBe("Advanced Bombard Crossbow");
 });
