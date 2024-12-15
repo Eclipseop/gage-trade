@@ -1,4 +1,4 @@
-import TradeStatsFetcher from "./trade/trade-stats";
+import AffixInfoFetcher from "./trade/affix-info";
 
 const ITEM_SECTION_MARKET = "--------";
 
@@ -31,8 +31,8 @@ const getLastSection = (sections: string[]) => {
 
 export const parse = async (itemData: string): Promise<ParsedItemData> => {
   const itemDataParts = itemData.split(ITEM_SECTION_MARKET);
-  const fetcher = TradeStatsFetcher.getInstance();
-  const itemStats = await fetcher.fetchTradeStats();
+  const fetcher = AffixInfoFetcher.getInstance();
+  const itemStats = await fetcher.fetchAffixInfo();
   const parseData = { affixs: [] } as unknown as ParsedItemData;
 
   const nonCorruptSection = getLastSection(itemDataParts);

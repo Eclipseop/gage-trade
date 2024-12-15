@@ -1,32 +1,28 @@
 import axios from "axios";
 
-export interface TradeStatsResponse {
-  result: Result[];
+interface AffixInfoResponse {
+  result: {
+    id: ID;
+    label: string;
+    entries: Entry[];
+  }[];
 }
 
-export interface Result {
-  id: ID;
-  label: string;
-  entries: Entry[];
-}
-
-export interface Entry {
+interface Entry {
   id: string;
   text: string;
   type: ID;
-  option?: EntryOption;
+  option?: {
+    options: OptionElement[];
+  };
 }
 
-export interface EntryOption {
-  options: OptionElement[];
-}
-
-export interface OptionElement {
+interface OptionElement {
   id: number;
   text: string;
 }
 
-export enum ID {
+enum ID {
   Enchant = "enchant",
   Explicit = "explicit",
   Implicit = "implicit",
@@ -35,27 +31,27 @@ export enum ID {
   Skill = "skill",
 }
 
-class TradeStatsFetcher {
-  private static instance: TradeStatsFetcher;
+class AffixInfoFetcher {
+  private static instance: AffixInfoFetcher;
   private cachedData: (Entry & { mappedRegex: RegExp })[] | null = null;
   private readonly API_URL =
     "https://www.pathofexile.com/api/trade2/data/stats";
 
-  public static getInstance(): TradeStatsFetcher {
-    if (!TradeStatsFetcher.instance) {
-      TradeStatsFetcher.instance = new TradeStatsFetcher();
+  public static getInstance(): AffixInfoFetcher {
+    if (!AffixInfoFetcher.instance) {
+      AffixInfoFetcher.instance = new AffixInfoFetcher();
     }
-    return TradeStatsFetcher.instance;
+    return AffixInfoFetcher.instance;
   }
 
-  public async fetchTradeStats(): Promise<(Entry & { mappedRegex: RegExp })[]> {
+  public async fetchAffixInfo(): Promise<(Entry & { mappedRegex: RegExp })[]> {
     try {
       if (this.cachedData) {
         return this.cachedData;
       }
-      const response = await axios.get<TradeStatsResponse>(this.API_URL, {
+      const response = await axios.get<AffixInfoResponse>(this.API_URL, {
         headers: {
-          "User-Agent": "POE Trade Stats Fetcher",
+          "User-Agent": "Gage Trade",
           Accept: "application/json",
         },
       });
@@ -82,9 +78,9 @@ class TradeStatsFetcher {
 
       return parsedStats;
     } catch (error) {
-      throw new Error("Failed to get item stats info!");
+      throw new Error("Failed to get stats info!");
     }
   }
 }
 
-export default TradeStatsFetcher;
+export default AffixInfoFetcher;
