@@ -36,7 +36,7 @@ const App = () => {
 
       const updatedAffixs = parsedData.affixs.map((affix) => ({
         ...affix,
-        checked: true, // Set default checked to true
+        checked: false,
       }));
 
       setMods({ ...parsedData, affixs: updatedAffixs });
