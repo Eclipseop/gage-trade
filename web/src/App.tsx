@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { lookup, openTradeQuery, type TradeListing } from "./trade/trade";
+import { type TradeListing, lookup, openTradeQuery } from "./trade/trade";
 import { api } from "./util/electron";
 
 export type ItemData = {
