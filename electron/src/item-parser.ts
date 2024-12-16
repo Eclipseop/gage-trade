@@ -1,6 +1,6 @@
 import AffixInfoFetcher from "./trade/affix-info";
 
-const ITEM_SECTION_MARKET = "--------";
+const ITEM_SECTION_MARKER = "--------";
 
 export type ParsedItemData = {
   name: string;
@@ -22,7 +22,7 @@ export type Affix = {
 
 const fetcher = AffixInfoFetcher.getInstance();
 
-const getLastSection = (itemRarity: string, sections: string[]) => {
+const getExplicitSectionIdx = (itemRarity: string, sections: string[]) => {
   let idx = -1;
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i];
@@ -47,18 +47,18 @@ const getItemRarity = (itemData: string): string | undefined => {
 };
 
 export const parse = async (itemData: string): Promise<ParsedItemData> => {
-  const itemDataParts = itemData.split(ITEM_SECTION_MARKET);
+  const itemDataParts = itemData.split(ITEM_SECTION_MARKER);
 
   const itemStats = await fetcher.fetchAffixInfo();
   const parseData = { affixs: [] } as unknown as ParsedItemData;
 
   const itemRarity = getItemRarity(itemData);
   if (!itemRarity) throw new Error("Unable to determine item rarity!");
-  const nonCorruptSection = getLastSection(itemRarity, itemDataParts);
+  const explicitSectionIdx = getExplicitSectionIdx(itemRarity, itemDataParts);
 
   for (let i = 0; i < itemDataParts.length; i++) {
     const section = itemDataParts[i];
-    if (i === nonCorruptSection) {
+    if (i === explicitSectionIdx) {
       // we're in the affix section hehe
       for (const x of section.split("\n")) {
         if (x.trim() === "") continue;
