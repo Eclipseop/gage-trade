@@ -20,7 +20,7 @@ const init = () => {
   mainWindow = new BrowserWindow({
     title: "Gage Trade",
     width: 500,
-    height: 550,
+    height: 350,
     show: false,
     autoHideMenuBar: true,
     webPreferences: {
@@ -37,7 +37,7 @@ const init = () => {
     event.preventDefault();
     mainWindow?.hide();
   });
-  mainWindow.on("blur", (event: unknown) => mainWindow?.hide());
+  // mainWindow.on("blur", (event: unknown) => mainWindow?.hide());
 };
 
 const toggleWindow = async () => {

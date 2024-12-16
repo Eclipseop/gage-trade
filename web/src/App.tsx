@@ -82,13 +82,13 @@ const App = () => {
   };
 
   return (
-    <div className="flex flex-col mx-auto pt-2 px-2 text-neutral-100 bg-black min-h-screen">
+    <div className="flex flex-col mx-auto pt-2 px-2 text-neutral-200 bg-black min-h-screen font-serif">
       <span className="text-xl">
         {mods?.name} - <span className="font-semibold">{mods?.itemClass}</span>
       </span>
 
       <form className="flex flex-col space-y-2 text-sm">
-        <div className="pl-1">
+        <div className="pl-1 grid grid-cols-2">
           {mods?.affixs.map((a, idx) => (
             <div
               key={a.affix[0].poe_id}
@@ -125,16 +125,22 @@ const App = () => {
           </button>
         </div>
       </form>
-      <span className="flex flex-col text-ms leading-tight">
+      <span className="flex flex-col text-sm pt-1">
         {itemRes.map((ir, idx) => (
-          <span
+          <div
+            className="flex flex-row justify-between leading-tight"
             key={`res-${
               // biome-ignore lint/suspicious/noArrayIndexKey: replace this once i am returing better info
               idx
             }`}
           >
-            {ir.listing.price.amount}
-          </span>
+            <span>
+              {ir.listing.price.amount} {ir.listing.price.currency}
+            </span>
+            <span className="text-xs text-neutral-500">
+              {ir.listing.account.name}
+            </span>
+          </div>
         ))}
       </span>
     </div>
