@@ -93,7 +93,7 @@ const App = () => {
 
   return (
     <>
-      <Toaster />
+      <Toaster position="top-center" duration={500} />
       <div className="flex flex-col mx-auto pt-2 px-2 text-neutral-200 bg-black min-h-screen font-serif">
         <span className="text-xl">
           {mods?.name} -{" "}
