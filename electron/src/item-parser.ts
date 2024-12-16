@@ -20,6 +20,8 @@ export type Affix = {
   rawText?: string;
 };
 
+const fetcher = AffixInfoFetcher.getInstance();
+
 const getLastSection = (sections: string[]) => {
   let idx = -1;
   for (let i = 0; i < sections.length; i++) {
@@ -31,7 +33,7 @@ const getLastSection = (sections: string[]) => {
 
 export const parse = async (itemData: string): Promise<ParsedItemData> => {
   const itemDataParts = itemData.split(ITEM_SECTION_MARKET);
-  const fetcher = AffixInfoFetcher.getInstance();
+
   const itemStats = await fetcher.fetchAffixInfo();
   const parseData = { affixs: [] } as unknown as ParsedItemData;
 
