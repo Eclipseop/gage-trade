@@ -73,14 +73,13 @@ const App = () => {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const submitTradeOpen = async (e: any) => {
     e.preventDefault();
-    if (mods) {
-      const filteredMods = {
-        ...mods,
-        affixs: mods.affixs.filter((affix) => affix.checked),
-      };
+    if (!mods) return;
+    const filteredMods = {
+      ...mods,
+      affixs: mods.affixs.filter((affix) => affix.checked),
+    };
 
-      await openTradeQuery(filteredMods);
-    }
+    await openTradeQuery(filteredMods);
   };
 
   return (
