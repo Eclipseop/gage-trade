@@ -45,7 +45,6 @@ const App = () => {
 
   const toggleChecked = (affixIndex: number) => {
     const existingMods = JSON.parse(JSON.stringify(mods));
-    console.log("yo", affixIndex, existingMods.affixs[affixIndex].checked);
     existingMods.affixs[affixIndex].checked =
       !existingMods?.affixs[affixIndex].checked;
     setMods(existingMods);
