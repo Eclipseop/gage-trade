@@ -9,7 +9,7 @@ export type ParsedItemData = {
   base: string; // todo create enum ehhe
   affixs: {
     affix: Affix[];
-    roll: number;
+    roll: number | undefined;
   }[];
 };
 
@@ -22,13 +22,28 @@ export type Affix = {
 
 const fetcher = AffixInfoFetcher.getInstance();
 
-const getLastSection = (sections: string[]) => {
+const getLastSection = (itemRarity: string, sections: string[]) => {
   let idx = -1;
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i];
     if (!section.includes("Corrupted")) idx = i;
   }
+  if (itemRarity === "Unique") {
+    idx = idx - 1;
+  }
   return idx;
+};
+
+const getItemRarity = (itemData: string): string | undefined => {
+  const lines = itemData.split("\n");
+  for (const line of lines) {
+    if (line.includes("Rarity")) {
+      const regex = /(Normal|Magic|Rare|Unique)/g;
+      const matches = line.match(regex);
+      return matches?.[0];
+    }
+  }
+  return undefined;
 };
 
 export const parse = async (itemData: string): Promise<ParsedItemData> => {
@@ -37,18 +52,21 @@ export const parse = async (itemData: string): Promise<ParsedItemData> => {
   const itemStats = await fetcher.fetchAffixInfo();
   const parseData = { affixs: [] } as unknown as ParsedItemData;
 
-  const nonCorruptSection = getLastSection(itemDataParts);
+  const itemRarity = getItemRarity(itemData);
+  if (!itemRarity) throw new Error("Unable to determine item rarity!");
+  const nonCorruptSection = getLastSection(itemRarity, itemDataParts);
 
   for (let i = 0; i < itemDataParts.length; i++) {
     const section = itemDataParts[i];
     if (i === nonCorruptSection) {
       // we're in the affix section hehe
       for (const x of section.split("\n")) {
+        if (x.trim() === "") continue;
         const rolls = x.match(/\d+(?:\.\d+)?/g);
-        if (!rolls) continue;
 
-        const roll =
-          rolls.map(Number).reduce((sum, num) => sum + num, 0) / rolls.length;
+        const roll = rolls
+          ? rolls.map(Number).reduce((sum, num) => sum + num, 0) / rolls.length
+          : undefined;
 
         const matchedMods = [] as Affix[];
         for (const explicitMod of itemStats) {
