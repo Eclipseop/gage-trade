@@ -204,8 +204,6 @@ const buildQuery = (item: ItemData) => {
     },
   };
 
-  console.log("hello lol");
-
   if (item.itemClass) {
     const mappedItemClass = itemClassMap[item.itemClass];
     if (!mappedItemClass) {
@@ -217,7 +215,6 @@ const buildQuery = (item: ItemData) => {
       },
     };
   }
-  console.log("hello lol?????");
 
   for (const affix of item.affixs) {
     query.query.stats.push({
