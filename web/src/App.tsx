@@ -136,13 +136,10 @@ const App = () => {
           </div>
         </form>
         <span className="flex flex-col text-sm pt-1">
-          {itemRes.map((ir, idx) => (
+          {itemRes.map((ir) => (
             <div
               className="flex flex-row justify-between leading-tight"
-              key={`res-${
-                // biome-ignore lint/suspicious/noArrayIndexKey: replace this once i am returing better info
-                idx
-              }`}
+              key={ir.id}
             >
               <span>
                 {ir.listing.price.amount} {ir.listing.price.currency}
