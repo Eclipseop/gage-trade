@@ -59,7 +59,6 @@ const App = () => {
         ...mods,
         affixs: mods.affixs.filter((affix) => affix.checked),
       };
-      // console.log("xD");
 
       const pendingData = toast.promise(lookup(filteredMods), {
         loading: "Loading...",
