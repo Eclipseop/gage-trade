@@ -104,16 +104,15 @@ const App = () => {
               <div
                 key={a.affix[0].poe_id}
                 className="space-x-1 flex items-center"
-                onClick={() => toggleChecked(idx)}
-                onKeyDown={() => toggleChecked(idx)}
               >
                 <label>
                   <input
                     type="checkbox"
                     checked={a.checked}
                     onChange={() => toggleChecked(idx)}
+                    className="cursor-pointer"
                   />
-                  {a.affix[0].rawText}
+                  <span>{a.affix[0].rawText}</span>
                 </label>
               </div>
             ))}
