@@ -61,18 +61,13 @@ const App = () => {
       };
       // console.log("xD");
 
-      toast.promise(lookup(filteredMods), {
+      const pendingData = toast.promise(lookup(filteredMods), {
         loading: "Loading...",
         success: "Done!",
         error: (data) => data,
       });
-
-      const items = await lookup(filteredMods);
-      if (!items) {
-        console.log("wjat the sigma? lookup returned undefined!!");
-        return;
-      }
-      setItemRes(items);
+      const data = await pendingData.unwrap();
+      if (data) setItemRes(data);
     }
   };
 
