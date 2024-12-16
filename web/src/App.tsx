@@ -54,20 +54,19 @@ const App = () => {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const submitSearch = async (e: any) => {
     e.preventDefault();
-    if (mods) {
-      const filteredMods = {
-        ...mods,
-        affixs: mods.affixs.filter((affix) => affix.checked),
-      };
+    if (!mods) return;
+    const filteredMods = {
+      ...mods,
+      affixs: mods.affixs.filter((affix) => affix.checked),
+    };
 
-      const pendingData = toast.promise(lookup(filteredMods), {
-        loading: "Loading...",
-        success: "Done!",
-        error: (data) => data,
-      });
-      const data = await pendingData.unwrap();
-      if (data) setItemRes(data);
-    }
+    const pendingData = toast.promise(lookup(filteredMods), {
+      loading: "Loading...",
+      success: "Done!",
+      error: (data) => data,
+    });
+    const data = await pendingData.unwrap();
+    if (data) setItemRes(data);
   };
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
