@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
+import { Toaster, toast } from "sonner";
 import { type TradeListing, lookup, openTradeQuery } from "./trade/trade";
 import { api } from "./util/electron";
-import { toast, Toaster } from "sonner";
 
 export type ItemData = {
   name: string;
