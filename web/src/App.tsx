@@ -63,10 +63,8 @@ const App = () => {
 
       toast.promise(lookup(filteredMods), {
         loading: "Loading...",
-        success: (data) => {
-          return "good job!";
-        },
-        error: "Damn... lmao",
+        success: "Done!",
+        error: (data) => data,
       });
 
       const items = await lookup(filteredMods);
@@ -93,7 +91,7 @@ const App = () => {
 
   return (
     <>
-      <Toaster position="top-center" duration={500} />
+      <Toaster position="top-center" duration={1500} />
       <div className="flex flex-col mx-auto pt-2 px-2 text-neutral-200 bg-black min-h-screen font-serif">
         <span className="text-xl">
           {mods?.name} -{" "}

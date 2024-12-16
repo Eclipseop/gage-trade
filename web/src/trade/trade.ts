@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { api } from "../util/electron";
 
 const NORMAL_TRADE_URL =
@@ -246,16 +246,27 @@ export type TradeListing = PoeItemLookupResult["result"];
 export const lookup = async (
   item: ItemData,
 ): Promise<TradeListing | undefined> => {
-  const query = buildQuery(item);
+  try {
+    const query = buildQuery(item);
 
-  console.log(JSON.stringify(query));
-  const { data } = await axios.post<PoeBaseSearchResult>(TRADE_API, query);
-  console.log(`[DEBUG] Found ${data.result.length} items`);
-  if (data.result.length === 0) {
-    return undefined;
+    console.log(JSON.stringify(query));
+    const { data } = await axios.post<PoeBaseSearchResult>(TRADE_API, query);
+    console.log(`[DEBUG] Found ${data.result.length} items`);
+    if (data.result.length === 0) {
+      return undefined;
+    }
+    const itemLookupRes = await axios.get<PoeItemLookupResult>(
+      `${FETCH_TRADE_API}/${data.result.slice(0, 10).join(",")}`,
+    );
+    return itemLookupRes.data.result;
+  } catch (err) {
+    let msg = "Error...";
+    if (err instanceof AxiosError) {
+      const axiosErr = err as AxiosError;
+      if (Number(axiosErr.status) === 429) {
+        msg = "Rate limited";
+      }
+    }
+    return Promise.reject(msg);
   }
-  const itemLookupRes = await axios.get<PoeItemLookupResult>(
-    `${FETCH_TRADE_API}/${data.result.slice(0, 10).join(",")}`,
-  );
-  return itemLookupRes.data.result;
 };
