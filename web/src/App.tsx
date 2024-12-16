@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { lookup, openTradeQuery } from "./trade/trade";
+import { lookup, openTradeQuery, type TradeListing } from "./trade/trade";
 import { api } from "./util/electron";
 
 export type ItemData = {
@@ -24,7 +24,7 @@ export type AffixInfo = {
 
 const App = () => {
   const [mods, setMods] = useState<ItemData>();
-  const [itemRes, setItemRes] = useState<string[]>([]);
+  const [itemRes, setItemRes] = useState<TradeListing>([]);
 
   useEffect(() => {
     api.receive("item", (data: string) => {
@@ -64,11 +64,7 @@ const App = () => {
         console.log("wjat the sigma? lookup returned undefined!!");
         return;
       }
-      setItemRes(
-        items.map(
-          (i) => `${i.listing.price.amount} ${i.listing.price.currency}`,
-        ),
-      );
+      setItemRes(items);
     }
   };
 
@@ -137,7 +133,7 @@ const App = () => {
               idx
             }`}
           >
-            {ir}
+            {ir.listing.price.amount}
           </span>
         ))}
       </span>

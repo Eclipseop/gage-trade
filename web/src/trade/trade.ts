@@ -241,7 +241,11 @@ export const openTradeQuery = async (item: ItemData) => {
   api.send("trade", { url });
 };
 
-export const lookup = async (item: ItemData) => {
+export type TradeListing = PoeItemLookupResult["result"];
+
+export const lookup = async (
+  item: ItemData,
+): Promise<TradeListing | undefined> => {
   const query = buildQuery(item);
 
   console.log(JSON.stringify(query));
