@@ -43,6 +43,23 @@ Item Level: 67
 +38 to Accuracy Rating
 Grants 5 Life per Enemy Hit`;
 
+const sample_item3 = `Item Class: Jewels
+Rarity: Rare
+Entropy Bliss
+Emerald
+--------
+Item Level: 67
+--------
+15% increased Elemental Damage
+11% increased amount of Mana Leeched
+9% increased Duration of Ignite, Shock and Chill on Enemies
+15% increased Magnitude of Shock you inflict
+--------
+Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to remove from the Socket.
+--------
+Note: ~price 10 exalted
+`;
+
 test("sample item 1", async () => {
   const parsedSampleItem = await parse(sample_item);
   expect(parsedSampleItem.itemClass).toBe("Body Armours");
