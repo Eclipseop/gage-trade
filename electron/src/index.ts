@@ -6,8 +6,8 @@ import {
   globalShortcut,
   ipcMain,
 } from "electron";
+import { UiohookKey, uIOhook } from "uiohook-napi";
 import { parse } from "./item-parser";
-import { uIOhook, UiohookKey } from "uiohook-napi";
 
 let mainWindow: BrowserWindow | null = null;
 
