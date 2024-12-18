@@ -26,6 +26,6 @@
   },
   "dependencies": {
     "axios": "^1.7.9",
-    "node-key-sender": "^1.0.11"
+    "uiohook-napi": "^1.5.4"
   }
 }

@@ -78,6 +78,7 @@ class AffixInfoFetcher {
 
       return parsedStats;
     } catch (error) {
+      console.error(error);
       throw new Error("Failed to get stats info!");
     }
   }
