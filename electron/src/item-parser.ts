@@ -97,7 +97,7 @@ export const parse = async (itemData: string): Promise<ParsedItemData> => {
       }
     }
 
-    if (section.includes("Rarity")) {
+    if (section.includes("Rarity: ")) {
       const sectionParts = section.split("\n").filter((i) => i.length > 0);
 
       for (let x = 0; x < sectionParts.length; x++) {

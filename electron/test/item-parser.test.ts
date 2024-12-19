@@ -60,6 +60,31 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
 Note: ~price 10 exalted
 `;
 
+const sample_item4 = `Item Class: Helmets
+Rarity: Rare
+Sol Ward
+Advanced Spired Greathelm
+--------
+Quality: +18% (augmented)
+Armour: 312 (augmented)
+--------
+Requirements:
+Level: 55
+Str: 101
+--------
+Sockets: S 
+--------
+Item Level: 59
+--------
++12% to Lightning Resistance (rune)
+--------
+26% increased Armour
++110 to maximum Life
++73 to maximum Mana
+15% increased Rarity of Items found
++1 to Level of all Minion Skills
++30% to Cold Resistance`;
+
 test("sample item 1", async () => {
   const parsedSampleItem = await parse(sample_item);
   expect(parsedSampleItem.itemClass).toBe("Body Armours");
@@ -135,5 +160,29 @@ test("sample item 3", async () => {
 
   const { affixs } = parsedSampleItem;
   expect(affixs.length).toBe(4);
+  expect(affixs).toContainEqual(a1);
+});
+
+test("sample item 4", async () => {
+  const parsedSampleItem = await parse(sample_item4);
+  expect(parsedSampleItem.itemClass).toBe("Helmets");
+  expect(parsedSampleItem.rarity).toBe("Rare");
+  expect(parsedSampleItem.name).toBe("Sol Ward");
+
+  const a1 = {
+    roll: 15,
+    affix: [
+      {
+        poe_id: "explicit.stat_3917489142",
+        rawText: "15% increased Rarity of Items found",
+        regex:
+          /\d+(?:\.\d+)?% (increased|reduced) (ItemRarity|Rarity of Items) found$/g,
+        type: "EXPLICIT",
+      },
+    ],
+  };
+
+  const { affixs } = parsedSampleItem;
+  expect(affixs.length).toBe(6);
   expect(affixs).toContainEqual(a1);
 });
