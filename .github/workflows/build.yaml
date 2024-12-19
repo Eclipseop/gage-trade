@@ -33,8 +33,8 @@ jobs:
       - name: Build Executable with Electron-Builder
         run: pnpm release
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: /*.exe
+      # - name: Create GitHub Release
+      #   id: create_release
+      #   uses: softprops/action-gh-release@v2
+      #   with:
+      #     files: /*.exe

@@ -12,9 +12,12 @@ import {
 import { UiohookKey, uIOhook } from "uiohook-napi";
 import { parse } from "./item-parser";
 
+import { autoUpdater } from "electron-updater";
+
 let mainWindow: BrowserWindow | null = null;
 
 const init = () => {
+  autoUpdater.checkForUpdatesAndNotify().then((res) => console.log(res));
   uIOhook.start();
 
   setInterval(async () => {

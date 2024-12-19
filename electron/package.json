@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "axios": "^1.7.9",
+    "electron-updater": "^6.3.9",
     "uiohook-napi": "^1.5.4"
   }
 }
