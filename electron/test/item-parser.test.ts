@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { Affix, parse } from "../src/item-parser";
+import { parse } from "../src/item-parser";
 
 const sample_item = `Item Class: Body Armours
 Rarity: Rare
