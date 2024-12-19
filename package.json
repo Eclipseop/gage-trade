@@ -15,6 +15,7 @@
     "electron:fix": "pnpm --filter electron fix",
     "lint": "pnpm web:lint && pnpm electron:lint",
     "fix": "pnpm web:fix && pnpm electron:fix",
+    "release": "electron-builder",
     "prepare": "husky"
   },
   "keywords": [],
@@ -38,6 +39,7 @@
     "productName": "Gage Trade",
     "files": ["electron/dist/**/*", "web/dist/**/*"],
     "win": {
+      "publish": ["github"],
       "target": ["NSIS"]
     },
     "directories": {

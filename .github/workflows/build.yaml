@@ -31,7 +31,7 @@ jobs:
         run: pnpm electron:build
 
       - name: Build Executable with Electron-Builder
-        run: pnpm electron-builder
+        run: pnpm release
 
       - name: Create GitHub Release
         id: create_release
