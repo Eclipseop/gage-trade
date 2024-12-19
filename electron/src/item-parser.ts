@@ -5,8 +5,8 @@ const ITEM_SECTION_MARKER = "--------";
 export type ParsedItemData = {
   name: string;
   rarity?: string;
-  itemClass: string; // TODO create enum hehe
-  base?: string; // todo create enum ehhe
+  itemClass: string;
+  base?: string;
   affixs?: {
     affix: Affix[];
     roll: number | undefined;
@@ -27,12 +27,13 @@ const getExplicitSectionIdx = (itemRarity: string, sections: string[]) => {
   let idx = -1;
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i];
-    if (
-      !section.includes("Corrupted") &&
-      !section.includes("Note: ") &&
-      !section.includes("allocated Jewel Socket")
-    )
-      idx = i;
+
+    const appendage =
+      section.includes("Corrupted") ||
+      section.includes("Note: ") ||
+      section.includes("allocated Jewel Socket");
+
+    if (!appendage) idx = i;
   }
   if (itemRarity === "Unique") {
     idx = idx - 1;
