@@ -39,7 +39,13 @@
     "productName": "Gage Trade",
     "files": ["electron/dist/**/*", "web/dist/**/*"],
     "win": {
-      "publish": ["github"],
+      "publish": [
+        {
+          "provider": "github",
+          "owner": "Eclipseop",
+          "repo": "gage-trade"
+        }
+      ],
       "target": ["NSIS"]
     },
     "directories": {
