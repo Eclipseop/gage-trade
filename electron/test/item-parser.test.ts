@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { parse } from "../src/item-parser";
+import { Affix, parse } from "../src/item-parser";
 
 const sample_item = `Item Class: Body Armours
 Rarity: Rare
@@ -92,21 +92,21 @@ test("sample item 2", async () => {
   );
 
   const a1 = {
+    roll: 38,
     affix: [
       {
-        poe_id: "explicit.stat_803737631",
-        rawText: "+38 to Accuracy Rating",
-        regex: /\d+(?:\.\d+)? to (Accuracy|Accuracy) Rating$/g,
         type: "EXPLICIT",
-      },
-      {
+        regex: /\d+(?:\.\d+)? to (Accuracy|Accuracy) Rating$/g,
         poe_id: "explicit.stat_691932474",
         rawText: "+38 to Accuracy Rating",
-        regex: /\d+(?:\.\d+)? to (Accuracy|Accuracy) Rating$/g,
+      },
+      {
         type: "EXPLICIT",
+        regex: /\d+(?:\.\d+)? to (Accuracy|Accuracy) Rating$/g,
+        poe_id: "explicit.stat_803737631",
+        rawText: "+38 to Accuracy Rating",
       },
     ],
-    roll: 38,
   };
 
   const { affixs } = parsedSampleItem;

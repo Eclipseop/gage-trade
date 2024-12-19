@@ -7,6 +7,7 @@
     "web:build": "pnpm --filter web build",
     "web:dev": "pnpm --filter web dev",
     "web:lint": "pnpm --filter web lint",
+    "electron:test": "pnpm --filter electron test",
     "electron:build": "pnpm --filter electron build",
     "electron:dev": "pnpm --filter electron dev",
     "electron:lint": "pnpm --filter electron lint",
@@ -14,8 +15,12 @@
     "prepare": "husky"
   },
   "keywords": [],
-  "author": "",
+  "author": "eclipseop",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Eclipseop/gage-trade.git"
+  },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "concurrently": "^9.1.0",
@@ -28,14 +33,9 @@
   "build": {
     "appId": "com.yourapp.id",
     "productName": "Gage Trade",
-    "files": [
-      "electron/dist/**/*",
-      "web/dist/**/*"
-    ],
+    "files": ["electron/dist/**/*", "web/dist/**/*"],
     "win": {
-      "target": [
-        "portable"
-      ]
+      "target": ["portable"]
     },
     "directories": {
       "output": "dist"
