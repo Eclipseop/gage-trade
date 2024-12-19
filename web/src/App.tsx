@@ -54,12 +54,8 @@ const App = () => {
   const submitSearch = async (e: any) => {
     e.preventDefault();
     if (!mods) return;
-    const filteredMods = {
-      ...mods,
-      affixs: mods.affixs.filter((affix) => affix.checked),
-    };
 
-    const pendingData = toast.promise(lookup(filteredMods), {
+    const pendingData = toast.promise(lookup(mods), {
       loading: "Loading...",
       success: "Done!",
       error: (data) => data,
@@ -72,12 +68,8 @@ const App = () => {
   const submitTradeOpen = async (e: any) => {
     e.preventDefault();
     if (!mods) return;
-    const filteredMods = {
-      ...mods,
-      affixs: mods.affixs.filter((affix) => affix.checked),
-    };
 
-    await openTradeQuery(filteredMods);
+    await openTradeQuery(mods);
   };
 
   return (

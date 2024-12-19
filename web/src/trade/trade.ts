@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios";
+import type { ItemData } from "../App";
 import { api } from "../util/electron";
 
 const NORMAL_TRADE_URL =
@@ -6,29 +7,11 @@ const NORMAL_TRADE_URL =
 const TRADE_API = "https://www.pathofexile.com/api/trade2/search/poe2/Standard";
 const FETCH_TRADE_API = "https://www.pathofexile.com/api/trade2/fetch";
 
-export type ItemData = {
-  name: string;
-  rarity: string;
-  itemClass: string; // TODO create enum hehe
-  base: string; // todo create enum ehhe
-  affixs: {
-    affix: AffixInfo[];
-    roll: number;
-  }[];
-};
-
-export type AffixInfo = {
-  common_name: string;
-  poe_id: string;
-  regex: RegExp;
-  type: "EXPLICIT" | "IMPLICIT";
-  rawText?: string;
-};
-
 type StatFiler = {
   type: "and" | "count";
   filters: {
     id: string;
+    disabled: boolean;
     value?: {
       min?: number;
       max?: number;
@@ -142,7 +125,7 @@ const itemClassMap: { [key: string]: string } = {
   "Body Armours": "armour.chest",
   Boots: "armour.boots",
   Gloves: "armour.gloves",
-  Helmets: "armour.helm",
+  Helmets: "armour.helmet",
   Shields: "armour.shield",
   Belts: "accessory.belt",
   Rings: "accessory.ring",
@@ -195,19 +178,37 @@ const itemClassMap: { [key: string]: string } = {
   Crossbows: "weapon.crossbow",
 };
 
+type PoeQuery = {
+  query: {
+    name?: string;
+    status: {
+      option: string;
+    };
+    stats: StatFiler[];
+    filters: Filter;
+  };
+  sort: {
+    price: "asc" | "desc";
+  };
+};
+
 const buildQuery = (item: ItemData) => {
-  const query = {
+  const query: PoeQuery = {
     query: {
       status: {
         option: "online",
       },
-      stats: [] as StatFiler[],
+      stats: [],
       filters: {} as Filter,
     },
     sort: {
       price: "asc",
     },
   };
+
+  if (item.rarity === "Unique") {
+    query.query = { ...query.query, name: item.name };
+  }
 
   if (item.itemClass) {
     const mappedItemClass = itemClassMap[item.itemClass];
@@ -226,6 +227,7 @@ const buildQuery = (item: ItemData) => {
       type: affix.affix.length === 1 ? "and" : "count",
       filters: affix.affix.map((a) => ({
         id: a.poe_id,
+        disabled: !affix.checked,
         value: { min: affix.roll },
       })),
       ...(affix.affix.length > 1 && { value: { min: 1 } }),
