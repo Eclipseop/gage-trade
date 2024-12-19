@@ -186,13 +186,14 @@ type PoeQuery = {
     };
     stats: StatFiler[];
     filters: Filter;
+    type?: string;
   };
   sort: {
     price: "asc" | "desc";
   };
 };
 
-const buildQuery = (item: ItemData) => {
+const buildQuery = (item: ItemData): PoeQuery => {
   const query: PoeQuery = {
     query: {
       status: {
@@ -205,6 +206,11 @@ const buildQuery = (item: ItemData) => {
       price: "asc",
     },
   };
+
+  if (item.itemClass === "Stackable Currency") {
+    query.query = { ...query.query, type: item.name };
+    return query;
+  }
 
   if (item.rarity === "Unique") {
     query.query = { ...query.query, name: item.name };
@@ -222,16 +228,18 @@ const buildQuery = (item: ItemData) => {
     };
   }
 
-  for (const affix of item.affixs) {
-    query.query.stats.push({
-      type: affix.affix.length === 1 ? "and" : "count",
-      filters: affix.affix.map((a) => ({
-        id: a.poe_id,
-        disabled: !affix.checked,
-        value: { min: affix.roll },
-      })),
-      ...(affix.affix.length > 1 && { value: { min: 1 } }),
-    });
+  if (item.affixs) {
+    for (const affix of item.affixs) {
+      query.query.stats.push({
+        type: affix.affix.length === 1 ? "and" : "count",
+        filters: affix.affix.map((a) => ({
+          id: a.poe_id,
+          disabled: !affix.checked,
+          value: { min: affix.roll },
+        })),
+        ...(affix.affix.length > 1 && { value: { min: 1 } }),
+      });
+    }
   }
   return query;
 };

@@ -7,8 +7,9 @@ export type ItemData = {
   name: string;
   rarity: string;
   itemClass: string; // TODO create enum hehe
-  base: string; // todo create enum ehhe
-  affixs: {
+  base?: string; // todo create enum ehhe
+  type?: string;
+  affixs?: {
     affix: AffixInfo[];
     roll: number;
     checked: boolean;
@@ -34,7 +35,7 @@ const App = () => {
 
       const parsedData = JSON.parse(data) as ItemData;
 
-      const updatedAffixs = parsedData.affixs.map((affix) => ({
+      const updatedAffixs = parsedData.affixs?.map((affix) => ({
         ...affix,
         checked: false,
       }));
@@ -83,7 +84,7 @@ const App = () => {
 
         <form className="flex flex-col space-y-2 text-sm">
           <div className="pl-1 grid grid-cols-2">
-            {mods?.affixs.map((a, idx) => (
+            {mods?.affixs?.map((a, idx) => (
               <div
                 key={a.affix[0].poe_id}
                 className="space-x-1 flex items-center"

@@ -4,10 +4,10 @@ const ITEM_SECTION_MARKER = "--------";
 
 export type ParsedItemData = {
   name: string;
-  rarity: string;
+  rarity?: string;
   itemClass: string; // TODO create enum hehe
-  base: string; // todo create enum ehhe
-  affixs: {
+  base?: string; // todo create enum ehhe
+  affixs?: {
     affix: Affix[];
     roll: number | undefined;
   }[];
@@ -44,7 +44,7 @@ const getItemRarity = (itemData: string): string | undefined => {
   const lines = itemData.split("\n");
   for (const line of lines) {
     if (line.includes("Rarity")) {
-      const regex = /(Normal|Magic|Rare|Unique)/g;
+      const regex = /(Normal|Magic|Rare|Unique|Currency)/g;
       const matches = line.match(regex);
       return matches?.[0];
     }
@@ -52,16 +52,47 @@ const getItemRarity = (itemData: string): string | undefined => {
   return undefined;
 };
 
+const getItemClass = (itemData: string): string | undefined => {
+  const lines = itemData.split("\n");
+  for (const line of lines) {
+    if (line.includes("Item Class")) {
+      const regex = /(?<=Item Class: )[A-z ]+/g;
+      const matches = line.match(regex);
+      return matches?.[0];
+    }
+  }
+  return undefined;
+};
+
+// I'm sure there is a better way of doing this...
+const isPoeItem = (itemData: string): boolean => {
+  return itemData.split(ITEM_SECTION_MARKER).length >= 3;
+};
+
 export const parse = async (itemData: string): Promise<ParsedItemData> => {
+  if (!isPoeItem(itemData)) return Promise.reject("Not a Poe Item");
+
   const itemDataParts = itemData.split(ITEM_SECTION_MARKER);
 
   const itemStats = await fetcher.fetchAffixInfo();
   const parseData = { affixs: [] } as unknown as ParsedItemData;
 
+  const itemClass = getItemClass(itemData);
+  if (!itemClass) throw new Error("Unable to determine item class");
+
   const itemRarity = getItemRarity(itemData);
   if (!itemRarity) throw new Error("Unable to determine item rarity!");
-  const explicitSectionIdx = getExplicitSectionIdx(itemRarity, itemDataParts);
 
+  if (itemClass === "Stackable Currency") {
+    const sec = itemDataParts[0].split("\r\n").filter((s) => s.length > 0);
+    return {
+      name: sec[sec.length - 1],
+      itemClass: itemClass,
+      rarity: itemRarity,
+    };
+  }
+
+  const explicitSectionIdx = getExplicitSectionIdx(itemRarity, itemDataParts);
   for (let i = 0; i < itemDataParts.length; i++) {
     const section = itemDataParts[i];
     if (i === explicitSectionIdx) {
@@ -91,7 +122,7 @@ export const parse = async (itemData: string): Promise<ParsedItemData> => {
         if (matchedMods.length === 0) {
           throw new Error(`COULD NOT MATCH ${x}`);
         }
-        parseData.affixs.push({ roll: roll, affix: matchedMods });
+        parseData.affixs?.push({ roll: roll, affix: matchedMods });
 
         console.log("\n");
       }
