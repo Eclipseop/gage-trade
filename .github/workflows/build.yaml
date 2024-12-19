@@ -37,4 +37,4 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
-          files: /**/*.exe
+          files: /*.exe
