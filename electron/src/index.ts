@@ -29,7 +29,7 @@ const init = () => {
   }, 100);
 
   mainWindow = new BrowserWindow({
-    title: "Gage Trade",
+    title: `Gage Trade - ${app.getVersion()}`,
     width: 500,
     height: 350,
     show: false,
@@ -44,6 +44,9 @@ const init = () => {
   mainWindow.loadFile(path.join(__dirname, "web/dist/index.html"));
   globalShortcut.register("CommandOrControl+D", toggleWindow);
 
+  mainWindow.on("page-title-updated", (evt) => {
+    evt.preventDefault();
+  });
   mainWindow.on("close", (event) => {
     event.preventDefault();
     mainWindow?.hide();
