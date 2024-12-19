@@ -113,3 +113,27 @@ test("sample item 2", async () => {
   expect(affixs.length).toBe(2);
   expect(affixs).toContainEqual(a1);
 });
+
+test("sample item 3", async () => {
+  const parsedSampleItem = await parse(sample_item3);
+  expect(parsedSampleItem.itemClass).toBe("Jewels");
+  expect(parsedSampleItem.rarity).toBe("Rare");
+  expect(parsedSampleItem.name).toBe("Entropy Bliss");
+
+  const a1 = {
+    roll: 15,
+    affix: [
+      {
+        type: "EXPLICIT",
+        regex:
+          /\d+(?:\.\d+)?% (increased|reduced) (ElementalDamage|Elemental Damage)$/g,
+        poe_id: "explicit.stat_3141070085",
+        rawText: "15% increased Elemental Damage",
+      },
+    ],
+  };
+
+  const { affixs } = parsedSampleItem;
+  expect(affixs.length).toBe(4);
+  expect(affixs).toContainEqual(a1);
+});
