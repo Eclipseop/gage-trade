@@ -1,4 +1,4 @@
-import { join } from "node:path";
+import path, { join } from "node:path";
 import {
   BrowserWindow,
   app,
@@ -40,8 +40,8 @@ const init = () => {
     },
   });
 
-  mainWindow.loadURL("http://localhost:5173");
-
+  console.log(path.join(__dirname, "web/dist/index.html"));
+  mainWindow.loadFile(path.join(__dirname, "web/dist/index.html"));
   globalShortcut.register("CommandOrControl+D", toggleWindow);
 
   mainWindow.on("close", (event) => {

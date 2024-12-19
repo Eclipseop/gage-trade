@@ -7,6 +7,13 @@ settings:
 importers:
 
   .:
+    dependencies:
+      axios:
+        specifier: ^1.7.9
+        version: 1.7.9
+      uiohook-napi:
+        specifier: ^1.5.4
+        version: 1.5.4
     devDependencies:
       '@biomejs/biome':
         specifier: ^1.9.4
@@ -17,6 +24,9 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
+      electron:
+        specifier: ^33.2.1
+        version: 33.2.1
       electron-builder:
         specifier: ^25.1.8
         version: 25.1.8(electron-builder-squirrel-windows@25.1.8)
