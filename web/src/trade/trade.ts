@@ -54,82 +54,87 @@ type PoeBaseSearchResult = {
   inexact: boolean;
 };
 
+type PoeItemListing = {
+  method: string;
+  indexed: string;
+  stash: {
+    name: string;
+    x: number;
+    y: number;
+  };
+  whisper: string;
+  account: {
+    name: string;
+    online: {
+      league: string;
+    };
+    lastCharacterName: string;
+    language: string;
+    realm: string;
+  };
+  price: {
+    type: string;
+    amount: number;
+    currency: string;
+  };
+};
+
+// probably come up w/ a better name
+type PoeItem = {
+  realm: string;
+  verified: boolean;
+  w: number;
+  h: number;
+  icon: string;
+  league: string;
+  id: string;
+  name: string;
+  typeLine: string;
+  baseType: string;
+  rarity: string;
+  ilvl: number;
+  identified: boolean;
+  note: string;
+  properties: Array<{
+    name: string;
+    values: Array<[string, number]>;
+    displayMode: number;
+    type?: number;
+  }>;
+  requirements: Array<{
+    name: string;
+    values: Array<[string, number]>;
+    displayMode: number;
+    type: number;
+  }>;
+  explicitMods: Array<string>;
+  frameType: number;
+  extended: {
+    es: number;
+    es_aug: boolean;
+    mods: {
+      explicit: Array<{
+        name: string;
+        tier: string;
+        level: number;
+        magnitudes: Array<{
+          hash: string;
+          min: string;
+          max: string;
+        }>;
+      }>;
+    };
+    hashes: {
+      explicit: Array<[string, Array<number>]>;
+    };
+  };
+};
+
 export type PoeItemLookupResult = {
   result: Array<{
     id: string;
-    listing: {
-      method: string;
-      indexed: string;
-      stash: {
-        name: string;
-        x: number;
-        y: number;
-      };
-      whisper: string;
-      account: {
-        name: string;
-        online: {
-          league: string;
-        };
-        lastCharacterName: string;
-        language: string;
-        realm: string;
-      };
-      price: {
-        type: string;
-        amount: number;
-        currency: string;
-      };
-    };
-    item: {
-      realm: string;
-      verified: boolean;
-      w: number;
-      h: number;
-      icon: string;
-      league: string;
-      id: string;
-      name: string;
-      typeLine: string;
-      baseType: string;
-      rarity: string;
-      ilvl: number;
-      identified: boolean;
-      note: string;
-      properties: Array<{
-        name: string;
-        values: Array<[string, number]>;
-        displayMode: number;
-        type?: number;
-      }>;
-      requirements: Array<{
-        name: string;
-        values: Array<[string, number]>;
-        displayMode: number;
-        type: number;
-      }>;
-      explicitMods: Array<string>;
-      frameType: number;
-      extended: {
-        es: number;
-        es_aug: boolean;
-        mods: {
-          explicit: Array<{
-            name: string;
-            tier: string;
-            level: number;
-            magnitudes: Array<{
-              hash: string;
-              min: string;
-              max: string;
-            }>;
-          }>;
-        };
-        hashes: {
-          explicit: Array<[string, Array<number>]>;
-        };
-      };
-    };
+    listing: PoeItemListing;
+    item: PoeItem;
   }>;
 };
 
