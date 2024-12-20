@@ -207,7 +207,7 @@ const buildQuery = (item: ItemData): PoeQuery => {
     },
   };
 
-  if (item.itemClass === "Stackable Currency") {
+  if (item.rarity === "Currency") {
     query.query = { ...query.query, type: item.name };
     return query;
   }

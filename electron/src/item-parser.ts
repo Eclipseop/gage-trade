@@ -84,8 +84,9 @@ export const parse = async (itemData: string): Promise<ParsedItemData> => {
   const itemRarity = getItemRarity(itemData);
   if (!itemRarity) throw new Error("Unable to determine item rarity!");
 
-  if (itemClass === "Stackable Currency") {
-    const sec = itemDataParts[0].split("\r\n").filter((s) => s.length > 0);
+  if (itemRarity === "Currency") {
+    const sec = itemDataParts[0].split("\n").filter((s) => s.length > 0);
+    console.log(sec);
     return {
       name: sec[sec.length - 1],
       itemClass: itemClass,

@@ -85,6 +85,18 @@ Item Level: 59
 +1 to Level of all Minion Skills
 +30% to Cold Resistance`;
 
+const sample_item5 = `Item Class: Socketable
+Rarity: Currency
+Soul Core of Topotante
+--------
+Stack Size: 1/10
+--------
+Martial Weapon: Attacks with this Weapon Penetrate 15% Elemental Resistances
+Armour: 15% increased Elemental Ailment Threshold
+--------
+Place into an empty Rune Socket in a Martial Weapon or Armour to apply its effect to that item. Once socketed it cannot be removed or replaced.
+`;
+
 test("sample item 1", async () => {
   const parsedSampleItem = await parse(sample_item);
   expect(parsedSampleItem.itemClass).toBe("Body Armours");
@@ -185,4 +197,11 @@ test("sample item 4", async () => {
   const { affixs } = parsedSampleItem;
   expect(affixs.length).toBe(6);
   expect(affixs).toContainEqual(a1);
+});
+
+test("sample item 5", async () => {
+  const parsedSampleItem = await parse(sample_item5);
+  expect(parsedSampleItem.itemClass).toBe("Socketable");
+  expect(parsedSampleItem.rarity).toBe("Currency");
+  expect(parsedSampleItem.name).toBe("Soul Core of Topotante");
 });
