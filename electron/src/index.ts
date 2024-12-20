@@ -16,6 +16,8 @@ import { autoUpdater } from "electron-updater";
 
 let mainWindow: BrowserWindow | null = null;
 
+let pastClipboard = "";
+
 const init = () => {
   uIOhook.start();
 
@@ -82,8 +84,6 @@ const init = () => {
   });
 };
 
-let pastClipboard = "";
-
 const toggleWindow = async () => {
   if (!mainWindow) {
     console.log("Main Window somehow not loaded?");
@@ -95,6 +95,13 @@ const toggleWindow = async () => {
   uIOhook.keyToggle(UiohookKey.Ctrl, "down");
   uIOhook.keyTap(UiohookKey.C);
   uIOhook.keyToggle(UiohookKey.Ctrl, "up");
+  setTimeout(async () => {
+    const c = clipboard.readText();
+    const parsedItem = await parse(c);
+    if (parsedItem) {
+      mainWindow?.show();
+    }
+  }, 500);
 };
 
 ipcMain.on("trade", async (event, args) => {
