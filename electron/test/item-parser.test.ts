@@ -97,6 +97,31 @@ Armour: 15% increased Elemental Ailment Threshold
 Place into an empty Rune Socket in a Martial Weapon or Armour to apply its effect to that item. Once socketed it cannot be removed or replaced.
 `;
 
+test("blank clipboard", async () => {
+  expect(async () => await parse("")).rejects.toThrowError("Not a Poe Item");
+});
+
+test("nonsense clipboard", async () => {
+  expect(async () => await parse("ajf932bnfa32fb8abf")).rejects.toThrowError(
+    "Not a Poe Item",
+  );
+});
+
+// passes the scuffed isPoeItem check, should still error
+test("nonsense clipboard 2", async () => {
+  const payload = `asdfasdfasdfasdf
+  ------
+  asdfasdfasdf
+  ------
+  asdfasdfasdf
+  ------
+  asdfasdfasdf`;
+
+  expect(async () => await parse(payload)).rejects.toThrowError(
+    "Not a Poe Item",
+  );
+});
+
 test("sample item 1", async () => {
   const parsedSampleItem = await parse(sample_item);
   expect(parsedSampleItem.itemClass).toBe("Body Armours");
