@@ -159,13 +159,13 @@ test("sample item 2", async () => {
       {
         type: "EXPLICIT",
         regex: /\d+(?:\.\d+)? to (Accuracy|Accuracy) Rating$/g,
-        poe_id: "explicit.stat_691932474",
+        poe_id: "explicit.stat_803737631",
         rawText: "+38 to Accuracy Rating",
       },
       {
         type: "EXPLICIT",
         regex: /\d+(?:\.\d+)? to (Accuracy|Accuracy) Rating$/g,
-        poe_id: "explicit.stat_803737631",
+        poe_id: "explicit.stat_691932474",
         rawText: "+38 to Accuracy Rating",
       },
     ],
