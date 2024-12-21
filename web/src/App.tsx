@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { type ChangeEvent, useEffect, useState } from "react";
 import { Toaster, toast } from "sonner";
 import { type TradeListing, lookup, openTradeQuery } from "./trade/trade";
 import { api } from "./util/electron";
@@ -51,6 +51,15 @@ const App = () => {
     setMods(existingMods);
   };
 
+  const updateRoll = (e: ChangeEvent<HTMLInputElement>, idx: number) => {
+    const existingMods: ItemData = JSON.parse(JSON.stringify(mods));
+
+    if (existingMods.affixs?.[idx]) {
+      existingMods.affixs[idx].roll = Number(e.target.value);
+      setMods(existingMods);
+    }
+  };
+
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const submitSearch = async (e: any) => {
     e.preventDefault();
@@ -83,13 +92,13 @@ const App = () => {
         </span>
 
         <form className="flex flex-col space-y-2 text-sm">
-          <div className="pl-1 grid grid-cols-2">
+          <div className="grid grid-cols-2 gap-1">
             {mods?.affixs?.map((a, idx) => (
               <div
                 key={a.affix[0].poe_id}
-                className="space-x-1 flex items-center"
+                className="space-x-1 flex items-center justify-between"
               >
-                <label>
+                <label className="flex space-x-1">
                   <input
                     type="checkbox"
                     checked={a.checked}
@@ -98,6 +107,13 @@ const App = () => {
                   />
                   <span>{a.affix[0].rawText}</span>
                 </label>
+
+                <input
+                  type="number"
+                  value={a.roll}
+                  onChange={(e) => updateRoll(e, idx)}
+                  className="w-10 px-1 py-[2px] leading-none bg-black border rounded"
+                />
               </div>
             ))}
           </div>
