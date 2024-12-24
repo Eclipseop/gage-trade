@@ -217,8 +217,6 @@ const buildQuery = (item: ItemData): PoeQuery => {
     query.query = { ...query.query, name: item.name };
   }
 
-  console.log(item.itemClass);
-
   if (item.itemClass) {
     const mappedItemClass = itemClassMap[item.itemClass];
     if (!mappedItemClass) {
