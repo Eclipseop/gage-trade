@@ -117,6 +117,24 @@ Allies in your Presence deal 1 to 10 additional Attack Lightning Damage
 Minions have 28% increased maximum Life
 `;
 
+const sample_item7 = `Item Class: Sceptres
+Rarity: Rare
+Apocalypse Smasher
+Shrine Sceptre
+--------
+Spirit: 133 (augmented)
+--------
+Requirements:
+Level: 66
+Str: 46
+Int: 117
+--------
+Item Level: 68
+--------
+33% increased Spirit
+Allies in your Presence have +67 to Accuracy Rating
+Allies in your Presence have 16% increased Attack Speed`;
+
 test("blank clipboard", async () => {
   expect(async () => await parse("")).rejects.toThrowError("Not a Poe Item");
 });
@@ -285,8 +303,45 @@ test("sample item 6", async () => {
   };
 
   const { affixs } = parsedSampleItem;
-  console.log(JSON.stringify(affixs, null, 2));
   expect(affixs?.length).toBe(4);
+  expect(affixs).toContainEqual(a1);
+  expect(affixs).toContainEqual(a2);
+});
+
+test("sample item 7", async () => {
+  const parsedSampleItem = await parse(sample_item7);
+  expect(parsedSampleItem.itemClass).toBe("Sceptres");
+  expect(parsedSampleItem.rarity).toBe("Rare");
+  expect(parsedSampleItem.name).toBe("Apocalypse Smasher");
+
+  const a1 = {
+    affix: [
+      {
+        poe_id: "explicit.stat_3169585282",
+        rawText: "Allies in your Presence have +67 to Accuracy Rating",
+        regex:
+          /^(Allies|Allies) in your (Presence|Presence) have \+?\d+(?:\.\d+)? to (Accuracy|Accuracy) Rating$/g,
+        type: "EXPLICIT",
+      },
+    ],
+    roll: 67,
+  };
+
+  const a2 = {
+    affix: [
+      {
+        poe_id: "explicit.stat_1998951374",
+        rawText: "Allies in your Presence have 16% increased Attack Speed",
+        regex:
+          /^(Allies|Allies) in your (Presence|Presence) have \+?\d+(?:\.\d+)?% (increased|reduced) (Attack|Attack) Speed$/g,
+        type: "EXPLICIT",
+      },
+    ],
+    roll: 16,
+  };
+
+  const { affixs } = parsedSampleItem;
+  expect(affixs?.length).toBe(3);
   expect(affixs).toContainEqual(a1);
   expect(affixs).toContainEqual(a2);
 });
