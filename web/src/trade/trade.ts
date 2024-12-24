@@ -209,7 +209,7 @@ const buildQuery = (item: ItemData): PoeQuery => {
   };
 
   if (item.rarity === "Currency") {
-    query.query = { ...query.query, type: item.name };
+    query.query = { ...query.query, type: item.name.replace("\r", "") };
     return query;
   }
 
