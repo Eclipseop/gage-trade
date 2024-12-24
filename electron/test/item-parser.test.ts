@@ -97,6 +97,26 @@ Armour: 15% increased Elemental Ailment Threshold
 Place into an empty Rune Socket in a Martial Weapon or Armour to apply its effect to that item. Once socketed it cannot be removed or replaced.
 `;
 
+const sample_item6 = `Item Class: Sceptres
+Rarity: Rare
+Brood Smasher
+Shrine Sceptre
+--------
+Spirit: 100
+--------
+Requirements:
+Level: 66 (unmet)
+Str: 46 (unmet)
+Int: 117
+--------
+Item Level: 68
+--------
+Allies in your Presence deal 7 to 9 additional Attack Fire Damage
+Allies in your Presence deal 1 to 10 additional Attack Lightning Damage
++24 to Strength
+Minions have 28% increased maximum Life
+`;
+
 test("blank clipboard", async () => {
   expect(async () => await parse("")).rejects.toThrowError("Not a Poe Item");
 });
@@ -133,7 +153,7 @@ test("sample item 1", async () => {
       {
         poe_id: "explicit.stat_3299347043",
         rawText: "+212 to maximum Life",
-        regex: /\d+(?:\.\d+)? to maximum Life$/g,
+        regex: /^\+?\d+(?:\.\d+)? to maximum Life$/g,
         type: "EXPLICIT",
       },
     ],
@@ -141,7 +161,7 @@ test("sample item 1", async () => {
   };
 
   const { affixs } = parsedSampleItem;
-  expect(affixs.length).toBe(6);
+  expect(affixs?.length).toBe(6);
   expect(affixs).toContainEqual(a1);
 });
 
@@ -157,22 +177,22 @@ test("sample item 2", async () => {
     roll: 38,
     affix: [
       {
-        type: "EXPLICIT",
-        regex: /\d+(?:\.\d+)? to (Accuracy|Accuracy) Rating$/g,
         poe_id: "explicit.stat_803737631",
         rawText: "+38 to Accuracy Rating",
+        regex: /^\+?\d+(?:\.\d+)? to (Accuracy|Accuracy) Rating$/g,
+        type: "EXPLICIT",
       },
       {
-        type: "EXPLICIT",
-        regex: /\d+(?:\.\d+)? to (Accuracy|Accuracy) Rating$/g,
         poe_id: "explicit.stat_691932474",
         rawText: "+38 to Accuracy Rating",
+        regex: /^\+?\d+(?:\.\d+)? to (Accuracy|Accuracy) Rating$/g,
+        type: "EXPLICIT",
       },
     ],
   };
 
   const { affixs } = parsedSampleItem;
-  expect(affixs.length).toBe(2);
+  expect(affixs?.length).toBe(2);
   expect(affixs).toContainEqual(a1);
 });
 
@@ -186,17 +206,17 @@ test("sample item 3", async () => {
     roll: 15,
     affix: [
       {
-        type: "EXPLICIT",
-        regex:
-          /\d+(?:\.\d+)?% (increased|reduced) (ElementalDamage|Elemental Damage)$/g,
         poe_id: "explicit.stat_3141070085",
         rawText: "15% increased Elemental Damage",
+        regex:
+          /^\+?\d+(?:\.\d+)?% (increased|reduced) (ElementalDamage|Elemental Damage)$/g,
+        type: "EXPLICIT",
       },
     ],
   };
 
   const { affixs } = parsedSampleItem;
-  expect(affixs.length).toBe(4);
+  expect(affixs?.length).toBe(4);
   expect(affixs).toContainEqual(a1);
 });
 
@@ -213,14 +233,14 @@ test("sample item 4", async () => {
         poe_id: "explicit.stat_3917489142",
         rawText: "15% increased Rarity of Items found",
         regex:
-          /\d+(?:\.\d+)?% (increased|reduced) (ItemRarity|Rarity of Items) found$/g,
+          /^\+?\d+(?:\.\d+)?% (increased|reduced) (ItemRarity|Rarity of Items) found$/g,
         type: "EXPLICIT",
       },
     ],
   };
 
   const { affixs } = parsedSampleItem;
-  expect(affixs.length).toBe(6);
+  expect(affixs?.length).toBe(6);
   expect(affixs).toContainEqual(a1);
 });
 
@@ -229,4 +249,44 @@ test("sample item 5", async () => {
   expect(parsedSampleItem.itemClass).toBe("Socketable");
   expect(parsedSampleItem.rarity).toBe("Currency");
   expect(parsedSampleItem.name).toBe("Soul Core of Topotante");
+});
+
+test("sample item 6", async () => {
+  const parsedSampleItem = await parse(sample_item6);
+  expect(parsedSampleItem.itemClass).toBe("Sceptres");
+  expect(parsedSampleItem.rarity).toBe("Rare");
+  expect(parsedSampleItem.name).toBe("Brood Smasher");
+
+  const a1 = {
+    affix: [
+      {
+        poe_id: "explicit.stat_770672621",
+        rawText: "Minions have 28% increased maximum Life",
+        regex:
+          /^(Minion|Minions) have \+?\d+(?:\.\d+)?% (increased|reduced) maximum Life$/g,
+        type: "EXPLICIT",
+      },
+    ],
+    roll: 28,
+  };
+
+  const a2 = {
+    roll: 5.5,
+    affix: [
+      {
+        type: "EXPLICIT",
+        regex:
+          /^(Allies|Allies) in your (Presence|Presence) deal \+?\d+(?:\.\d+)? to \+?\d+(?:\.\d+)? additional (Attack|Attack) (Lightning|Lightning) Damage$/g,
+        poe_id: "explicit.stat_2854751904",
+        rawText:
+          "Allies in your Presence deal 1 to 10 additional Attack Lightning Damage",
+      },
+    ],
+  };
+
+  const { affixs } = parsedSampleItem;
+  console.log(JSON.stringify(affixs, null, 2));
+  expect(affixs?.length).toBe(4);
+  expect(affixs).toContainEqual(a1);
+  expect(affixs).toContainEqual(a2);
 });

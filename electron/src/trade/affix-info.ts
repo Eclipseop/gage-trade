@@ -56,23 +56,26 @@ class AffixInfoFetcher {
         },
       });
 
-      const parsedStats = response.data.result[0].entries.map((em) => ({
-        ...em,
-        mappedRegex: new RegExp(
-          `${em.text
-            .replace(/\[([^\]]+)\]/g, (match, group: string) => {
-              const sortedElements = group
-                .split(",")
-                .map((el: string) => el.trim())
-                .sort((a, b) => a.length - b.length);
-              return `(${sortedElements.join("|")})`;
-            })
-            .replaceAll("+", "\\+")
-            .replace("increased", "(increased|reduced)")
-            .replaceAll("#", "\\d+(?:\\.\\d+)?")}$`,
-          "g",
-        ),
-      }));
+      const parsedStats = response.data.result[0].entries.map((entry) => {
+        const transformedText = entry.text
+          .replace(/\[([^\]]+)\]/g, (match, group: string) => {
+            const sortedElements = group
+              .split(",")
+              .map((el) => el.trim())
+              .sort((a, b) => a.length - b.length);
+            return `(${sortedElements.join("|")})`;
+          })
+          .replaceAll("+", "\\+")
+          .replace("increased", "(increased|reduced)")
+          .replaceAll("#", "\\+?\\d+(?:\\.\\d+)?");
+
+        const mappedRegex = new RegExp(`^${transformedText}$`, "g");
+
+        return {
+          ...entry,
+          mappedRegex,
+        };
+      });
 
       this.cachedData = parsedStats;
 
