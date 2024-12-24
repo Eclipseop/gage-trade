@@ -176,6 +176,7 @@ const itemClassMap: { [key: string]: string } = {
   "Expedition Artifacts": "expedition.artifact",
   Beasts: "beast",
   Crossbows: "weapon.crossbow",
+  Quarterstaves: "weapon.warstaff",
 };
 
 type PoeQuery = {
@@ -215,6 +216,8 @@ const buildQuery = (item: ItemData): PoeQuery => {
   if (item.rarity === "Unique") {
     query.query = { ...query.query, name: item.name };
   }
+
+  console.log(item.itemClass);
 
   if (item.itemClass) {
     const mappedItemClass = itemClassMap[item.itemClass];
