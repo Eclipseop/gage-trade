@@ -254,11 +254,9 @@ export const openTradeQuery = async (item: ItemData) => {
   api.send("trade", { url });
 };
 
-export type TradeListing = PoeItemLookupResult["result"];
+export type TradeListing = PoeItemLookupResult["result"][number];
 
-export const lookup = async (
-  item: ItemData,
-): Promise<TradeListing | undefined> => {
+export const lookup = async (item: ItemData): Promise<TradeListing[]> => {
   try {
     const query = buildQuery(item);
 
@@ -266,7 +264,7 @@ export const lookup = async (
     const { data } = await axios.post<PoeBaseSearchResult>(TRADE_API, query);
     console.log(`[DEBUG] Found ${data.result.length} items`);
     if (data.result.length === 0) {
-      return undefined;
+      return [];
     }
     const itemLookupRes = await axios.get<PoeItemLookupResult>(
       `${FETCH_TRADE_API}/${data.result.slice(0, 10).join(",")}`,
