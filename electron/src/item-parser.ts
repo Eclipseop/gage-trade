@@ -8,12 +8,12 @@ export type ParsedItemData = {
   itemClass: string;
   base?: string;
   affixs?: {
-    affix: Affix[];
+    affix: MappedAffix[];
     roll: number | undefined;
   }[];
 };
 
-export type Affix = {
+type MappedAffix = {
   poe_id: string;
   regex: RegExp;
   type: "EXPLICIT" | "IMPLICIT";
@@ -106,7 +106,7 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
           ? rolls.map(Number).reduce((sum, num) => sum + num, 0) / rolls.length
           : undefined;
 
-        const matchedAffix = [] as Affix[];
+        const matchedAffix = [] as MappedAffix[];
         for (const affix of affixInfo) {
           if (affix.mappedRegex.exec(x.replace("\r", "")) != null) {
             console.log(
