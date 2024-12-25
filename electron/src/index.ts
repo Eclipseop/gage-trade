@@ -37,8 +37,8 @@ const init = () => {
 
   mainWindow = new BrowserWindow({
     title: `Gage Trade - ${app.getVersion()}`,
-    width: 500,
-    height: 350,
+    width: 550,
+    height: 750,
     show: false,
     autoHideMenuBar: true,
     webPreferences: {
