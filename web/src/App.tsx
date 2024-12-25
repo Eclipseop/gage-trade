@@ -65,6 +65,7 @@ const App = () => {
     e.preventDefault();
     if (!mods) return;
 
+    setItemRes([]);
     const pendingData = toast.promise(lookup(mods), {
       loading: "Loading...",
       success: "Done!",
