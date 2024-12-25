@@ -70,33 +70,32 @@ const isPoeItem = (itemData: string): boolean => {
   return itemData.split(ITEM_SECTION_MARKER).length >= 3;
 };
 
-export const parse = async (itemData: string): Promise<ParsedItemData> => {
-  if (!isPoeItem(itemData)) return Promise.reject("Not a Poe Item");
+export const parse = async (itemString: string): Promise<ParsedItemData> => {
+  if (!isPoeItem(itemString)) return Promise.reject("Not a Poe Item");
 
-  const itemDataParts = itemData.split(ITEM_SECTION_MARKER);
+  const itemSections = itemString.split(ITEM_SECTION_MARKER);
 
-  const itemStats = await fetcher.fetchAffixInfo();
+  const affixInfo = await fetcher.fetchAffixInfo();
   const parseData = { affixs: [] } as unknown as ParsedItemData;
 
-  const itemClass = getItemClass(itemData);
+  const itemClass = getItemClass(itemString);
   if (!itemClass) throw new Error("Unable to determine item class");
 
-  const itemRarity = getItemRarity(itemData);
+  const itemRarity = getItemRarity(itemString);
   if (!itemRarity) throw new Error("Unable to determine item rarity!");
 
   if (itemRarity === "Currency") {
-    const sec = itemDataParts[0].split("\n").filter((s) => s.length > 0);
-    console.log(sec);
+    const lines = itemSections[0].split("\n").filter((s) => s.length > 0);
     return {
-      name: sec[sec.length - 1],
+      name: lines[lines.length - 1],
       itemClass: itemClass,
       rarity: itemRarity,
     };
   }
 
-  const explicitSectionIdx = getExplicitSectionIdx(itemRarity, itemDataParts);
-  for (let i = 0; i < itemDataParts.length; i++) {
-    const section = itemDataParts[i];
+  const explicitSectionIdx = getExplicitSectionIdx(itemRarity, itemSections);
+  for (let i = 0; i < itemSections.length; i++) {
+    const section = itemSections[i];
     if (i === explicitSectionIdx) {
       // we're in the affix section hehe
       for (const x of section.split("\n")) {
@@ -107,24 +106,24 @@ export const parse = async (itemData: string): Promise<ParsedItemData> => {
           ? rolls.map(Number).reduce((sum, num) => sum + num, 0) / rolls.length
           : undefined;
 
-        const matchedMods = [] as Affix[];
-        for (const explicitMod of itemStats) {
-          if (explicitMod.mappedRegex.exec(x.replace("\r", "")) != null) {
+        const matchedAffix = [] as Affix[];
+        for (const affix of affixInfo) {
+          if (affix.mappedRegex.exec(x.replace("\r", "")) != null) {
             console.log(
-              `${x} matched using ${explicitMod.mappedRegex}, poe_id: ${explicitMod.id}`,
+              `${x} matched using ${affix.mappedRegex}, poe_id: ${affix.id}`,
             );
-            matchedMods.push({
+            matchedAffix.push({
               type: "EXPLICIT",
-              regex: explicitMod.mappedRegex,
-              poe_id: explicitMod.id,
+              regex: affix.mappedRegex,
+              poe_id: affix.id,
               rawText: x,
             });
           }
         }
-        if (matchedMods.length === 0) {
+        if (matchedAffix.length === 0) {
           throw new Error(`COULD NOT MATCH ${x}`);
         }
-        parseData.affixs?.push({ roll: roll, affix: matchedMods });
+        parseData.affixs?.push({ roll: roll, affix: matchedAffix });
 
         console.log("\n");
       }
