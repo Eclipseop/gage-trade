@@ -135,6 +135,32 @@ Item Level: 68
 Allies in your Presence have +67 to Accuracy Rating
 Allies in your Presence have 16% increased Attack Speed`;
 
+const sample_item8 = `Item Class: Crossbows
+Rarity: Rare
+Sorrow Core
+Advanced Tense Crossbow
+--------
+Physical Damage: 17-66
+Lightning Damage: 1-23 (augmented)
+Critical Hit Chance: 5.00%
+Attacks per Second: 1.60
+Reload Time: 0.85
+--------
+Requirements:
+Level: 45
+Str: 57 (unmet)
+Dex: 57 (unmet)
+--------
+Item Level: 69
+--------
+27% increased Bolt Speed (implicit)
+--------
+Adds 1 to 23 Lightning Damage
++183 to Accuracy Rating
+Grants 2 Life per Enemy Hit
+Leeches 4.39% of Physical Damage as Mana
+`;
+
 test("blank clipboard", async () => {
   expect(async () => await parse("")).rejects.toThrowError("Not a Poe Item");
 });
@@ -370,3 +396,73 @@ test("sample item 7", async () => {
   expect(affixs).toContainEqual(a1);
   expect(affixs).toContainEqual(a2);
 });
+
+test("sample item 8", async () => {
+  const parsedSampleItem = await parse(sample_item8);
+  expect(parsedSampleItem.itemClass).toBe("Crossbows");
+  expect(parsedSampleItem.rarity).toBe("Rare");
+  expect(parsedSampleItem.name).toBe("Sorrow Core");
+  const s1: ItemStat = {
+    type: "physical-damage",
+    value: 41.5,
+  };
+  const s2: ItemStat = {
+    type: "lightning-damage",
+    value: 12,
+  };
+  const s3: ItemStat = {
+    type: "crit-chance",
+    value: 5.0,
+  };
+  const s4: ItemStat = {
+    type: "attacks-per-second",
+    value: 1.6,
+  };
+  const s5: ItemStat = {
+    type: "reload-time",
+    value: 0.85,
+  };
+  expect(parsedSampleItem.stats).toContainEqual(s1);
+  expect(parsedSampleItem.stats).toContainEqual(s2);
+  expect(parsedSampleItem.stats).toContainEqual(s3);
+  expect(parsedSampleItem.stats).toContainEqual(s4);
+  expect(parsedSampleItem.stats).toContainEqual(s5);
+});
+
+/*
+    type: "physical-damage",
+    value: 41.5,
+  };
+  expect(parsedSampleItem.stats).toContainEqual(s1);
+
+  // const a1 = {
+  //   affix: [
+  //     {
+  //       poe_id: "explicit.stat_3169585282",
+  //       rawText: "Allies in your Presence have +67 to Accuracy Rating",
+  //       regex:
+  //         /^(Allies|Allies) in your (Presence|Presence) have \+?\d+(?:\.\d+)? to (Accuracy|Accuracy) Rating$/g,
+  //       type: "EXPLICIT",
+  //     },
+  //   ],
+  //   roll: 67,
+  // };
+
+  // const a2 = {
+  //   affix: [
+  //     {
+  //       poe_id: "explicit.stat_1998951374",
+  //       rawText: "Allies in your Presence have 16% increased Attack Speed",
+  //       regex:
+  //         /^(Allies|Allies) in your (Presence|Presence) have \+?\d+(?:\.\d+)?% (increased|reduced) (Attack|Attack) Speed$/g,
+  //       type: "EXPLICIT",
+  //     },
+  //   ],
+  //   roll: 16,
+  // };
+
+  // const { affixs } = parsedSampleItem;
+  // expect(affixs?.length).toBe(3);
+  // expect(affixs).toContainEqual(a1);
+  // expect(affixs).toContainEqual(a2);
+  (/)*/

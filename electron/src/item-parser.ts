@@ -23,7 +23,7 @@ type MappedAffix = {
 };
 
 export type ItemStat = {
-  type: "armour" | "evasion" | "energy-shield" | "spirit";
+  type: string;
   value: number;
 };
 
@@ -83,38 +83,35 @@ const getQuality = (itemData: string): number | undefined => {
 
 const getItemStats = (itemData: string): ItemStat[] => {
   const arr: ItemStat[] = [];
+  const addStat = (line: string, type: string, regex: string) => {
+    if (line.startsWith(regex)) {
+      const rolls = line.match(/\d+(?:\.\d+)?/g);
+
+      const roll = rolls
+        ? rolls.map(Number).reduce((sum, num) => sum + num, 0) / rolls.length
+        : undefined;
+
+      if (roll) {
+        arr.push({
+          type,
+          value: Number(roll),
+        });
+      }
+    }
+  };
+
   for (const line of itemData.split("\n")) {
-    const armourMatch = line.match(/^Armour: (\d+)/);
-    if (armourMatch) {
-      arr.push({
-        type: "armour",
-        value: Number(armourMatch[1]),
-      });
-    }
-
-    const esMatch = line.match(/^Energy Shield: (\d+)/);
-    if (esMatch) {
-      arr.push({
-        type: "energy-shield",
-        value: Number(esMatch[1]),
-      });
-    }
-
-    const evasionMatch = line.match(/^Evasion Rating: (\d+)/);
-    if (evasionMatch) {
-      arr.push({
-        type: "evasion",
-        value: Number(evasionMatch[1]),
-      });
-    }
-
-    const spiritMatch = line.match(/^Spirit: (\d+)/);
-    if (spiritMatch) {
-      arr.push({
-        type: "spirit",
-        value: Number(spiritMatch[1]),
-      });
-    }
+    addStat(line, "armour", "Armour");
+    addStat(line, "evasion", "Evasion Rating");
+    addStat(line, "energy-shield", "Energy Shield");
+    addStat(line, "spirit", "Spirit");
+    addStat(line, "physical-damage", "Physical Damage");
+    addStat(line, "cold-damage", "Cold Damage");
+    addStat(line, "fire-damage", "Fire Damage");
+    addStat(line, "lightning-damage", "Lightning Damage");
+    addStat(line, "crit-chance", "Critical Hit Chance");
+    addStat(line, "attacks-per-second", "Attacks per Second");
+    addStat(line, "reload-time", "Reload Time");
   }
   return arr;
 };
