@@ -10,11 +10,18 @@ export type ItemData = {
   itemClass: string; // TODO create enum hehe
   base?: string; // todo create enum ehhe
   type?: string;
+  quality?: number;
+  stats?: ItemStat[];
   affixs?: {
     affix: AffixInfo[];
     roll: number;
     checked: boolean;
   }[];
+};
+
+export type ItemStat = {
+  type: string;
+  value: number;
 };
 
 export type AffixInfo = {
@@ -26,14 +33,14 @@ export type AffixInfo = {
 };
 
 const App = () => {
-  const [mods, setMods] = useState<ItemData>();
+  const [itemData, setItemData] = useState<ItemData>();
 
-  console.log(mods);
+  console.log(itemData);
   const [itemRes, setItemRes] = useState<TradeListing[]>([]);
 
   useEffect(() => {
     api.receive("item", (data: string) => {
-      setMods(undefined);
+      setItemData(undefined);
       setItemRes([]);
 
       const parsedData = JSON.parse(data) as ItemData;
@@ -43,17 +50,17 @@ const App = () => {
         checked: false,
       }));
 
-      setMods({ ...parsedData, affixs: updatedAffixs });
+      setItemData({ ...parsedData, affixs: updatedAffixs });
     });
   }, []);
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const submitSearch = async (e: any) => {
     e.preventDefault();
-    if (!mods) return;
+    if (!itemData) return;
 
     setItemRes([]);
-    const pendingData = toast.promise(lookup(mods), {
+    const pendingData = toast.promise(lookup(itemData), {
       loading: "Loading...",
       success: "Done!",
       error: (data) => data,
@@ -65,22 +72,22 @@ const App = () => {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const submitTradeOpen = async (e: any) => {
     e.preventDefault();
-    if (!mods) return;
+    if (!itemData) return;
 
-    await openTradeQuery(mods);
+    await openTradeQuery(itemData);
   };
 
   return (
     <>
       <Toaster position="top-center" duration={1500} theme="dark" />
 
-      {mods && (
+      {itemData && (
         <PoeItemSearch
-          itemData={mods}
+          itemData={itemData}
           itemResults={itemRes}
           search={submitSearch}
           searchUI={submitTradeOpen}
-          setItemData={setMods}
+          setItemData={setItemData}
         />
       )}
     </>
