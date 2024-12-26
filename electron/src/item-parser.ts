@@ -7,6 +7,7 @@ export type ParsedItemData = {
   rarity?: string;
   itemClass: string;
   base?: string;
+  quality?: number;
   affixs?: {
     affix: MappedAffix[];
     roll: number | undefined;
@@ -65,6 +66,15 @@ const getItemClass = (itemData: string): string | undefined => {
   return undefined;
 };
 
+const getQuality = (itemData: string): number | undefined => {
+  for (const line of itemData.split("\n")) {
+    if (line.startsWith("Quality: +")) {
+      return Number(line.match(/\d+/)?.[0]);
+    }
+  }
+  return undefined;
+};
+
 // I'm sure there is a better way of doing this...
 const isPoeItem = (itemData: string): boolean => {
   return itemData.split(ITEM_SECTION_MARKER).length >= 3;
@@ -83,6 +93,9 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
 
   const itemRarity = getItemRarity(itemString);
   if (!itemRarity) throw new Error("Unable to determine item rarity!");
+
+  const quality = getQuality(itemString);
+  if (quality) parseData.quality = quality;
 
   if (itemRarity === "Currency") {
     const lines = itemSections[0].split("\n").filter((s) => s.length > 0);
@@ -109,9 +122,6 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
         const matchedAffix = [] as MappedAffix[];
         for (const affix of affixInfo) {
           if (affix.mappedRegex.exec(x.replace("\r", "")) != null) {
-            console.log(
-              `${x} matched using ${affix.mappedRegex}, poe_id: ${affix.id}`,
-            );
             matchedAffix.push({
               type: "EXPLICIT",
               regex: affix.mappedRegex,
@@ -124,8 +134,6 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
           throw new Error(`COULD NOT MATCH ${x}`);
         }
         parseData.affixs?.push({ roll: roll, affix: matchedAffix });
-
-        console.log("\n");
       }
     }
 

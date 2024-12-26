@@ -165,6 +165,7 @@ test("sample item 1", async () => {
   expect(parsedSampleItem.itemClass).toBe("Body Armours");
   expect(parsedSampleItem.rarity).toBe("Rare");
   expect(parsedSampleItem.name).toBe("Tempest Cloak");
+  expect(parsedSampleItem.quality).toBe(3);
 
   const a1 = {
     affix: [
@@ -243,6 +244,7 @@ test("sample item 4", async () => {
   expect(parsedSampleItem.itemClass).toBe("Helmets");
   expect(parsedSampleItem.rarity).toBe("Rare");
   expect(parsedSampleItem.name).toBe("Sol Ward");
+  expect(parsedSampleItem.quality).toBe(18);
 
   const a1 = {
     roll: 15,
