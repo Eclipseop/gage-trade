@@ -8,6 +8,7 @@ export type ParsedItemData = {
   itemClass: string;
   base?: string;
   quality?: number;
+  stats?: ItemStat[];
   affixs?: {
     affix: MappedAffix[];
     roll: number | undefined;
@@ -19,6 +20,11 @@ type MappedAffix = {
   regex: RegExp;
   type: "EXPLICIT" | "IMPLICIT";
   rawText?: string;
+};
+
+export type ItemStat = {
+  type: "armour" | "evasion" | "energy-shield" | "spirit";
+  value: number;
 };
 
 const fetcher = AffixInfoFetcher.getInstance();
@@ -75,6 +81,44 @@ const getQuality = (itemData: string): number | undefined => {
   return undefined;
 };
 
+const getItemStats = (itemData: string): ItemStat[] => {
+  const arr: ItemStat[] = [];
+  for (const line of itemData.split("\n")) {
+    const armourMatch = line.match(/^Armour: (\d+)/);
+    if (armourMatch) {
+      arr.push({
+        type: "armour",
+        value: Number(armourMatch[1]),
+      });
+    }
+
+    const esMatch = line.match(/^Energy Shield: (\d+)/);
+    if (esMatch) {
+      arr.push({
+        type: "energy-shield",
+        value: Number(esMatch[1]),
+      });
+    }
+
+    const evasionMatch = line.match(/^Evasion Rating: (\d+)/);
+    if (evasionMatch) {
+      arr.push({
+        type: "evasion",
+        value: Number(evasionMatch[1]),
+      });
+    }
+
+    const spiritMatch = line.match(/^Spirit: (\d+)/);
+    if (spiritMatch) {
+      arr.push({
+        type: "spirit",
+        value: Number(spiritMatch[1]),
+      });
+    }
+  }
+  return arr;
+};
+
 // I'm sure there is a better way of doing this...
 const isPoeItem = (itemData: string): boolean => {
   return itemData.split(ITEM_SECTION_MARKER).length >= 3;
@@ -96,6 +140,8 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
 
   const quality = getQuality(itemString);
   if (quality) parseData.quality = quality;
+
+  parseData.stats = getItemStats(itemString);
 
   if (itemRarity === "Currency") {
     const lines = itemSections[0].split("\n").filter((s) => s.length > 0);

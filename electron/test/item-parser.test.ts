@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { parse } from "../src/item-parser";
+import { type ItemStat, parse } from "../src/item-parser";
 
 const sample_item = `Item Class: Body Armours
 Rarity: Rare
@@ -167,6 +167,12 @@ test("sample item 1", async () => {
   expect(parsedSampleItem.name).toBe("Tempest Cloak");
   expect(parsedSampleItem.quality).toBe(3);
 
+  const s1: ItemStat = {
+    type: "armour",
+    value: 497,
+  };
+  expect(parsedSampleItem.stats).toContainEqual(s1);
+
   const a1 = {
     affix: [
       {
@@ -220,6 +226,7 @@ test("sample item 3", async () => {
   expect(parsedSampleItem.itemClass).toBe("Jewels");
   expect(parsedSampleItem.rarity).toBe("Rare");
   expect(parsedSampleItem.name).toBe("Entropy Bliss");
+  expect(parsedSampleItem.stats?.length).toBe(0);
 
   const a1 = {
     roll: 15,
@@ -245,6 +252,12 @@ test("sample item 4", async () => {
   expect(parsedSampleItem.rarity).toBe("Rare");
   expect(parsedSampleItem.name).toBe("Sol Ward");
   expect(parsedSampleItem.quality).toBe(18);
+
+  const s1: ItemStat = {
+    type: "armour",
+    value: 312,
+  };
+  expect(parsedSampleItem.stats).toContainEqual(s1);
 
   const a1 = {
     roll: 15,
@@ -276,6 +289,11 @@ test("sample item 6", async () => {
   expect(parsedSampleItem.itemClass).toBe("Sceptres");
   expect(parsedSampleItem.rarity).toBe("Rare");
   expect(parsedSampleItem.name).toBe("Brood Smasher");
+  const s1: ItemStat = {
+    type: "spirit",
+    value: 100,
+  };
+  expect(parsedSampleItem.stats).toContainEqual(s1);
 
   const a1 = {
     affix: [
@@ -315,6 +333,11 @@ test("sample item 7", async () => {
   expect(parsedSampleItem.itemClass).toBe("Sceptres");
   expect(parsedSampleItem.rarity).toBe("Rare");
   expect(parsedSampleItem.name).toBe("Apocalypse Smasher");
+  const s1: ItemStat = {
+    type: "spirit",
+    value: 133,
+  };
+  expect(parsedSampleItem.stats).toContainEqual(s1);
 
   const a1 = {
     affix: [
