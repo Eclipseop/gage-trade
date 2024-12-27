@@ -9,6 +9,10 @@ export type ParsedItemData = {
   base?: string;
   quality?: number;
   stats?: ItemStat[];
+  implicit?: {
+    affix: MappedAffix[];
+    roll: number | undefined;
+  }[];
   affixs?: {
     affix: MappedAffix[];
     roll: number | undefined;
@@ -30,8 +34,16 @@ export type ItemStat = {
 const fetcher = AffixInfoFetcher.getInstance();
 
 // TODO think of a non cringe way of doing this haha
-const getExplicitSectionIdx = (itemRarity: string, sections: string[]) => {
+const getExplicitSectionIdx = (
+  itemRarity: string,
+  itemClass: string,
+  sections: string[],
+) => {
   let idx = -1;
+
+  if (itemClass === "Tablet") {
+    return -1;
+  }
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i];
 
@@ -43,6 +55,9 @@ const getExplicitSectionIdx = (itemRarity: string, sections: string[]) => {
     if (!appendage) idx = i;
   }
   if (itemRarity === "Unique") {
+    idx = idx - 1;
+  }
+  if (itemClass === "Quivers") {
     idx = idx - 1;
   }
   return idx;
@@ -127,7 +142,7 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
   const itemSections = itemString.split(ITEM_SECTION_MARKER);
 
   const affixInfo = await fetcher.fetchAffixInfo();
-  const parseData = { affixs: [] } as unknown as ParsedItemData;
+  const parseData = { affixs: [], implicit: [] } as unknown as ParsedItemData;
 
   const itemClass = getItemClass(itemString);
   if (!itemClass) throw new Error("Unable to determine item class");
@@ -149,9 +164,45 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
     };
   }
 
-  const explicitSectionIdx = getExplicitSectionIdx(itemRarity, itemSections);
+  const explicitSectionIdx = getExplicitSectionIdx(
+    itemRarity,
+    itemClass,
+    itemSections,
+  );
+
+  for (const line of itemString.split("\n")) {
+    if (!line.includes("(implicit)")) continue;
+    const x = line.replace(" (implicit)", "").trim();
+    if (x.trim() === "") continue;
+    const rolls = x.match(/\d+(?:\.\d+)?/g);
+
+    const roll = rolls
+      ? rolls.map(Number).reduce((sum, num) => sum + num, 0) / rolls.length
+      : undefined;
+
+    const matchedAffix = [] as MappedAffix[];
+    for (const affix of affixInfo.filter((ai) => ai.type === "implicit")) {
+      if (affix.mappedRegex.exec(x.replace("\r", "")) != null) {
+        console.log(
+          `${x} matched using ${affix.mappedRegex}, poe_id: ${affix.id}`,
+        );
+        matchedAffix.push({
+          type: "IMPLICIT",
+          regex: affix.mappedRegex,
+          poe_id: affix.id,
+          rawText: x,
+        });
+      }
+    }
+    if (matchedAffix.length === 0) {
+      throw new Error(`COULD NOT MATCH ${x}`);
+    }
+    parseData.implicit?.push({ roll: roll, affix: matchedAffix });
+  }
+
   for (let i = 0; i < itemSections.length; i++) {
     const section = itemSections[i];
+
     if (i === explicitSectionIdx) {
       // we're in the affix section hehe
       for (const x of section.split("\n")) {
@@ -163,7 +214,7 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
           : undefined;
 
         const matchedAffix = [] as MappedAffix[];
-        for (const affix of affixInfo) {
+        for (const affix of affixInfo.filter((ai) => ai.type === "explicit")) {
           if (affix.mappedRegex.exec(x.replace("\r", "")) != null) {
             matchedAffix.push({
               type: "EXPLICIT",

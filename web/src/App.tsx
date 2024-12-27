@@ -12,10 +12,8 @@ export type ItemData = {
   type?: string;
   quality?: number;
   stats?: ItemStat[];
-  affixs?: {
-    affix: AffixInfo[];
-    roll: number;
-  }[];
+  implicit?: RollableSearchableAffix[];
+  affixs?: RollableSearchableAffix[];
 };
 
 export type WithSearchConfig<T> = {
@@ -42,6 +40,11 @@ export type AffixInfo = {
   rawText?: string;
 };
 
+type Rollable = { roll: number };
+type Searchable = { checked: boolean };
+export type RollableSearchableAffix = { affix: AffixInfo[] } & Rollable &
+  Searchable;
+
 const App = () => {
   const [itemData, setItemData] = useState<ItemSearchCriteria>();
 
@@ -59,16 +62,20 @@ const App = () => {
           const typedKey = key as keyof ItemData;
           const value = parsedData[typedKey];
 
-          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-          (criteria as any)[typedKey] = {
-            value: value,
-            include: false,
-          };
+      const updatedAffixs = parsedData.affixs?.map((affix) => ({
+        ...affix,
+        checked: false,
+      }));
+      const updatedImplicits = parsedData.implicit?.map((affix) => ({
+        ...affix,
+        checked: false,
+      }));
 
-          return criteria;
-        },
-        {} as ItemSearchCriteria,
-      );
+      setMods({
+        ...parsedData,
+        affixs: updatedAffixs,
+        implicit: updatedImplicits,
+      });
     });
   }, []);
 

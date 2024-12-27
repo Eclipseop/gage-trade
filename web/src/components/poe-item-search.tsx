@@ -74,17 +74,40 @@ const PoeItemSearch = ({
   search: (e: unknown) => Promise<void>;
   searchUI: (e: unknown) => Promise<void>;
 }) => {
-  const handleRollChange = (affixIndex: number, newRoll: number) => {
-    console.log(affixIndex, newRoll);
-    // const newAffixs = [...(itemData.affixs ?? [])];
-    // newAffixs[affixIndex].roll = newRoll;
-    // setItemData({ ...itemData, affixs: newAffixs });
+  const handleRollChange = (
+    affixType: "affixs" | "implicit",
+    affixIndex: number,
+    newRoll: number,
+  ) => {
+    const updateAffix = (key: "affixs" | "implicit") => {
+      const updatedAffixes = [...(itemData[key] ?? [])];
+      updatedAffixes[affixIndex].roll = newRoll;
+      setItemData({ ...itemData, [key]: updatedAffixes });
+    };
+
+    if (affixType === "affixs") {
+      updateAffix("affixs");
+    } else if (affixType === "implicit") {
+      updateAffix("implicit");
+    }
   };
 
-  const handleCheckedChange = (affixIndex: number, checked: boolean) => {
-    // const newAffixs = [...(itemData.affixs ?? [])];
-    // newAffixs[affixIndex].checked = checked;
-    // setItemData({ ...itemData, affixs: newAffixs });
+  const handleCheckedChange = (
+    affixType: "affixs" | "implicit",
+    affixIndex: number,
+    checked: boolean,
+  ) => {
+    const updateAffix = (key: "affixs" | "implicit") => {
+      const updatedAffixes = [...(itemData[key] ?? [])];
+      updatedAffixes[affixIndex].checked = checked;
+      setItemData({ ...itemData, [key]: updatedAffixes });
+    };
+
+    if (affixType === "affixs") {
+      updateAffix("affixs");
+    } else if (affixType === "implicit") {
+      updateAffix("implicit");
+    }
   };
 
   return (
@@ -108,19 +131,48 @@ const PoeItemSearch = ({
           </p>
         )}
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-2">
         <ScrollArea className="w-full rounded-md border p-2">
-          {itemData.affixs?.value?.map((affixGroup, index) => (
+          {(itemData.implicit?.length ?? 0) > 0 && (
+            <div className="text-sm font-semibold mb-1">Implicits</div>
+          )}
+          {itemData.implicit?.map((affixGroup, index) => (
             <div key={`group-${affixGroup.affix[0].poe_id}`}>
               {affixGroup.affix.map((affix) => (
                 <Affix
                   key={affix.poe_id}
                   affix={affix}
                   roll={affixGroup.roll}
-                  checked={affixGroup}
-                  onRollChange={(newRoll) => handleRollChange(index, newRoll)}
+                  checked={affixGroup.checked}
+                  onRollChange={(newRoll) =>
+                    handleRollChange("implicit", index, newRoll)
+                  }
                   onCheckedChange={(checked) =>
-                    handleCheckedChange(index, checked)
+                    handleCheckedChange("implicit", index, checked)
+                  }
+                />
+              ))}
+            </div>
+          ))}
+        </ScrollArea>
+        <ScrollArea className="w-full rounded-md border p-2">
+          {(itemData.implicit?.length ?? 0) > 0 && (
+            <div className="text-sm font-semibold mb-1">Explicits</div>
+          )}
+
+          {itemData.affixs?.map((affixGroup, index) => (
+            <div key={`group-${affixGroup.affix[0].poe_id}`}>
+              {affixGroup.affix.map((affix) => (
+                <Affix
+                  key={affix.poe_id}
+                  affix={affix}
+                  roll={affixGroup.roll}
+                  checked={affixGroup.checked}
+                  onRollChange={(newRoll) =>
+                    handleRollChange("affixs", index, newRoll)
+                  }
+                  onCheckedChange={(checked) =>
+                    handleCheckedChange("affixs", index, checked)
                   }
                 />
               ))}

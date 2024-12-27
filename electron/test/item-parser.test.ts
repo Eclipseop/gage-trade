@@ -135,7 +135,7 @@ Item Level: 68
 Allies in your Presence have +67 to Accuracy Rating
 Allies in your Presence have 16% increased Attack Speed`;
 
-const sample_item8 = `Item Class: Crossbows
+const sample_item10 = `Item Class: Crossbows
 Rarity: Rare
 Sorrow Core
 Advanced Tense Crossbow
@@ -158,7 +158,42 @@ Item Level: 69
 Adds 1 to 23 Lightning Damage
 +183 to Accuracy Rating
 Grants 2 Life per Enemy Hit
-Leeches 4.39% of Physical Damage as Mana
+Leeches 4.39% of Physical Damage as Mana`;
+
+const sample_item8 = `Item Class: Quivers
+Rarity: Unique
+Blackgleam
+Fire Quiver
+--------
+Requirements:
+Level: 8
+--------
+Item Level: 72
+--------
+Adds 3 to 5 Fire damage to Attacks (implicit)
+--------
++31 to maximum Mana
+50% increased chance to Ignite
+Projectiles Pierce all Ignited enemies
+Attacks Gain 6% of Damage as Extra Fire Damage
+--------
+Molten feathers, veiled spark,
+Hissing arrows from the dark.
+--------
+Can only be equipped if you are wielding a Bow.`;
+
+const sample_item9 = `Item Class: Tablet
+Rarity: Magic
+Brimming Breach Precursor Tablet of Fissuring
+--------
+Item Level: 66
+--------
+5 Maps in Range contain Breaches (implicit)
+--------
+Your Maps which contain Breaches have 9% chance to contain an additional Breach
+11% increased Rare Monsters in your Maps
+--------
+Can be used in a completed Tower on your Atlas to influence surrounding Maps. Tablets are consumed once placed into a Tower.
 `;
 
 test("blank clipboard", async () => {
@@ -397,8 +432,8 @@ test("sample item 7", async () => {
   expect(affixs).toContainEqual(a2);
 });
 
-test("sample item 8", async () => {
-  const parsedSampleItem = await parse(sample_item8);
+test("sample item 10", async () => {
+  const parsedSampleItem = await parse(sample_item10);
   expect(parsedSampleItem.itemClass).toBe("Crossbows");
   expect(parsedSampleItem.rarity).toBe("Rare");
   expect(parsedSampleItem.name).toBe("Sorrow Core");
@@ -466,3 +501,52 @@ test("sample item 8", async () => {
   // expect(affixs).toContainEqual(a1);
   // expect(affixs).toContainEqual(a2);
   (/)*/
+  expect(parsedSampleItem.itemClass).toBe("Quivers");
+  expect(parsedSampleItem.rarity).toBe("Unique");
+  expect(parsedSampleItem.name).toBe("Blackgleam");
+
+  const a1 = {
+    affix: [
+      {
+        poe_id: "implicit.stat_1573130764",
+        rawText: "Adds 3 to 5 Fire damage to Attacks",
+        regex:
+          /^Adds \+?\d+(?:\.\d+)? to \+?\d+(?:\.\d+)? (Fire) damage to (Attack|Attacks)$/g,
+        type: "IMPLICIT",
+      },
+    ],
+    roll: 4,
+  };
+
+  expect(parsedSampleItem.implicit).toContainEqual(a1);
+
+  const { affixs } = parsedSampleItem;
+  expect(affixs?.length).toBe(4);
+});
+
+test("sample item 9", async () => {
+  const parsedSampleItem = await parse(sample_item9);
+  expect(parsedSampleItem.itemClass).toBe("Tablet");
+  expect(parsedSampleItem.rarity).toBe("Magic");
+  expect(parsedSampleItem.name).toBe(
+    "Brimming Breach Precursor Tablet of Fissuring",
+  );
+
+  const a1 = {
+    affix: [
+      {
+        poe_id: "implicit.stat_2219129443",
+        rawText: "5 Maps in Range contain Breaches",
+        regex:
+          /^\+?\d+(?:\.\d+)? Maps in Range contain (ContainsBreach|Breaches)$/g,
+        type: "IMPLICIT",
+      },
+    ],
+    roll: 5,
+  };
+
+  expect(parsedSampleItem.implicit).toContainEqual(a1);
+
+  const { affixs } = parsedSampleItem;
+  expect(affixs?.length).toBe(0);
+});
