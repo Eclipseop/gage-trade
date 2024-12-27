@@ -135,6 +135,28 @@ Item Level: 68
 Allies in your Presence have +67 to Accuracy Rating
 Allies in your Presence have 16% increased Attack Speed`;
 
+const sample_item8 = `Item Class: Quivers
+Rarity: Unique
+Blackgleam
+Fire Quiver
+--------
+Requirements:
+Level: 8
+--------
+Item Level: 72
+--------
+Adds 3 to 5 Fire damage to Attacks (implicit)
+--------
++31 to maximum Mana
+50% increased chance to Ignite
+Projectiles Pierce all Ignited enemies
+Attacks Gain 6% of Damage as Extra Fire Damage
+--------
+Molten feathers, veiled spark,
+Hissing arrows from the dark.
+--------
+Can only be equipped if you are wielding a Bow.`;
+
 test("blank clipboard", async () => {
   expect(async () => await parse("")).rejects.toThrowError("Not a Poe Item");
 });
@@ -344,4 +366,14 @@ test("sample item 7", async () => {
   expect(affixs?.length).toBe(3);
   expect(affixs).toContainEqual(a1);
   expect(affixs).toContainEqual(a2);
+});
+
+test("sample item 8", async () => {
+  const parsedSampleItem = await parse(sample_item8);
+  expect(parsedSampleItem.itemClass).toBe("Quivers");
+  expect(parsedSampleItem.rarity).toBe("Unique");
+  expect(parsedSampleItem.name).toBe("Blackgleam");
+
+  const { affixs } = parsedSampleItem;
+  expect(affixs?.length).toBe(4);
 });

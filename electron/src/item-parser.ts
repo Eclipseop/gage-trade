@@ -23,7 +23,11 @@ type MappedAffix = {
 const fetcher = AffixInfoFetcher.getInstance();
 
 // TODO think of a non cringe way of doing this haha
-const getExplicitSectionIdx = (itemRarity: string, sections: string[]) => {
+const getExplicitSectionIdx = (
+  itemRarity: string,
+  itemClass: string,
+  sections: string[],
+) => {
   let idx = -1;
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i];
@@ -36,6 +40,9 @@ const getExplicitSectionIdx = (itemRarity: string, sections: string[]) => {
     if (!appendage) idx = i;
   }
   if (itemRarity === "Unique") {
+    idx = idx - 1;
+  }
+  if (itemClass === "Quivers") {
     idx = idx - 1;
   }
   return idx;
@@ -93,7 +100,11 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
     };
   }
 
-  const explicitSectionIdx = getExplicitSectionIdx(itemRarity, itemSections);
+  const explicitSectionIdx = getExplicitSectionIdx(
+    itemRarity,
+    itemClass,
+    itemSections,
+  );
   for (let i = 0; i < itemSections.length; i++) {
     const section = itemSections[i];
     if (i === explicitSectionIdx) {
