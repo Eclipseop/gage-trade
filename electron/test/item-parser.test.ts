@@ -157,6 +157,20 @@ Hissing arrows from the dark.
 --------
 Can only be equipped if you are wielding a Bow.`;
 
+const sample_item9 = `Item Class: Tablet
+Rarity: Magic
+Brimming Breach Precursor Tablet of Fissuring
+--------
+Item Level: 66
+--------
+5 Maps in Range contain Breaches (implicit)
+--------
+Your Maps which contain Breaches have 9% chance to contain an additional Breach
+11% increased Rare Monsters in your Maps
+--------
+Can be used in a completed Tower on your Atlas to influence surrounding Maps. Tablets are consumed once placed into a Tower.
+`;
+
 test("blank clipboard", async () => {
   expect(async () => await parse("")).rejects.toThrowError("Not a Poe Item");
 });
@@ -374,6 +388,48 @@ test("sample item 8", async () => {
   expect(parsedSampleItem.rarity).toBe("Unique");
   expect(parsedSampleItem.name).toBe("Blackgleam");
 
+  const a1 = {
+    affix: [
+      {
+        poe_id: "implicit.stat_1573130764",
+        rawText: "Adds 3 to 5 Fire damage to Attacks",
+        regex:
+          /^Adds \+?\d+(?:\.\d+)? to \+?\d+(?:\.\d+)? (Fire) damage to (Attack|Attacks)$/g,
+        type: "IMPLICIT",
+      },
+    ],
+    roll: 4,
+  };
+
+  expect(parsedSampleItem.implicit).toContainEqual(a1);
+
   const { affixs } = parsedSampleItem;
   expect(affixs?.length).toBe(4);
+});
+
+test("sample item 9", async () => {
+  const parsedSampleItem = await parse(sample_item9);
+  expect(parsedSampleItem.itemClass).toBe("Tablet");
+  expect(parsedSampleItem.rarity).toBe("Magic");
+  expect(parsedSampleItem.name).toBe(
+    "Brimming Breach Precursor Tablet of Fissuring",
+  );
+
+  const a1 = {
+    affix: [
+      {
+        poe_id: "implicit.stat_2219129443",
+        rawText: "5 Maps in Range contain Breaches",
+        regex:
+          /^\+?\d+(?:\.\d+)? Maps in Range contain (ContainsBreach|Breaches)$/g,
+        type: "IMPLICIT",
+      },
+    ],
+    roll: 5,
+  };
+
+  expect(parsedSampleItem.implicit).toContainEqual(a1);
+
+  const { affixs } = parsedSampleItem;
+  expect(affixs?.length).toBe(0);
 });

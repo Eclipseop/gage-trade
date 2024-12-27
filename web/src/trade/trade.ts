@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import type { ItemData } from "../App";
+import type { ItemData, RollableSearchableAffix } from "../App";
 import { api } from "../util/electron";
 
 const NORMAL_TRADE_URL =
@@ -229,8 +229,8 @@ const buildQuery = (item: ItemData): PoeQuery => {
     };
   }
 
-  if (item.affixs) {
-    for (const affix of item.affixs) {
+  const processAffixes = (affixes: RollableSearchableAffix[]) => {
+    for (const affix of affixes) {
       query.query.stats.push({
         type: affix.affix.length === 1 ? "and" : "count",
         filters: affix.affix.map((a) => ({
@@ -241,6 +241,14 @@ const buildQuery = (item: ItemData): PoeQuery => {
         ...(affix.affix.length > 1 && { value: { min: 1 } }),
       });
     }
+  };
+
+  if (item.affixs) {
+    processAffixes(item.affixs);
+  }
+
+  if (item.implicit) {
+    processAffixes(item.implicit);
   }
   return query;
 };

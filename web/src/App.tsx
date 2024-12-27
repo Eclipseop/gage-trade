@@ -10,11 +10,8 @@ export type ItemData = {
   itemClass: string; // TODO create enum hehe
   base?: string; // todo create enum ehhe
   type?: string;
-  affixs?: {
-    affix: AffixInfo[];
-    roll: number;
-    checked: boolean;
-  }[];
+  implicit?: RollableSearchableAffix[];
+  affixs?: RollableSearchableAffix[];
 };
 
 export type AffixInfo = {
@@ -24,6 +21,11 @@ export type AffixInfo = {
   type: "EXPLICIT" | "IMPLICIT";
   rawText?: string;
 };
+
+type Rollable = { roll: number };
+type Searchable = { checked: boolean };
+export type RollableSearchableAffix = { affix: AffixInfo[] } & Rollable &
+  Searchable;
 
 const App = () => {
   const [mods, setMods] = useState<ItemData>();
@@ -42,8 +44,16 @@ const App = () => {
         ...affix,
         checked: false,
       }));
+      const updatedImplicits = parsedData.implicit?.map((affix) => ({
+        ...affix,
+        checked: false,
+      }));
 
-      setMods({ ...parsedData, affixs: updatedAffixs });
+      setMods({
+        ...parsedData,
+        affixs: updatedAffixs,
+        implicit: updatedImplicits,
+      });
     });
   }, []);
 
