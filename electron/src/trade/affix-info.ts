@@ -78,7 +78,6 @@ class AffixInfoFetcher {
           };
         }),
       );
-      console.log(JSON.stringify(parsedStats));
 
       this.cachedData = parsedStats;
 
