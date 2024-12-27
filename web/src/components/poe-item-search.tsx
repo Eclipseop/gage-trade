@@ -75,34 +75,38 @@ const PoeItemSearch = ({
   searchUI: (e: unknown) => Promise<void>;
 }) => {
   const handleRollChange = (
-    affixType: string,
+    affixType: "affixs" | "implicit",
     affixIndex: number,
     newRoll: number,
   ) => {
-    if (affixType === "explicit") {
-      const newAffixes = [...(itemData.affixs ?? [])];
-      newAffixes[affixIndex].roll = newRoll;
-      setItemData({ ...itemData, affixs: newAffixes });
+    const updateAffix = (key: "affixs" | "implicit") => {
+      const updatedAffixes = [...(itemData[key] ?? [])];
+      updatedAffixes[affixIndex].roll = newRoll;
+      setItemData({ ...itemData, [key]: updatedAffixes });
+    };
+
+    if (affixType === "affixs") {
+      updateAffix("affixs");
     } else if (affixType === "implicit") {
-      const newImplicits = [...(itemData.implicit ?? [])];
-      newImplicits[affixIndex].roll = newRoll;
-      setItemData({ ...itemData, implicit: newImplicits });
+      updateAffix("implicit");
     }
   };
 
   const handleCheckedChange = (
-    affixType: string,
+    affixType: "affixs" | "implicit",
     affixIndex: number,
     checked: boolean,
   ) => {
-    if (affixType === "explicit") {
-      const newAffixes = [...(itemData.affixs ?? [])];
-      newAffixes[affixIndex].checked = checked;
-      setItemData({ ...itemData, affixs: newAffixes });
+    const updateAffix = (key: "affixs" | "implicit") => {
+      const updatedAffixes = [...(itemData[key] ?? [])];
+      updatedAffixes[affixIndex].checked = checked;
+      setItemData({ ...itemData, [key]: updatedAffixes });
+    };
+
+    if (affixType === "affixs") {
+      updateAffix("affixs");
     } else if (affixType === "implicit") {
-      const newImplicits = [...(itemData.implicit ?? [])];
-      newImplicits[affixIndex].checked = checked;
-      setItemData({ ...itemData, implicit: newImplicits });
+      updateAffix("implicit");
     }
   };
 
@@ -159,10 +163,10 @@ const PoeItemSearch = ({
                   roll={affixGroup.roll}
                   checked={affixGroup.checked}
                   onRollChange={(newRoll) =>
-                    handleRollChange("explicit", index, newRoll)
+                    handleRollChange("affixs", index, newRoll)
                   }
                   onCheckedChange={(checked) =>
-                    handleCheckedChange("explicit", index, checked)
+                    handleCheckedChange("affixs", index, checked)
                   }
                 />
               ))}
