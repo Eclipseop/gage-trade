@@ -16,17 +16,6 @@ export type ItemData = {
   affixs?: RollableSearchableAffix[];
 };
 
-export type WithSearchConfig<T> = {
-  [K in keyof T]: T[K] extends Array<infer U>
-    ? Array<{ value: U; include: boolean }> // Apply value/include to each item in the array
-    : T[K] extends object
-      ? { value: WithSearchConfig<T[K]>; include: boolean }
-      : { value: T[K]; include: boolean };
-};
-
-export type SearchCriteria<T> = Partial<WithSearchConfig<T>>;
-export type ItemSearchCriteria = SearchCriteria<ItemData>;
-
 export type ItemStat = {
   type: string;
   value: number;
@@ -46,7 +35,7 @@ export type RollableSearchableAffix = { affix: AffixInfo[] } & Rollable &
   Searchable;
 
 const App = () => {
-  const [itemData, setItemData] = useState<ItemSearchCriteria>();
+  const [itemData, setItemData] = useState<ItemData>();
 
   const [itemRes, setItemRes] = useState<TradeListing[]>([]);
 
@@ -57,11 +46,6 @@ const App = () => {
 
       const parsedData: ItemData = JSON.parse(data);
 
-      const searchCriteria: ItemSearchCriteria = Object.keys(parsedData).reduce(
-        (criteria, key) => {
-          const typedKey = key as keyof ItemData;
-          const value = parsedData[typedKey];
-
       const updatedAffixs = parsedData.affixs?.map((affix) => ({
         ...affix,
         checked: false,
@@ -71,7 +55,7 @@ const App = () => {
         checked: false,
       }));
 
-      setMods({
+      setItemData({
         ...parsedData,
         affixs: updatedAffixs,
         implicit: updatedImplicits,

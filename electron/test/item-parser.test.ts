@@ -464,43 +464,8 @@ test("sample item 10", async () => {
   expect(parsedSampleItem.stats).toContainEqual(s5);
 });
 
-/*
-    type: "physical-damage",
-    value: 41.5,
-  };
-  expect(parsedSampleItem.stats).toContainEqual(s1);
-
-  // const a1 = {
-  //   affix: [
-  //     {
-  //       poe_id: "explicit.stat_3169585282",
-  //       rawText: "Allies in your Presence have +67 to Accuracy Rating",
-  //       regex:
-  //         /^(Allies|Allies) in your (Presence|Presence) have \+?\d+(?:\.\d+)? to (Accuracy|Accuracy) Rating$/g,
-  //       type: "EXPLICIT",
-  //     },
-  //   ],
-  //   roll: 67,
-  // };
-
-  // const a2 = {
-  //   affix: [
-  //     {
-  //       poe_id: "explicit.stat_1998951374",
-  //       rawText: "Allies in your Presence have 16% increased Attack Speed",
-  //       regex:
-  //         /^(Allies|Allies) in your (Presence|Presence) have \+?\d+(?:\.\d+)?% (increased|reduced) (Attack|Attack) Speed$/g,
-  //       type: "EXPLICIT",
-  //     },
-  //   ],
-  //   roll: 16,
-  // };
-
-  // const { affixs } = parsedSampleItem;
-  // expect(affixs?.length).toBe(3);
-  // expect(affixs).toContainEqual(a1);
-  // expect(affixs).toContainEqual(a2);
-  (/)*/
+test("sample item 8", async () => {
+  const parsedSampleItem = await parse(sample_item8);
   expect(parsedSampleItem.itemClass).toBe("Quivers");
   expect(parsedSampleItem.rarity).toBe("Unique");
   expect(parsedSampleItem.name).toBe("Blackgleam");
