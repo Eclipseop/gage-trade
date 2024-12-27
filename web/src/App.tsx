@@ -40,7 +40,7 @@ type SearchableValue<T> = {
   included: boolean;
 };
 
-type SearchableArray<T> = {
+export type SearchableArray<T> = {
   value: T[];
 };
 

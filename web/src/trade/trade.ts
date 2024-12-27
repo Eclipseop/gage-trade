@@ -1,6 +1,5 @@
 import axios, { AxiosError } from "axios";
 import type {
-  ItemData,
   RollableSearchableAffix,
   SearchableArray,
   SearchableItemData,
@@ -24,11 +23,44 @@ type StatFiler = {
   }[];
 };
 
+const StatTypes = [
+  {
+    key: "armour",
+    term: "ar",
+  },
+  {
+    key: "evasion",
+    term: "ev",
+  },
+  {
+    key: "energy-shield",
+    term: "es",
+  },
+  {
+    key: "block",
+    term: "block",
+  },
+  {
+    key: "spirit",
+    term: "spirit",
+  },
+] as const;
+
 type Filter = {
-  type_filters: {
+  type_filters?: {
     filters: {
-      category: {
+      category?: {
         option: string;
+      };
+      quality?: {
+        min?: number;
+      };
+    };
+  };
+  equipment_filters?: {
+    filters: {
+      [key in (typeof StatTypes)[number]["term"]]?: {
+        min?: number;
       };
     };
   };
@@ -243,6 +275,30 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
     };
   }
 
+  if (item.quality?.included) {
+    query.query.filters = {
+      type_filters: {
+        filters: { quality: { min: item.quality.value } },
+      },
+    };
+  }
+
+  for (const stat of item.stats?.value ?? []) {
+    if (!stat.included) continue;
+
+    const mappedStatType = StatTypes.find((st) => st.key === stat.type);
+    if (!mappedStatType) continue;
+
+    // Ensure the filters structure exists
+    query.query.filters = {
+      equipment_filters: {
+        filters: {
+          [mappedStatType?.term]: { min: stat.value },
+        },
+      },
+    };
+  }
+
   const processAffixes = (
     affixes: SearchableArray<RollableSearchableAffix>["value"],
   ) => {
@@ -303,6 +359,7 @@ export const lookup = async (
     );
     return itemLookupRes.data.result;
   } catch (err) {
+    console.log(err);
     let msg = "Error...";
     if (err instanceof AxiosError) {
       const axiosErr = err as AxiosError;
