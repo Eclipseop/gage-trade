@@ -1,4 +1,4 @@
-import type { AffixInfo, ItemData } from "@/App";
+import type { AffixInfo, ItemSearchCriteria } from "@/App";
 import type { TradeListing } from "@/trade/trade";
 import { Globe, Search } from "lucide-react";
 import { Badge } from "./ui/badge";
@@ -64,53 +64,60 @@ const SearchResultItem: React.FC<{ result: TradeListing }> = ({ result }) => {
 const PoeItemSearch = ({
   itemData,
   itemResults,
-  setItemData,
+  // setItemData,
   search,
   searchUI,
 }: {
-  itemData: ItemData;
+  itemData: ItemSearchCriteria;
   itemResults: TradeListing[];
-  setItemData: (item: ItemData) => void;
+  setItemData: (item: ItemSearchCriteria) => void;
   search: (e: unknown) => Promise<void>;
   searchUI: (e: unknown) => Promise<void>;
 }) => {
   const handleRollChange = (affixIndex: number, newRoll: number) => {
-    const newAffixs = [...(itemData.affixs ?? [])];
-    newAffixs[affixIndex].roll = newRoll;
-    setItemData({ ...itemData, affixs: newAffixs });
+    console.log(affixIndex, newRoll);
+    // const newAffixs = [...(itemData.affixs ?? [])];
+    // newAffixs[affixIndex].roll = newRoll;
+    // setItemData({ ...itemData, affixs: newAffixs });
   };
 
   const handleCheckedChange = (affixIndex: number, checked: boolean) => {
-    const newAffixs = [...(itemData.affixs ?? [])];
-    newAffixs[affixIndex].checked = checked;
-    setItemData({ ...itemData, affixs: newAffixs });
+    // const newAffixs = [...(itemData.affixs ?? [])];
+    // newAffixs[affixIndex].checked = checked;
+    // setItemData({ ...itemData, affixs: newAffixs });
   };
 
   return (
     <>
       <CardHeader>
-        <CardTitle className="text-xl font-bold">{itemData.name}</CardTitle>
+        <CardTitle className="text-xl font-bold">
+          {itemData.name?.value}
+        </CardTitle>
         <div className="flex space-x-2">
-          <Badge>{itemData.rarity}</Badge>
-          <Badge variant="outline">{itemData.itemClass}</Badge>
+          <Badge>{itemData.rarity?.value}</Badge>
+          <Badge variant="outline">{itemData.itemClass?.value}</Badge>
         </div>
         {itemData.base && (
-          <p className="text-xs text-muted-foreground">{itemData.base}</p>
+          <p className="text-xs text-muted-foreground">
+            {itemData.base?.value}
+          </p>
         )}
         {itemData.type && (
-          <p className="text-xs text-muted-foreground">{itemData.type}</p>
+          <p className="text-xs text-muted-foreground">
+            {itemData.type?.value}
+          </p>
         )}
       </CardHeader>
       <CardContent>
         <ScrollArea className="w-full rounded-md border p-2">
-          {itemData.affixs?.map((affixGroup, index) => (
+          {itemData.affixs?.value?.map((affixGroup, index) => (
             <div key={`group-${affixGroup.affix[0].poe_id}`}>
               {affixGroup.affix.map((affix) => (
                 <Affix
                   key={affix.poe_id}
                   affix={affix}
                   roll={affixGroup.roll}
-                  checked={affixGroup.checked}
+                  checked={affixGroup}
                   onRollChange={(newRoll) => handleRollChange(index, newRoll)}
                   onCheckedChange={(checked) =>
                     handleCheckedChange(index, checked)

@@ -15,9 +15,19 @@ export type ItemData = {
   affixs?: {
     affix: AffixInfo[];
     roll: number;
-    checked: boolean;
   }[];
 };
+
+export type WithSearchConfig<T> = {
+  [K in keyof T]: T[K] extends Array<infer U>
+    ? Array<{ value: U; include: boolean }> // Apply value/include to each item in the array
+    : T[K] extends object
+      ? { value: WithSearchConfig<T[K]>; include: boolean }
+      : { value: T[K]; include: boolean };
+};
+
+export type SearchCriteria<T> = Partial<WithSearchConfig<T>>;
+export type ItemSearchCriteria = SearchCriteria<ItemData>;
 
 export type ItemStat = {
   type: string;
@@ -33,9 +43,8 @@ export type AffixInfo = {
 };
 
 const App = () => {
-  const [itemData, setItemData] = useState<ItemData>();
+  const [itemData, setItemData] = useState<ItemSearchCriteria>();
 
-  console.log(itemData);
   const [itemRes, setItemRes] = useState<TradeListing[]>([]);
 
   useEffect(() => {
@@ -43,14 +52,23 @@ const App = () => {
       setItemData(undefined);
       setItemRes([]);
 
-      const parsedData = JSON.parse(data) as ItemData;
+      const parsedData: ItemData = JSON.parse(data);
 
-      const updatedAffixs = parsedData.affixs?.map((affix) => ({
-        ...affix,
-        checked: false,
-      }));
+      const searchCriteria: ItemSearchCriteria = Object.keys(parsedData).reduce(
+        (criteria, key) => {
+          const typedKey = key as keyof ItemData;
+          const value = parsedData[typedKey];
 
-      setItemData({ ...parsedData, affixs: updatedAffixs });
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+          (criteria as any)[typedKey] = {
+            value: value,
+            include: false,
+          };
+
+          return criteria;
+        },
+        {} as ItemSearchCriteria,
+      );
     });
   }, []);
 

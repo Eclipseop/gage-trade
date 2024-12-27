@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import type { ItemData } from "../App";
+import type { ItemSearchCriteria } from "../App";
 import { api } from "../util/electron";
 
 const NORMAL_TRADE_URL =
@@ -194,7 +194,7 @@ type PoeQuery = {
   };
 };
 
-const buildQuery = (item: ItemData): PoeQuery => {
+const buildQuery = (item: ItemSearchCriteria): PoeQuery => {
   const query: PoeQuery = {
     query: {
       status: {
@@ -208,29 +208,29 @@ const buildQuery = (item: ItemData): PoeQuery => {
     },
   };
 
-  if (item.rarity === "Currency") {
-    query.query = { ...query.query, type: item.name.replace("\r", "") };
+  if (item.rarity?.value === "Currency") {
+    query.query = { ...query.query, type: item.name?.value.replace("\r", "") };
     return query;
   }
 
-  if (item.rarity === "Unique") {
-    query.query = { ...query.query, name: item.name };
+  if (item.rarity?.value === "Unique") {
+    query.query = { ...query.query, name: item.name?.value };
   }
 
   if (item.itemClass) {
-    const mappedItemClass = itemClassMap[item.itemClass];
+    const mappedItemClass = itemClassMap[item.itemClass.value];
     if (!mappedItemClass) {
       throw new Error("Unknown item class? monka!");
     }
     query.query.filters = {
       type_filters: {
-        filters: { category: { option: itemClassMap[item.itemClass] } },
+        filters: { category: { option: itemClassMap[item.itemClass.value] } },
       },
     };
   }
 
   if (item.affixs) {
-    for (const affix of item.affixs) {
+    for (const affix of item.affixs.value ?? []) {
       query.query.stats.push({
         type: affix.affix.length === 1 ? "and" : "count",
         filters: affix.affix.map((a) => ({
@@ -245,7 +245,7 @@ const buildQuery = (item: ItemData): PoeQuery => {
   return query;
 };
 
-export const openTradeQuery = async (item: ItemData) => {
+export const openTradeQuery = async (item: ItemSearchCriteria) => {
   const query = buildQuery(item);
 
   console.log(JSON.stringify(query));
@@ -256,7 +256,9 @@ export const openTradeQuery = async (item: ItemData) => {
 
 export type TradeListing = PoeItemLookupResult["result"][number];
 
-export const lookup = async (item: ItemData): Promise<TradeListing[]> => {
+export const lookup = async (
+  item: ItemSearchCriteria,
+): Promise<TradeListing[]> => {
   try {
     const query = buildQuery(item);
 
