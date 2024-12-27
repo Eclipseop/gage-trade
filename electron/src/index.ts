@@ -47,10 +47,14 @@ const init = () => {
     },
   });
 
-  mainWindow.loadURL("http://localhost:5173");
+  console.log(process.env.NODE_ENV);
+  if (process.env.NODE_ENV !== "development") {
+    console.log(path.join(__dirname, "web/dist/index.html"));
+    mainWindow.loadFile(path.join(__dirname, "web/dist/index.html"));
+  } else {
+    mainWindow.loadURL("http://localhost:5173");
+  }
 
-  // console.log(path.join(__dirname, "web/dist/index.html"));
-  // mainWindow.loadFile(path.join(__dirname, "web/dist/index.html"));
   globalShortcut.register("CommandOrControl+D", toggleWindow);
 
   mainWindow.on("page-title-updated", (evt) => {
@@ -60,7 +64,10 @@ const init = () => {
     event.preventDefault();
     mainWindow?.hide();
   });
-  // mainWindow.on("blur", (event: unknown) => mainWindow?.hide());
+
+  if (process.env.NODE_ENV !== "development") {
+    mainWindow.on("blur", (event: unknown) => mainWindow?.hide());
+  }
 
   let tray = undefined;
 
