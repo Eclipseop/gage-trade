@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import type { ItemData } from "../App";
+import type { ItemData, RollableSearchableAffix } from "../App";
 import { api } from "../util/electron";
 
 const NORMAL_TRADE_URL =
@@ -229,31 +229,26 @@ const buildQuery = (item: ItemData): PoeQuery => {
     };
   }
 
+  const processAffixes = (affixes: RollableSearchableAffix[]) => {
+    for (const affix of affixes) {
+      query.query.stats.push({
+        type: affix.affix.length === 1 ? "and" : "count",
+        filters: affix.affix.map((a) => ({
+          id: a.poe_id,
+          disabled: !affix.checked,
+          value: { min: affix.roll },
+        })),
+        ...(affix.affix.length > 1 && { value: { min: 1 } }),
+      });
+    }
+  };
+
   if (item.affixs) {
-    for (const affix of item.affixs) {
-      query.query.stats.push({
-        type: affix.affix.length === 1 ? "and" : "count",
-        filters: affix.affix.map((a) => ({
-          id: a.poe_id,
-          disabled: !affix.checked,
-          value: { min: affix.roll },
-        })),
-        ...(affix.affix.length > 1 && { value: { min: 1 } }),
-      });
-    }
+    processAffixes(item.affixs);
   }
+
   if (item.implicit) {
-    for (const affix of item.implicit) {
-      query.query.stats.push({
-        type: affix.affix.length === 1 ? "and" : "count",
-        filters: affix.affix.map((a) => ({
-          id: a.poe_id,
-          disabled: !affix.checked,
-          value: { min: affix.roll },
-        })),
-        ...(affix.affix.length > 1 && { value: { min: 1 } }),
-      });
-    }
+    processAffixes(item.implicit);
   }
   return query;
 };
