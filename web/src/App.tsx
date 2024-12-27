@@ -19,6 +19,7 @@ export type ItemData = {
 export type ItemStat = {
   type: string;
   value: number;
+  included: boolean;
 };
 
 export type AffixInfo = {
@@ -39,10 +40,11 @@ type SearchableValue<T> = {
   included: boolean;
 };
 
-export type SearchableArray<T> = {
-  value: (T & { included: boolean })[];
+type SearchableArray<T> = {
+  value: T[];
 };
 
+// The main mapped type
 export type SearchableItemData = {
   [K in keyof ItemData]: ItemData[K] extends (infer U)[]
     ? SearchableArray<U>

@@ -175,6 +175,17 @@ const PoeItemSearch = ({
               Q: {itemData.quality?.value}
             </Badge>
           )}
+
+          {itemData.stats?.value.map((stat, idx) => (
+            <Badge
+              key={stat.type}
+              variant={stat.included ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() => handleIncludedChange("stats", !stat.included, idx)}
+            >
+              {stat.type}: {stat.value}
+            </Badge>
+          ))}
         </div>
         {itemData.base && (
           <p className="text-xs text-muted-foreground">
