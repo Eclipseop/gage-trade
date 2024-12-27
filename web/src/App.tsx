@@ -29,13 +29,56 @@ export type AffixInfo = {
   rawText?: string;
 };
 
+type Searchable = { included: boolean };
 type Rollable = { roll: number };
-type Searchable = { checked: boolean };
 export type RollableSearchableAffix = { affix: AffixInfo[] } & Rollable &
   Searchable;
 
+type SearchableValue<T> = {
+  value: T;
+  included: boolean;
+};
+
+export type SearchableArray<T> = {
+  value: (T & { included: boolean })[];
+};
+
+export type SearchableItemData = {
+  [K in keyof ItemData]: ItemData[K] extends (infer U)[]
+    ? SearchableArray<U>
+    : SearchableValue<NonNullable<ItemData[K]>>;
+};
+
+const toSearchableItemData = (item: ItemData): SearchableItemData => {
+  const result = {} as SearchableItemData;
+
+  for (const key of Object.keys(item) as (keyof ItemData)[]) {
+    const value = item[key];
+
+    if (value === undefined) continue;
+
+    if (Array.isArray(value)) {
+      //@ts-expect-error
+      result[key] = {
+        value: value.map((item) => ({
+          ...item,
+          included: false,
+        })),
+      } as SearchableItemData[keyof ItemData];
+    } else {
+      //@ts-expect-error
+      result[key] = {
+        value,
+        included: false,
+      } as SearchableItemData[keyof ItemData];
+    }
+  }
+
+  return result;
+};
+
 const App = () => {
-  const [itemData, setItemData] = useState<ItemData>();
+  const [itemData, setItemData] = useState<SearchableItemData>();
 
   const [itemRes, setItemRes] = useState<TradeListing[]>([]);
 
@@ -46,20 +89,9 @@ const App = () => {
 
       const parsedData: ItemData = JSON.parse(data);
 
-      const updatedAffixs = parsedData.affixs?.map((affix) => ({
-        ...affix,
-        checked: false,
-      }));
-      const updatedImplicits = parsedData.implicit?.map((affix) => ({
-        ...affix,
-        checked: false,
-      }));
-
-      setItemData({
-        ...parsedData,
-        affixs: updatedAffixs,
-        implicit: updatedImplicits,
-      });
+      const l = toSearchableItemData(parsedData);
+      console.log(l);
+      setItemData(l);
     });
   }, []);
 

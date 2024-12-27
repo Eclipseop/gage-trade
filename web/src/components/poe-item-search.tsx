@@ -1,4 +1,4 @@
-import type { AffixInfo, ItemSearchCriteria } from "@/App";
+import type { AffixInfo, SearchableItemData } from "@/App";
 import type { TradeListing } from "@/trade/trade";
 import { Globe, Search } from "lucide-react";
 import { Badge } from "./ui/badge";
@@ -61,16 +61,18 @@ const SearchResultItem: React.FC<{ result: TradeListing }> = ({ result }) => {
   );
 };
 
+type SearchableKeys = keyof SearchableItemData;
+
 const PoeItemSearch = ({
   itemData,
   itemResults,
-  // setItemData,
+  setItemData,
   search,
   searchUI,
 }: {
-  itemData: ItemSearchCriteria;
+  itemData: SearchableItemData;
   itemResults: TradeListing[];
-  setItemData: (item: ItemSearchCriteria) => void;
+  setItemData: (item: SearchableItemData) => void;
   search: (e: unknown) => Promise<void>;
   searchUI: (e: unknown) => Promise<void>;
 }) => {
@@ -80,9 +82,18 @@ const PoeItemSearch = ({
     newRoll: number,
   ) => {
     const updateAffix = (key: "affixs" | "implicit") => {
-      const updatedAffixes = [...(itemData[key] ?? [])];
-      updatedAffixes[affixIndex].roll = newRoll;
-      setItemData({ ...itemData, [key]: updatedAffixes });
+      if (!itemData[key]) return;
+
+      const updatedAffixes = [...itemData[key].value];
+      updatedAffixes[affixIndex] = {
+        ...updatedAffixes[affixIndex],
+        roll: newRoll,
+      };
+
+      setItemData({
+        ...itemData,
+        [key]: { value: updatedAffixes },
+      });
     };
 
     if (affixType === "affixs") {
@@ -92,21 +103,38 @@ const PoeItemSearch = ({
     }
   };
 
-  const handleCheckedChange = (
-    affixType: "affixs" | "implicit",
-    affixIndex: number,
-    checked: boolean,
+  const handleIncludedChange = (
+    key: SearchableKeys,
+    included: boolean,
+    arrayIndex?: number,
   ) => {
-    const updateAffix = (key: "affixs" | "implicit") => {
-      const updatedAffixes = [...(itemData[key] ?? [])];
-      updatedAffixes[affixIndex].checked = checked;
-      setItemData({ ...itemData, [key]: updatedAffixes });
-    };
+    if (!itemData[key]) return;
 
-    if (affixType === "affixs") {
-      updateAffix("affixs");
-    } else if (affixType === "implicit") {
-      updateAffix("implicit");
+    // Handle array types (affixs, implicit, stats)
+    if (Array.isArray(itemData[key]?.value)) {
+      if (typeof arrayIndex !== "number") return;
+
+      const updatedArray = [...itemData[key].value];
+      updatedArray[arrayIndex] = {
+        ...updatedArray[arrayIndex],
+        included: included,
+      };
+
+      setItemData({
+        ...itemData,
+        [key]: { value: updatedArray },
+      });
+    }
+    // Handle primitive types (name, rarity, itemClass, etc.)
+    else {
+      setItemData({
+        ...itemData,
+        [key]: {
+          ...itemData[key],
+          value: itemData[key].value,
+          included: included,
+        },
+      });
     }
   };
 
@@ -117,8 +145,36 @@ const PoeItemSearch = ({
           {itemData.name?.value}
         </CardTitle>
         <div className="flex space-x-2">
-          <Badge>{itemData.rarity?.value}</Badge>
-          <Badge variant="outline">{itemData.itemClass?.value}</Badge>
+          <Badge
+            variant={itemData.rarity.included ? "default" : "outline"}
+            className="cursor-pointer"
+            onClick={() =>
+              handleIncludedChange("rarity", !itemData.rarity.included)
+            }
+          >
+            {itemData.rarity?.value}
+          </Badge>
+          <Badge
+            variant={itemData.itemClass.included ? "default" : "outline"}
+            className="cursor-pointer"
+            onClick={() =>
+              handleIncludedChange("itemClass", !itemData.itemClass.included)
+            }
+          >
+            {itemData.itemClass?.value}
+          </Badge>
+
+          {itemData.quality && (
+            <Badge
+              variant={itemData.quality.included ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() =>
+                handleIncludedChange("quality", !itemData.quality?.included)
+              }
+            >
+              Q: {itemData.quality?.value}
+            </Badge>
+          )}
         </div>
         {itemData.base && (
           <p className="text-xs text-muted-foreground">
@@ -132,47 +188,52 @@ const PoeItemSearch = ({
         )}
       </CardHeader>
       <CardContent className="space-y-2">
-        <ScrollArea className="w-full rounded-md border p-2">
-          {(itemData.implicit?.length ?? 0) > 0 && (
+        {(itemData.implicit?.value.length ?? 0) > 0 && (
+          <ScrollArea className="w-full rounded-md border p-2">
             <div className="text-sm font-semibold mb-1">Implicits</div>
-          )}
-          {itemData.implicit?.map((affixGroup, index) => (
-            <div key={`group-${affixGroup.affix[0].poe_id}`}>
-              {affixGroup.affix.map((affix) => (
-                <Affix
-                  key={affix.poe_id}
-                  affix={affix}
-                  roll={affixGroup.roll}
-                  checked={affixGroup.checked}
-                  onRollChange={(newRoll) =>
-                    handleRollChange("implicit", index, newRoll)
-                  }
-                  onCheckedChange={(checked) =>
-                    handleCheckedChange("implicit", index, checked)
-                  }
-                />
-              ))}
-            </div>
-          ))}
-        </ScrollArea>
+            {itemData.implicit?.value.map((affixGroup, index) => (
+              <div key={`group-${affixGroup.affix[0].poe_id}`}>
+                {affixGroup.affix.map((affix) => (
+                  <Affix
+                    key={affix.poe_id}
+                    affix={affix}
+                    roll={affixGroup.roll}
+                    checked={affixGroup.included} // Changed from checked to included
+                    onRollChange={(newRoll) =>
+                      handleRollChange("implicit", index, newRoll)
+                    }
+                    onCheckedChange={
+                      (
+                        included, // Changed parameter name to match
+                      ) => handleIncludedChange("implicit", included, index) // Updated function name
+                    }
+                  />
+                ))}
+              </div>
+            ))}
+          </ScrollArea>
+        )}
+
         <ScrollArea className="w-full rounded-md border p-2">
-          {(itemData.implicit?.length ?? 0) > 0 && (
+          {(itemData.affixs?.value.length ?? 0) > 0 && ( // Changed to check value array
             <div className="text-sm font-semibold mb-1">Explicits</div>
           )}
 
-          {itemData.affixs?.map((affixGroup, index) => (
+          {itemData.affixs?.value.map((affixGroup, index) => (
             <div key={`group-${affixGroup.affix[0].poe_id}`}>
               {affixGroup.affix.map((affix) => (
                 <Affix
                   key={affix.poe_id}
                   affix={affix}
                   roll={affixGroup.roll}
-                  checked={affixGroup.checked}
+                  checked={affixGroup.included} // Changed from checked to included
                   onRollChange={(newRoll) =>
                     handleRollChange("affixs", index, newRoll)
                   }
-                  onCheckedChange={(checked) =>
-                    handleCheckedChange("affixs", index, checked)
+                  onCheckedChange={
+                    (
+                      included, // Changed parameter name to match
+                    ) => handleIncludedChange("affixs", included, index) // Updated function name
                   }
                 />
               ))}
