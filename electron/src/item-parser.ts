@@ -7,6 +7,8 @@ export type ParsedItemData = {
   rarity?: string;
   itemClass: string;
   base?: string;
+  quality?: number;
+  stats?: ItemStat[];
   implicit?: {
     affix: MappedAffix[];
     roll: number | undefined;
@@ -22,6 +24,11 @@ type MappedAffix = {
   regex: RegExp;
   type: "EXPLICIT" | "IMPLICIT";
   rawText?: string;
+};
+
+export type ItemStat = {
+  type: string;
+  value: number;
 };
 
 const fetcher = AffixInfoFetcher.getInstance();
@@ -80,6 +87,50 @@ const getItemClass = (itemData: string): string | undefined => {
   return undefined;
 };
 
+const getQuality = (itemData: string): number | undefined => {
+  for (const line of itemData.split("\n")) {
+    if (line.startsWith("Quality: +")) {
+      return Number(line.match(/\d+/)?.[0]);
+    }
+  }
+  return undefined;
+};
+
+const getItemStats = (itemData: string): ItemStat[] => {
+  const arr: ItemStat[] = [];
+  const addStat = (line: string, type: string, regex: string) => {
+    if (line.startsWith(regex)) {
+      const rolls = line.match(/\d+(?:\.\d+)?/g);
+
+      const roll = rolls
+        ? rolls.map(Number).reduce((sum, num) => sum + num, 0) / rolls.length
+        : undefined;
+
+      if (roll) {
+        arr.push({
+          type,
+          value: Number(roll),
+        });
+      }
+    }
+  };
+
+  for (const line of itemData.split("\n")) {
+    addStat(line, "armour", "Armour");
+    addStat(line, "evasion", "Evasion Rating");
+    addStat(line, "energy-shield", "Energy Shield");
+    addStat(line, "spirit", "Spirit");
+    addStat(line, "physical-damage", "Physical Damage");
+    addStat(line, "cold-damage", "Cold Damage");
+    addStat(line, "fire-damage", "Fire Damage");
+    addStat(line, "lightning-damage", "Lightning Damage");
+    addStat(line, "crit-chance", "Critical Hit Chance");
+    addStat(line, "attacks-per-second", "Attacks per Second");
+    addStat(line, "reload-time", "Reload Time");
+  }
+  return arr;
+};
+
 // I'm sure there is a better way of doing this...
 const isPoeItem = (itemData: string): boolean => {
   return itemData.split(ITEM_SECTION_MARKER).length >= 3;
@@ -98,6 +149,11 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
 
   const itemRarity = getItemRarity(itemString);
   if (!itemRarity) throw new Error("Unable to determine item rarity!");
+
+  const quality = getQuality(itemString);
+  if (quality) parseData.quality = quality;
+
+  parseData.stats = getItemStats(itemString);
 
   if (itemRarity === "Currency") {
     const lines = itemSections[0].split("\n").filter((s) => s.length > 0);
@@ -160,9 +216,6 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
         const matchedAffix = [] as MappedAffix[];
         for (const affix of affixInfo.filter((ai) => ai.type === "explicit")) {
           if (affix.mappedRegex.exec(x.replace("\r", "")) != null) {
-            console.log(
-              `${x} matched using ${affix.mappedRegex}, poe_id: ${affix.id}`,
-            );
             matchedAffix.push({
               type: "EXPLICIT",
               regex: affix.mappedRegex,
@@ -175,8 +228,6 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
           throw new Error(`COULD NOT MATCH ${x}`);
         }
         parseData.affixs?.push({ roll: roll, affix: matchedAffix });
-
-        console.log("\n");
       }
     }
 

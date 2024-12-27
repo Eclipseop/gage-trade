@@ -1,5 +1,9 @@
 import axios, { AxiosError } from "axios";
-import type { ItemData, RollableSearchableAffix } from "../App";
+import type {
+  RollableSearchableAffix,
+  SearchableArray,
+  SearchableItemData,
+} from "../App";
 import { api } from "../util/electron";
 
 const NORMAL_TRADE_URL =
@@ -19,11 +23,44 @@ type StatFiler = {
   }[];
 };
 
+const StatTypes = [
+  {
+    key: "armour",
+    term: "ar",
+  },
+  {
+    key: "evasion",
+    term: "ev",
+  },
+  {
+    key: "energy-shield",
+    term: "es",
+  },
+  {
+    key: "block",
+    term: "block",
+  },
+  {
+    key: "spirit",
+    term: "spirit",
+  },
+] as const;
+
 type Filter = {
-  type_filters: {
+  type_filters?: {
     filters: {
-      category: {
+      category?: {
         option: string;
+      };
+      quality?: {
+        min?: number;
+      };
+    };
+  };
+  equipment_filters?: {
+    filters: {
+      [key in (typeof StatTypes)[number]["term"]]?: {
+        min?: number;
       };
     };
   };
@@ -194,7 +231,7 @@ type PoeQuery = {
   };
 };
 
-const buildQuery = (item: ItemData): PoeQuery => {
+const buildQuery = (item: SearchableItemData): PoeQuery => {
   const query: PoeQuery = {
     query: {
       status: {
@@ -208,34 +245,72 @@ const buildQuery = (item: ItemData): PoeQuery => {
     },
   };
 
-  if (item.rarity === "Currency") {
-    query.query = { ...query.query, type: item.name.replace("\r", "") };
+  // Check if rarity is included and is Currency
+  if (item.rarity?.included && item.rarity.value === "Currency") {
+    query.query = {
+      ...query.query,
+      type: item.name?.value.replace("\r", ""),
+    };
     return query;
   }
 
-  if (item.rarity === "Unique") {
-    query.query = { ...query.query, name: item.name };
+  // Check if rarity is included and is Unique
+  if (item.rarity?.included && item.rarity.value === "Unique") {
+    query.query = {
+      ...query.query,
+      name: item.name?.value,
+    };
   }
 
-  if (item.itemClass) {
-    const mappedItemClass = itemClassMap[item.itemClass];
+  // Check if itemClass is included
+  if (item.itemClass?.included && item.itemClass.value) {
+    const mappedItemClass = itemClassMap[item.itemClass.value];
     if (!mappedItemClass) {
       throw new Error("Unknown item class? monka!");
     }
     query.query.filters = {
       type_filters: {
-        filters: { category: { option: itemClassMap[item.itemClass] } },
+        filters: { category: { option: mappedItemClass } },
       },
     };
   }
 
-  const processAffixes = (affixes: RollableSearchableAffix[]) => {
+  if (item.quality?.included) {
+    query.query.filters = {
+      type_filters: {
+        filters: { quality: { min: item.quality.value } },
+      },
+    };
+  }
+
+  for (const stat of item.stats?.value ?? []) {
+    if (!stat.included) continue;
+
+    const mappedStatType = StatTypes.find((st) => st.key === stat.type);
+    if (!mappedStatType) continue;
+
+    // Ensure the filters structure exists
+    query.query.filters = {
+      equipment_filters: {
+        filters: {
+          [mappedStatType?.term]: { min: stat.value },
+        },
+      },
+    };
+  }
+
+  const processAffixes = (
+    affixes: SearchableArray<RollableSearchableAffix>["value"],
+  ) => {
     for (const affix of affixes) {
+      // Only process if this affix is included in the search
+      if (!affix.included) continue;
+
       query.query.stats.push({
         type: affix.affix.length === 1 ? "and" : "count",
         filters: affix.affix.map((a) => ({
           id: a.poe_id,
-          disabled: !affix.checked,
+          disabled: false, // Since we're only processing included affixes, this is always false
           value: { min: affix.roll },
         })),
         ...(affix.affix.length > 1 && { value: { min: 1 } }),
@@ -243,17 +318,20 @@ const buildQuery = (item: ItemData): PoeQuery => {
     }
   };
 
-  if (item.affixs) {
-    processAffixes(item.affixs);
+  // Process affixes if they exist
+  if (item.affixs?.value) {
+    processAffixes(item.affixs.value);
   }
 
-  if (item.implicit) {
-    processAffixes(item.implicit);
+  // Process implicit if they exist
+  if (item.implicit?.value) {
+    processAffixes(item.implicit.value);
   }
+
   return query;
 };
 
-export const openTradeQuery = async (item: ItemData) => {
+export const openTradeQuery = async (item: SearchableItemData) => {
   const query = buildQuery(item);
 
   console.log(JSON.stringify(query));
@@ -264,7 +342,9 @@ export const openTradeQuery = async (item: ItemData) => {
 
 export type TradeListing = PoeItemLookupResult["result"][number];
 
-export const lookup = async (item: ItemData): Promise<TradeListing[]> => {
+export const lookup = async (
+  item: SearchableItemData,
+): Promise<TradeListing[]> => {
   try {
     const query = buildQuery(item);
 
@@ -279,6 +359,7 @@ export const lookup = async (item: ItemData): Promise<TradeListing[]> => {
     );
     return itemLookupRes.data.result;
   } catch (err) {
+    console.log(err);
     let msg = "Error...";
     if (err instanceof AxiosError) {
       const axiosErr = err as AxiosError;

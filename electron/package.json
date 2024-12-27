@@ -9,7 +9,7 @@
     "watch": "tsc -w",
     "fix": "biome check --write",
     "lint": "biome check",
-    "dev": "tsc && electron ."
+    "dev": "tsc && cross-env NODE_ENV=development electron ."
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
   "devDependencies": {
     "@types/node": "^22.10.2",
     "concurrently": "^9.1.0",
+    "cross-env": "^7.0.3",
     "electron": "^33.2.1",
     "electron-builder": "^25.1.8",
     "nodemon": "^3.1.9",
