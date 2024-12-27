@@ -10,6 +10,11 @@ export type ItemData = {
   itemClass: string; // TODO create enum hehe
   base?: string; // todo create enum ehhe
   type?: string;
+  implicit?: {
+    affix: AffixInfo[];
+    roll: number;
+    checked: boolean;
+  }[];
   affixs?: {
     affix: AffixInfo[];
     roll: number;
@@ -42,8 +47,16 @@ const App = () => {
         ...affix,
         checked: false,
       }));
+      const updatedImplicits = parsedData.implicit?.map((affix) => ({
+        ...affix,
+        checked: false,
+      }));
 
-      setMods({ ...parsedData, affixs: updatedAffixs });
+      setMods({
+        ...parsedData,
+        affixs: updatedAffixs,
+        implicit: updatedImplicits,
+      });
     });
   }, []);
 

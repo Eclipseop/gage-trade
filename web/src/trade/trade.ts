@@ -242,6 +242,19 @@ const buildQuery = (item: ItemData): PoeQuery => {
       });
     }
   }
+  if (item.implicit) {
+    for (const affix of item.implicit) {
+      query.query.stats.push({
+        type: affix.affix.length === 1 ? "and" : "count",
+        filters: affix.affix.map((a) => ({
+          id: a.poe_id,
+          disabled: !affix.checked,
+          value: { min: affix.roll },
+        })),
+        ...(affix.affix.length > 1 && { value: { min: 1 } }),
+      });
+    }
+  }
   return query;
 };
 
