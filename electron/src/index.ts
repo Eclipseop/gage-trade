@@ -122,7 +122,7 @@ ipcMain.on("trade", async (event, args) => {
 });
 
 let lastTriggerTime = 0;
-const THROTTLE_DELAY = 1000; // 1 second in milliseconds
+const THROTTLE_DELAY = 1000;
 
 ipcMain.on("item-check", async (event, args) => {
   const currentTime = Date.now();
