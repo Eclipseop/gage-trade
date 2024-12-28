@@ -219,6 +219,21 @@ Sacrifice 20% of Mana and they Leech that Mana
 Tale-women may not fight directly,
 for they have a much higher purpose.`;
 
+const sample_item12 = `Item Class: Inscribed Ultimatum
+Rarity: Currency
+Inscribed Ultimatum
+--------
+Area Level: 75
+Number of Trials: 10
+--------
+Item Level: 75
+--------
+Mortals spend their lives wondering which
+fate shall be theirs. Chaos takes amusement
+in knowing the answer: all of them.
+--------
+Take this item to The Temple of Chaos to participate in a Trial of Chaos.`;
+
 test("blank clipboard", async () => {
   expect(async () => await parse("")).rejects.toThrowError("Not a Poe Item");
 });
@@ -555,6 +570,16 @@ test("sample item 11", async () => {
 
   const { affixs } = parsedSampleItem;
   console.log(JSON.stringify(affixs));
-  // expect(affixs?.length).toBe(4);
   expect(affixs).toContainEqual(a1);
+});
+
+test("sample item 12", async () => {
+  const parsedSampleItem = await parse(sample_item12);
+  expect(parsedSampleItem.itemClass).toBe("Inscribed Ultimatum");
+  expect(parsedSampleItem.rarity).toBe("Currency");
+  expect(parsedSampleItem.name).toBe("Inscribed Ultimatum");
+  expect(parsedSampleItem.areaLevel).toBe(75);
+
+  const { affixs } = parsedSampleItem;
+  expect(affixs?.length).toBe(undefined);
 });
