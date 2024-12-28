@@ -8,7 +8,7 @@ interface AffixInfoResponse {
   }[];
 }
 
-interface Entry {
+export interface Entry {
   id: string;
   text: string;
   type: ID;

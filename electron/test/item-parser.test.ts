@@ -196,6 +196,29 @@ Your Maps which contain Breaches have 9% chance to contain an additional Breach
 Can be used in a completed Tower on your Atlas to influence surrounding Maps. Tablets are consumed once placed into a Tower.
 `;
 
+const sample_item11 = `Item Class: Sceptres
+Rarity: Unique
+Font of Power
+Omen Sceptre
+--------
+Spirit: 145 (augmented)
+--------
+Requirements:
+Level: 72
+Str: 50
+Int: 128 (unmet)
+--------
+Item Level: 73
+--------
+45% increased Spirit
++60 to maximum Mana
+20% increased Mana Regeneration Rate
+When a Party Member in your Presence Casts a Spell, you
+Sacrifice 20% of Mana and they Leech that Mana
+--------
+Tale-women may not fight directly,
+for they have a much higher purpose.`;
+
 test("blank clipboard", async () => {
   expect(async () => await parse("")).rejects.toThrowError("Not a Poe Item");
 });
@@ -264,12 +287,6 @@ test("sample item 2", async () => {
     affix: [
       {
         poe_id: "explicit.stat_803737631",
-        rawText: "+38 to Accuracy Rating",
-        regex: /^\+?\d+(?:\.\d+)? to (Accuracy|Accuracy) Rating$/g,
-        type: "EXPLICIT",
-      },
-      {
-        poe_id: "explicit.stat_691932474",
         rawText: "+38 to Accuracy Rating",
         regex: /^\+?\d+(?:\.\d+)? to (Accuracy|Accuracy) Rating$/g,
         type: "EXPLICIT",
@@ -514,4 +531,30 @@ test("sample item 9", async () => {
 
   const { affixs } = parsedSampleItem;
   expect(affixs?.length).toBe(0);
+});
+
+test("sample item 11", async () => {
+  const parsedSampleItem = await parse(sample_item11);
+  expect(parsedSampleItem.itemClass).toBe("Sceptres");
+  expect(parsedSampleItem.rarity).toBe("Unique");
+  expect(parsedSampleItem.name).toBe("Font of Power");
+
+  const a1 = {
+    affix: [
+      {
+        poe_id: "explicit.stat_603021645",
+        rawText:
+          "When a Party Member in your Presence Casts a Spell, you\nSacrifice 20% of Mana and they Leech that Mana",
+        regex:
+          /^When a Party Member in your (Presence) Casts a (Spell), you\n(Sacrifice) \+?\d+(?:\.\d+)?% of Mana and they (ManaLeech|Leech that Mana)$/g,
+        type: "EXPLICIT",
+      },
+    ],
+    roll: 20,
+  };
+
+  const { affixs } = parsedSampleItem;
+  console.log(JSON.stringify(affixs));
+  // expect(affixs?.length).toBe(4);
+  expect(affixs).toContainEqual(a1);
 });

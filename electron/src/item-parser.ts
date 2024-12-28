@@ -1,4 +1,4 @@
-import AffixInfoFetcher from "./trade/affix-info";
+import AffixInfoFetcher, { type Entry } from "./trade/affix-info";
 
 const ITEM_SECTION_MARKER = "--------";
 
@@ -136,6 +136,52 @@ const isPoeItem = (itemData: string): boolean => {
   return itemData.split(ITEM_SECTION_MARKER).length >= 3;
 };
 
+interface AffixMatch {
+  text: string;
+  affix: Entry & { mappedRegex: RegExp };
+}
+
+const findAffixMatches = (
+  text: string,
+  affixes: (Entry & { mappedRegex: RegExp })[],
+): AffixMatch[] => {
+  const matches: AffixMatch[] = [];
+  const textToProcess = text.trim();
+
+  if (textToProcess === "") return matches;
+
+  let remainingText = textToProcess;
+
+  while (remainingText.length > 0) {
+    for (const affix of affixes) {
+      const regex = new RegExp(affix.mappedRegex.source, "gm");
+      const match = regex.exec(remainingText);
+
+      if (match) {
+        matches.push({
+          text: match[0],
+          affix: affix,
+        });
+
+        remainingText = remainingText.replace(match[0], "").trim();
+
+        break;
+      }
+    }
+  }
+
+  return matches;
+};
+
+/*
+An idea on how to solve affixes that have new line:
+
+Once we konw we have the explicit section, DO NOT pslit it into new lines,
+use regex to match on the entire section and add the matches into an array
+May need to use m regex flag
+
+If needed, we could remove the text once it is matched.
+*/
 export const parse = async (itemString: string): Promise<ParsedItemData> => {
   if (!isPoeItem(itemString)) return Promise.reject("Not a Poe Item");
 
@@ -204,30 +250,24 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
     const section = itemSections[i];
 
     if (i === explicitSectionIdx) {
-      // we're in the affix section hehe
-      for (const x of section.split("\n")) {
-        if (x.trim() === "") continue;
-        const rolls = x.match(/\d+(?:\.\d+)?/g);
-
+      const explicitMatches = findAffixMatches(section, affixInfo);
+      for (const match of explicitMatches) {
+        const rolls = match.text.match(/\d+(?:\.\d+)?/g);
         const roll = rolls
           ? rolls.map(Number).reduce((sum, num) => sum + num, 0) / rolls.length
           : undefined;
 
-        const matchedAffix = [] as MappedAffix[];
-        for (const affix of affixInfo.filter((ai) => ai.type === "explicit")) {
-          if (affix.mappedRegex.exec(x.replace("\r", "")) != null) {
-            matchedAffix.push({
+        parseData.affixs?.push({
+          roll,
+          affix: [
+            {
               type: "EXPLICIT",
-              regex: affix.mappedRegex,
-              poe_id: affix.id,
-              rawText: x,
-            });
-          }
-        }
-        if (matchedAffix.length === 0) {
-          throw new Error(`COULD NOT MATCH ${x}`);
-        }
-        parseData.affixs?.push({ roll: roll, affix: matchedAffix });
+              regex: match.affix.mappedRegex,
+              poe_id: match.affix.id,
+              rawText: match.text,
+            },
+          ],
+        });
       }
     }
 
