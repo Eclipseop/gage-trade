@@ -59,7 +59,7 @@ class AffixInfoFetcher {
       const parsedStats = response.data.result.flatMap((result) =>
         result.entries.map((entry) => {
           const transformedText = entry.text
-            .replace(/\[([^\]]+)\]/g, (match, group: string) => {
+            .replace(/\[([^\]]+)\]/g, (_match, group: string) => {
               const sortedElements = group
                 .split(",")
                 .map((el) => el.trim())

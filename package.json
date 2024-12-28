@@ -8,7 +8,7 @@
     "web:dev": "pnpm --filter web dev",
     "web:lint": "pnpm --filter web lint",
     "web:fix": "pnpm --filter web fix",
-    "electron:test": "pnpm --filter electron test",
+    "web:test": "pnpm --filter web test",
     "electron:build": "pnpm --filter electron build",
     "electron:dev": "pnpm --filter electron dev",
     "electron:lint": "pnpm --filter electron lint",
@@ -38,10 +38,7 @@
   "build": {
     "appId": "com.yourapp.id",
     "productName": "Gage Trade",
-    "files": [
-      "electron/dist/**/*",
-      "web/dist/**/*"
-    ],
+    "files": ["electron/dist/**/*", "web/dist/**/*"],
     "win": {
       "publish": [
         {
@@ -50,9 +47,7 @@
           "repo": "gage-trade"
         }
       ],
-      "target": [
-        "NSIS"
-      ]
+      "target": ["NSIS"]
     },
     "directories": {
       "output": "dist"

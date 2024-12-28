@@ -1,37 +1,7 @@
-import AffixInfoFetcher, { type Entry } from "./trade/affix-info";
+import type { AffixInfo, ItemStat, ParsedItemData } from "@/types/parser";
+import AffixInfoFetcher, { type Entry } from "./affix-info";
 
 const ITEM_SECTION_MARKER = "--------";
-
-export type ParsedItemData = {
-  name: string;
-  rarity?: string;
-  itemClass: string;
-  base?: string;
-  quality?: number;
-  areaLevel?: number;
-  itemLevel?: number;
-  stats?: ItemStat[];
-  implicit?: {
-    affix: MappedAffix[];
-    roll: number | undefined;
-  }[];
-  affixs?: {
-    affix: MappedAffix[];
-    roll: number | undefined;
-  }[];
-};
-
-type MappedAffix = {
-  poe_id: string;
-  regex: RegExp;
-  type: "EXPLICIT" | "IMPLICIT";
-  rawText?: string;
-};
-
-export type ItemStat = {
-  type: string;
-  value: number;
-};
 
 const fetcher = AffixInfoFetcher.getInstance();
 
@@ -205,6 +175,8 @@ If needed, we could remove the text once it is matched.
 export const parse = async (itemString: string): Promise<ParsedItemData> => {
   if (!isPoeItem(itemString)) return Promise.reject("Not a Poe Item");
 
+  console.log(itemString);
+
   const itemSections = itemString.split(ITEM_SECTION_MARKER);
 
   const affixInfo = await fetcher.fetchAffixInfo();
@@ -253,7 +225,7 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
       ? rolls.map(Number).reduce((sum, num) => sum + num, 0) / rolls.length
       : undefined;
 
-    const matchedAffix = [] as MappedAffix[];
+    const matchedAffix = [] as AffixInfo[];
     for (const affix of affixInfo.filter((ai) => ai.type === "implicit")) {
       if (affix.mappedRegex.exec(x.replace("\r", "")) != null) {
         console.log(
@@ -270,7 +242,11 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
     if (matchedAffix.length === 0) {
       throw new Error(`COULD NOT MATCH ${x}`);
     }
-    parseData.implicit?.push({ roll: roll, affix: matchedAffix });
+    parseData.implicit?.push({
+      roll: roll,
+      affix: matchedAffix,
+      included: false,
+    });
   }
 
   for (let i = 0; i < itemSections.length; i++) {
@@ -294,6 +270,7 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
               rawText: match.text,
             },
           ],
+          included: false,
         });
       }
     }

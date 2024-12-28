@@ -1,2 +1,2 @@
 pnpm lint
-pnpm electron:test
+pnpm web:test

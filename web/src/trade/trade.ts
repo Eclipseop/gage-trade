@@ -1,9 +1,9 @@
-import axios, { AxiosError } from "axios";
 import type {
   RollableSearchableAffix,
   SearchableArray,
   SearchableItemData,
-} from "../App";
+} from "@/types/parser";
+import axios, { AxiosError } from "axios";
 import { api } from "../util/electron";
 
 const NORMAL_TRADE_URL =
