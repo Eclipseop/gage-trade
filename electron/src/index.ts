@@ -87,6 +87,12 @@ const init = () => {
 
     const contextMenu = Menu.buildFromTemplate([
       {
+        label: "Check for updates",
+        click: () => {
+          autoUpdater.checkForUpdatesAndNotify();
+        },
+      },
+      {
         label: "Exit",
         click: () => {
           process.exit();
