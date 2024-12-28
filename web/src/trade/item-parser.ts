@@ -189,15 +189,6 @@ const sanitize = (itemString: string): string => {
   return xd;
 };
 
-/*
-An idea on how to solve affixes that have new line:
-
-Once we konw we have the explicit section, DO NOT pslit it into new lines,
-use regex to match on the entire section and add the matches into an array
-May need to use m regex flag
-
-If needed, we could remove the text once it is matched.
-*/
 export const parse = async (itemString: string): Promise<ParsedItemData> => {
   if (!isPoeItem(itemString)) return Promise.reject("Not a Poe Item");
 
