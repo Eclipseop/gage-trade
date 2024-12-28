@@ -290,7 +290,6 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
 
   // Check if itemClass is included
   if (item.itemClass?.included) {
-    console.log(item.itemClass);
     const mappedItemClass = itemClassMap[item.itemClass.value];
     if (!mappedItemClass) {
       throw new Error(`Unknown item class? monka! ${item.itemClass.value}`);
@@ -299,7 +298,6 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
     query.query.filters.type_filters!.filters.category = {
       option: mappedItemClass,
     };
-    console.log("new", query);
   }
 
   if (item.quality?.included) {

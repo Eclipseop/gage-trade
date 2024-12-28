@@ -47,11 +47,15 @@ class AffixInfoFetcher {
   public async fetchAffixInfo(): Promise<(Entry & { mappedRegex: RegExp })[]> {
     try {
       if (this.cachedData) {
+        console.log("Returning affix-info from cache");
         return this.cachedData;
       }
       const response = await axios.get<AffixInfoResponse>(this.API_URL, {
         headers: {
-          "User-Agent": "Gage Trade",
+          ...(process.env.NODE_ENV === "test" && {
+            "User-Agent": "Gage Trade",
+          }),
+
           Accept: "application/json",
         },
       });
@@ -80,6 +84,7 @@ class AffixInfoFetcher {
       );
 
       this.cachedData = parsedStats;
+      console.log("ok did it!", this.cachedData.length);
 
       return parsedStats;
     } catch (error) {

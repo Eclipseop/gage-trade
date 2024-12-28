@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Toaster, toast } from "sonner";
 import PoeItemSearch from "./components/poe-item-search";
-import { parse } from "./trade/item-parser";
+import { isPoeItem, parse } from "./trade/item-parser";
 import { type TradeListing, lookup, openTradeQuery } from "./trade/trade";
 import type { ParsedItemData, SearchableItemData } from "./types/parser";
 import { api } from "./util/electron";
@@ -40,15 +40,20 @@ const App = () => {
   const [itemRes, setItemRes] = useState<TradeListing[]>([]);
 
   useEffect(() => {
+    api.receive("item-check", async (data: string) => {
+      console.log("item-check triggered");
+
+      api.send("item-check", isPoeItem(data[0]));
+    });
+
     api.receive("item", async (data: string) => {
-      console.log("um hello???");
+      console.log("item received");
       setItemData(undefined);
       setItemRes([]);
 
       const parsedData = await parse(data[0]);
 
       const l = toSearchableItemData(parsedData);
-      console.log(l);
       setItemData(l);
     });
   }, []);

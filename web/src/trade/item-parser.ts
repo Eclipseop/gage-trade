@@ -122,7 +122,7 @@ const getItemStats = (itemData: string): ItemStat[] => {
 };
 
 // I'm sure there is a better way of doing this...
-const isPoeItem = (itemData: string): boolean => {
+export const isPoeItem = (itemData: string): boolean => {
   return itemData.split(ITEM_SECTION_MARKER).length >= 3;
 };
 
@@ -174,8 +174,6 @@ If needed, we could remove the text once it is matched.
 */
 export const parse = async (itemString: string): Promise<ParsedItemData> => {
   if (!isPoeItem(itemString)) return Promise.reject("Not a Poe Item");
-
-  console.log(itemString);
 
   const itemSections = itemString.split(ITEM_SECTION_MARKER);
 

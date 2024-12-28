@@ -581,7 +581,6 @@ test("sample item 11", async () => {
   };
 
   const { affixs } = parsedSampleItem;
-  console.log(JSON.stringify(affixs));
   expect(affixs).toContainEqual(a1);
 });
 

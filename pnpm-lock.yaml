@@ -140,6 +140,9 @@ importers:
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.49)
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       globals:
         specifier: ^15.14.0
         version: 15.14.0

@@ -21,13 +21,12 @@ const init = () => {
 
   setInterval(async () => {
     const contents = clipboard.readText();
-    if (contents !== pastClipboard) {
+    if (contents !== pastClipboard && pastClipboard !== undefined) {
       pastClipboard = contents;
-      mainWindow?.webContents.send("item", contents);
-      mainWindow?.setAlwaysOnTop(true, "pop-up-menu");
-      mainWindow?.show();
-      mainWindow?.focus();
-      mainWindow?.setAlwaysOnTop(false);
+
+      mainWindow?.webContents.send("item-check", contents);
+    } else if (pastClipboard === undefined) {
+      pastClipboard = contents;
     }
   }, 100);
 
@@ -114,13 +113,24 @@ const toggleWindow = async () => {
   uIOhook.keyToggle(UiohookKey.Ctrl, "up");
   setTimeout(async () => {
     const contents = clipboard.readText();
-    mainWindow?.webContents.send("item", contents);
-    mainWindow?.show();
+    mainWindow?.webContents.send("item-check", contents);
   }, 500);
 };
 
 ipcMain.on("trade", async (event, args) => {
   require("electron").shell.openExternal(args.url);
+});
+
+ipcMain.on("item-check", async (event, args) => {
+  if (args) {
+    mainWindow?.webContents.send("item", pastClipboard);
+    mainWindow?.setAlwaysOnTop(true, "pop-up-menu");
+    mainWindow?.show();
+    mainWindow?.focus();
+    mainWindow?.setAlwaysOnTop(false);
+  } else {
+    console.log("Clipboard is not a POE item..");
+  }
 });
 
 app.on("ready", init);
