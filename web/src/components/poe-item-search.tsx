@@ -41,13 +41,15 @@ const Affix = ({
           {affix.rawText}
         </label>
       </div>
-      <Input
-        type="number"
-        value={roll}
-        onChange={(e) => onRollChange(Number(e.target.value))}
-        className="w-16 h-6 text-xs"
-        disabled={!checked}
-      />
+      {roll && (
+        <Input
+          type="number"
+          value={roll}
+          onChange={(e) => onRollChange(Number(e.target.value))}
+          className="w-16 h-6 text-xs"
+          disabled={!checked}
+        />
+      )}
     </div>
   );
 };
