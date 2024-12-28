@@ -341,15 +341,6 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
     const mappedStatType = StatTypes.find((st) => st.key === stat.type);
     if (!mappedStatType) continue;
 
-    // Ensure the filters structure exists
-    // query.query.filters = {
-    //   equipment_filters: {
-    //     filters: {
-    //       [mappedStatType?.term]: { min: stat.value },
-    //     },
-    //   },
-    // };
-
     // biome-ignore lint/style/noNonNullAssertion: <explanation>
     query.query.filters.equipment_filters!.filters[mappedStatType?.term] = {
       min: stat.value,
