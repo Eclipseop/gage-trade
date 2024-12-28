@@ -58,8 +58,7 @@ const App = () => {
     });
   }, []);
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const submitSearch = async (e: any) => {
+  const submitSearch = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!itemData) return;
 
@@ -73,8 +72,7 @@ const App = () => {
     if (data) setItemRes(data);
   };
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const submitTradeOpen = async (e: any) => {
+  const submitTradeOpen = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!itemData) return;
 

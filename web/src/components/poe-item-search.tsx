@@ -73,8 +73,8 @@ const PoeItemSearch = ({
   itemData: SearchableItemData;
   itemResults: TradeListing[];
   setItemData: (item: SearchableItemData) => void;
-  search: (e: unknown) => Promise<void>;
-  searchUI: (e: unknown) => Promise<void>;
+  search: (e: React.MouseEvent<HTMLButtonElement>) => Promise<void>;
+  searchUI: (e: React.MouseEvent<HTMLButtonElement>) => Promise<void>;
 }) => {
   const handleRollChange = (
     affixType: "affixs" | "implicit",
