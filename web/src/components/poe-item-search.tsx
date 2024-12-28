@@ -79,7 +79,7 @@ const PoeItemSearch = ({
   const handleRollChange = (
     affixType: "affixs" | "implicit",
     affixIndex: number,
-    newRoll: number
+    newRoll: number,
   ) => {
     const updateAffix = (key: "affixs" | "implicit") => {
       if (!itemData[key]) return;
@@ -106,7 +106,7 @@ const PoeItemSearch = ({
   const handleIncludedChange = (
     key: SearchableKeys,
     included: boolean,
-    arrayIndex?: number
+    arrayIndex?: number,
   ) => {
     if (!itemData[key]) return;
 
@@ -219,7 +219,7 @@ const PoeItemSearch = ({
                     }
                     onCheckedChange={
                       (
-                        included // Changed parameter name to match
+                        included, // Changed parameter name to match
                       ) => handleIncludedChange("implicit", included, index) // Updated function name
                     }
                   />
@@ -247,7 +247,7 @@ const PoeItemSearch = ({
                   }
                   onCheckedChange={
                     (
-                      included // Changed parameter name to match
+                      included, // Changed parameter name to match
                     ) => handleIncludedChange("affixs", included, index) // Updated function name
                   }
                 />
