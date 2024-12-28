@@ -88,8 +88,17 @@ const getItemLevel = (itemData: string): number | undefined => {
 
 const getItemStats = (itemData: string): ItemStat[] => {
   const arr: ItemStat[] = [];
-  const addStat = (line: string, type: string, regex: string) => {
-    if (line.startsWith(regex)) {
+  const addStat = (
+    line: string,
+    type: string,
+    regexPatterns: string | string[],
+  ) => {
+    const patterns = Array.isArray(regexPatterns)
+      ? regexPatterns
+      : [regexPatterns];
+    const matches = patterns.some((regex) => line.startsWith(regex));
+
+    if (matches) {
       const rolls = line.match(/\d+(?:\.\d+)?/g);
 
       const roll = rolls
@@ -107,13 +116,13 @@ const getItemStats = (itemData: string): ItemStat[] => {
 
   for (const line of itemData.split("\n")) {
     addStat(line, "armour", "Armour");
-    addStat(line, "evasion", "Evasion Rating");
-    addStat(line, "energy-shield", "Energy Shield");
+    addStat(line, "evasion", ["Evasion", "Evasion Rating"]);
+    addStat(line, "energy-shield", ["Energy Shield", "EnergyShield"]);
     addStat(line, "spirit", "Spirit");
-    addStat(line, "physical-damage", "Physical Damage");
-    addStat(line, "cold-damage", "Cold Damage");
-    addStat(line, "fire-damage", "Fire Damage");
-    addStat(line, "lightning-damage", "Lightning Damage");
+    addStat(line, "physical-damage", ["Physical Damage", "PhysicalDamage"]);
+    addStat(line, "cold-damage", ["Cold Damage", "ColdDamage"]);
+    addStat(line, "fire-damage", ["Fire Damage", "FireDamage"]);
+    addStat(line, "lightning-damage", ["Lightning Damage", "LightningDamage"]);
     addStat(line, "crit-chance", "Critical Hit Chance");
     addStat(line, "attacks-per-second", "Attacks per Second");
     addStat(line, "reload-time", "Reload Time");
@@ -141,8 +150,12 @@ const findAffixMatches = (
   if (textToProcess === "") return matches;
 
   let remainingText = textToProcess;
+  console.log(remainingText);
 
+  let attempts = 0;
   while (remainingText.length > 0) {
+    if (attempts > 20) break;
+    attempts++;
     for (const affix of affixes) {
       const regex = new RegExp(affix.mappedRegex.source, "gm");
       const match = regex.exec(remainingText);
@@ -163,6 +176,19 @@ const findAffixMatches = (
   return matches;
 };
 
+const sanitize = (itemString: string): string => {
+  // First handle paired matches with | separator - now taking the last part
+  let xd = itemString.replace(
+    /\[([^|\]]+)\|([^\]]+)\]/g,
+    (_, firstMatch, secondMatch) => secondMatch,
+  );
+
+  // Then handle single word brackets - just remove the brackets
+  xd = xd.replace(/\[([^\]]+)\]/g, (_, word) => word);
+
+  return xd;
+};
+
 /*
 An idea on how to solve affixes that have new line:
 
@@ -175,27 +201,29 @@ If needed, we could remove the text once it is matched.
 export const parse = async (itemString: string): Promise<ParsedItemData> => {
   if (!isPoeItem(itemString)) return Promise.reject("Not a Poe Item");
 
-  const itemSections = itemString.split(ITEM_SECTION_MARKER);
+  const sanitizedItemString = sanitize(itemString);
+
+  const itemSections = sanitizedItemString.split(ITEM_SECTION_MARKER);
 
   const affixInfo = await fetcher.fetchAffixInfo();
   const parseData = { affixs: [], implicit: [] } as unknown as ParsedItemData;
 
-  const itemClass = getItemClass(itemString);
+  const itemClass = getItemClass(sanitizedItemString);
   if (!itemClass) throw new Error("Unable to determine item class");
 
-  const itemRarity = getItemRarity(itemString);
+  const itemRarity = getItemRarity(sanitizedItemString);
   if (!itemRarity) throw new Error("Unable to determine item rarity!");
 
-  const quality = getQuality(itemString);
+  const quality = getQuality(sanitizedItemString);
   if (quality) parseData.quality = quality;
 
-  const areaLevel = getAreaLevel(itemString);
+  const areaLevel = getAreaLevel(sanitizedItemString);
   if (areaLevel) parseData.areaLevel = areaLevel;
 
-  const itemLevel = getItemLevel(itemString);
+  const itemLevel = getItemLevel(sanitizedItemString);
   if (itemLevel) parseData.itemLevel = itemLevel;
 
-  parseData.stats = getItemStats(itemString);
+  parseData.stats = getItemStats(sanitizedItemString);
 
   if (itemRarity === "Currency") {
     const lines = itemSections[0].split("\n").filter((s) => s.length > 0);
@@ -213,7 +241,7 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
     itemSections,
   );
 
-  for (const line of itemString.split("\n")) {
+  for (const line of sanitizedItemString.split("\n")) {
     if (!line.includes("(implicit)")) continue;
     const x = line.replace(" (implicit)", "").trim();
     if (x.trim() === "") continue;
