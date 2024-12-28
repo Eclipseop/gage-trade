@@ -79,7 +79,7 @@ const PoeItemSearch = ({
   const handleRollChange = (
     affixType: "affixs" | "implicit",
     affixIndex: number,
-    newRoll: number,
+    newRoll: number
   ) => {
     const updateAffix = (key: "affixs" | "implicit") => {
       if (!itemData[key]) return;
@@ -106,7 +106,7 @@ const PoeItemSearch = ({
   const handleIncludedChange = (
     key: SearchableKeys,
     included: boolean,
-    arrayIndex?: number,
+    arrayIndex?: number
   ) => {
     if (!itemData[key]) return;
 
@@ -141,9 +141,17 @@ const PoeItemSearch = ({
   return (
     <>
       <CardHeader>
-        <CardTitle className="text-xl font-bold">
-          {itemData.name?.value}
-        </CardTitle>
+        <div className="py-2">
+          <CardTitle className="text-xl font-bold text-center ">
+            {itemData.name?.value}
+          </CardTitle>
+          {itemData.base && (
+            <p className="text-xs text-muted-foreground text-center">
+              {itemData.base?.value}
+            </p>
+          )}
+        </div>
+
         <div className="flex space-x-2">
           <Badge
             variant={itemData.rarity.included ? "default" : "outline"}
@@ -187,11 +195,7 @@ const PoeItemSearch = ({
             </Badge>
           ))}
         </div>
-        {itemData.base && (
-          <p className="text-xs text-muted-foreground">
-            {itemData.base?.value}
-          </p>
-        )}
+
         {itemData.type && (
           <p className="text-xs text-muted-foreground">
             {itemData.type?.value}
@@ -215,7 +219,7 @@ const PoeItemSearch = ({
                     }
                     onCheckedChange={
                       (
-                        included, // Changed parameter name to match
+                        included // Changed parameter name to match
                       ) => handleIncludedChange("implicit", included, index) // Updated function name
                     }
                   />
@@ -243,7 +247,7 @@ const PoeItemSearch = ({
                   }
                   onCheckedChange={
                     (
-                      included, // Changed parameter name to match
+                      included // Changed parameter name to match
                     ) => handleIncludedChange("affixs", included, index) // Updated function name
                   }
                 />
