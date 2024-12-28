@@ -140,6 +140,9 @@ importers:
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.49)
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       globals:
         specifier: ^15.14.0
         version: 15.14.0
@@ -155,6 +158,9 @@ importers:
       vite:
         specifier: ^6.0.4
         version: 6.0.6(@types/node@22.10.2)(jiti@1.21.7)(yaml@2.6.1)
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.8(@types/node@22.10.2)
 
 packages:
 

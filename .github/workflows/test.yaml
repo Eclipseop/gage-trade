@@ -25,4 +25,4 @@ jobs:
         run: pnpm install
 
       - name: Run tests
-        run: pnpm electron:test
+        run: pnpm web:test

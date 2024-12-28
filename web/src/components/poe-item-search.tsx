@@ -1,5 +1,5 @@
-import type { AffixInfo, SearchableItemData } from "@/App";
 import type { TradeListing } from "@/trade/trade";
+import type { AffixInfo, SearchableItemData } from "@/types/parser";
 import { Globe, Search } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
@@ -11,7 +11,7 @@ import { Separator } from "./ui/separator";
 
 type AffixProps = {
   affix: AffixInfo;
-  roll: number;
+  roll: number | undefined;
   checked: boolean;
   onRollChange: (newRoll: number) => void;
   onCheckedChange: (checked: boolean) => void;
@@ -154,10 +154,10 @@ const PoeItemSearch = ({
 
         <div className="flex space-x-2">
           <Badge
-            variant={itemData.rarity.included ? "default" : "outline"}
+            variant={itemData.rarity?.included ? "default" : "outline"}
             className="cursor-pointer"
             onClick={() =>
-              handleIncludedChange("rarity", !itemData.rarity.included)
+              handleIncludedChange("rarity", !itemData.rarity?.included)
             }
           >
             {itemData.rarity?.value}
@@ -220,9 +220,9 @@ const PoeItemSearch = ({
           ))}
         </div>
 
-        {itemData.type && (
+        {itemData.base && (
           <p className="text-xs text-muted-foreground">
-            {itemData.type?.value}
+            {itemData.base?.value}
           </p>
         )}
       </CardHeader>

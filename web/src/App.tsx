@@ -1,62 +1,15 @@
 import { useEffect, useState } from "react";
 import { Toaster, toast } from "sonner";
 import PoeItemSearch from "./components/poe-item-search";
+import { isPoeItem, parse } from "./trade/item-parser";
 import { type TradeListing, lookup, openTradeQuery } from "./trade/trade";
+import type { ParsedItemData, SearchableItemData } from "./types/parser";
 import { api } from "./util/electron";
 
-export type ItemData = {
-  name: string;
-  rarity: string;
-  itemClass: string; // TODO create enum hehe
-  base?: string; // todo create enum ehhe
-  type?: string;
-  quality?: number;
-  itemLevel?: number;
-  areaLevel?: number;
-  stats?: ItemStat[];
-  implicit?: RollableSearchableAffix[];
-  affixs?: RollableSearchableAffix[];
-};
-
-export type ItemStat = {
-  type: string;
-  value: number;
-  included: boolean;
-};
-
-export type AffixInfo = {
-  common_name: string;
-  poe_id: string;
-  regex: RegExp;
-  type: "EXPLICIT" | "IMPLICIT";
-  rawText?: string;
-};
-
-type Searchable = { included: boolean };
-type Rollable = { roll: number };
-export type RollableSearchableAffix = { affix: AffixInfo[] } & Rollable &
-  Searchable;
-
-type SearchableValue<T> = {
-  value: T;
-  included: boolean;
-};
-
-export type SearchableArray<T> = {
-  value: T[];
-};
-
-// The main mapped type
-export type SearchableItemData = {
-  [K in keyof ItemData]: ItemData[K] extends (infer U)[]
-    ? SearchableArray<U>
-    : SearchableValue<NonNullable<ItemData[K]>>;
-};
-
-const toSearchableItemData = (item: ItemData): SearchableItemData => {
+const toSearchableItemData = (item: ParsedItemData): SearchableItemData => {
   const result = {} as SearchableItemData;
 
-  for (const key of Object.keys(item) as (keyof ItemData)[]) {
+  for (const key of Object.keys(item) as (keyof ParsedItemData)[]) {
     const value = item[key];
 
     if (value === undefined) continue;
@@ -68,13 +21,13 @@ const toSearchableItemData = (item: ItemData): SearchableItemData => {
           ...item,
           included: false,
         })),
-      } as SearchableItemData[keyof ItemData];
+      } as SearchableItemData[keyof ParsedItemData];
     } else {
       //@ts-expect-error
       result[key] = {
         value,
         included: false,
-      } as SearchableItemData[keyof ItemData];
+      } as SearchableItemData[keyof ParsedItemData];
     }
   }
 
@@ -87,14 +40,20 @@ const App = () => {
   const [itemRes, setItemRes] = useState<TradeListing[]>([]);
 
   useEffect(() => {
-    api.receive("item", (data: string) => {
+    api.receive("item-check", async (data: string) => {
+      console.log("item-check triggered");
+
+      api.send("item-check", isPoeItem(data[0]));
+    });
+
+    api.receive("item", async (data: string) => {
+      console.log("item received");
       setItemData(undefined);
       setItemRes([]);
 
-      const parsedData: ItemData = JSON.parse(data);
+      const parsedData = await parse(data[0]);
 
       const l = toSearchableItemData(parsedData);
-      console.log(l);
       setItemData(l);
     });
   }, []);

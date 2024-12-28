@@ -9,10 +9,8 @@ import {
   ipcMain,
   nativeImage,
 } from "electron";
-import { UiohookKey, uIOhook } from "uiohook-napi";
-import { parse } from "./item-parser";
-
 import { autoUpdater } from "electron-updater";
+import { UiohookKey, uIOhook } from "uiohook-napi";
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -22,16 +20,13 @@ const init = () => {
   uIOhook.start();
 
   setInterval(async () => {
-    const c = clipboard.readText();
-    if (c !== pastClipboard) {
-      pastClipboard = c;
-      const p = await parse(c);
-      if (!p) return;
-      mainWindow?.webContents.send("item", JSON.stringify(p));
-      mainWindow?.setAlwaysOnTop(true, "pop-up-menu");
-      mainWindow?.show();
-      mainWindow?.focus();
-      mainWindow?.setAlwaysOnTop(false);
+    const contents = clipboard.readText();
+    if (contents !== pastClipboard && pastClipboard !== undefined) {
+      pastClipboard = contents;
+
+      mainWindow?.webContents.send("item-check", contents);
+    } else if (pastClipboard === undefined) {
+      pastClipboard = contents;
     }
   }, 100);
 
@@ -117,16 +112,25 @@ const toggleWindow = async () => {
   uIOhook.keyTap(UiohookKey.C);
   uIOhook.keyToggle(UiohookKey.Ctrl, "up");
   setTimeout(async () => {
-    const c = clipboard.readText();
-    const parsedItem = await parse(c);
-    if (parsedItem) {
-      mainWindow?.show();
-    }
+    const contents = clipboard.readText();
+    mainWindow?.webContents.send("item-check", contents);
   }, 500);
 };
 
 ipcMain.on("trade", async (event, args) => {
   require("electron").shell.openExternal(args.url);
+});
+
+ipcMain.on("item-check", async (event, args) => {
+  if (args) {
+    mainWindow?.webContents.send("item", pastClipboard);
+    mainWindow?.setAlwaysOnTop(true, "pop-up-menu");
+    mainWindow?.show();
+    mainWindow?.focus();
+    mainWindow?.setAlwaysOnTop(false);
+  } else {
+    console.log("Clipboard is not a POE item..");
+  }
 });
 
 app.on("ready", init);
