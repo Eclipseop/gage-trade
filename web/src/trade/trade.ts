@@ -64,6 +64,13 @@ type Filter = {
       };
     };
   };
+  misc_filters?: {
+    filters: {
+      area_level?: {
+        min?: number;
+      };
+    };
+  };
 };
 
 type PoeBaseSearchResult = {
@@ -248,6 +255,9 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
             quality: undefined,
           },
         },
+        misc_filters: {
+          filters: {},
+        },
       },
     },
     sort: {
@@ -290,6 +300,13 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
     // biome-ignore lint/style/noNonNullAssertion: <explanation>
     query.query.filters.type_filters!.filters.quality = {
       min: item.quality.value,
+    };
+  }
+
+  if (item.areaLevel?.included) {
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    query.query.filters.misc_filters!.filters.area_level = {
+      min: item.areaLevel.value,
     };
   }
 

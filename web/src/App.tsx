@@ -11,6 +11,7 @@ export type ItemData = {
   base?: string; // todo create enum ehhe
   type?: string;
   quality?: number;
+  areaLevel?: number;
   stats?: ItemStat[];
   implicit?: RollableSearchableAffix[];
   affixs?: RollableSearchableAffix[];
