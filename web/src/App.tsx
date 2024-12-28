@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Toaster, toast } from "sonner";
 import PoeItemSearch from "./components/poe-item-search";
 import { isPoeItem, parse } from "./trade/item-parser";
@@ -36,26 +36,28 @@ const toSearchableItemData = (item: ParsedItemData): SearchableItemData => {
 
 const App = () => {
   const [itemData, setItemData] = useState<SearchableItemData>();
-
   const [itemRes, setItemRes] = useState<TradeListing[]>([]);
+  const isSetup = useRef(false);
 
   useEffect(() => {
-    api.receive("item-check", async (data: string) => {
-      console.log("item-check triggered");
+    if (!isSetup.current) {
+      api.receive("item-check", async (data: string) => {
+        console.log("item-check triggered");
+        api.send("item-check", isPoeItem(data[0]));
+      });
 
-      api.send("item-check", isPoeItem(data[0]));
-    });
+      api.receive("item", async (data: string) => {
+        console.log("item received", data[0]);
+        setItemData(undefined);
+        setItemRes([]);
 
-    api.receive("item", async (data: string) => {
-      console.log("item received");
-      setItemData(undefined);
-      setItemRes([]);
+        const parsedData = await parse(data[0]);
+        const l = toSearchableItemData(parsedData);
+        setItemData(l);
+      });
 
-      const parsedData = await parse(data[0]);
-
-      const l = toSearchableItemData(parsedData);
-      setItemData(l);
-    });
+      isSetup.current = true;
+    }
   }, []);
 
   const submitSearch = async (e: React.MouseEvent<HTMLButtonElement>) => {

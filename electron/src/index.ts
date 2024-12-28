@@ -121,7 +121,17 @@ ipcMain.on("trade", async (event, args) => {
   require("electron").shell.openExternal(args.url);
 });
 
+let lastTriggerTime = 0;
+const THROTTLE_DELAY = 1000;
+
 ipcMain.on("item-check", async (event, args) => {
+  const currentTime = Date.now();
+
+  if (currentTime - lastTriggerTime < THROTTLE_DELAY) {
+    console.log("Throttled: Please wait before checking again");
+    return;
+  }
+  lastTriggerTime = currentTime;
   if (args) {
     mainWindow?.webContents.send("item", pastClipboard);
     mainWindow?.setAlwaysOnTop(true, "pop-up-menu");
