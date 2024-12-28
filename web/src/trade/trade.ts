@@ -224,6 +224,8 @@ const itemClassMap: { [key: string]: string } = {
   Beasts: "beast",
   Crossbows: "weapon.crossbow",
   Quarterstaves: "weapon.warstaff",
+  "Inscribed Ultimatum": "map.ultimatum",
+  "Trial Coins": "map.barya",
 };
 
 type PoeQuery = {
@@ -291,7 +293,7 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
     console.log(item.itemClass);
     const mappedItemClass = itemClassMap[item.itemClass.value];
     if (!mappedItemClass) {
-      throw new Error("Unknown item class? monka!");
+      throw new Error(`Unknown item class? monka! ${item.itemClass.value}`);
     }
     // biome-ignore lint/style/noNonNullAssertion: <explanation>
     query.query.filters.type_filters!.filters.category = {
