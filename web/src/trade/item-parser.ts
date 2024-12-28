@@ -177,10 +177,10 @@ const findAffixMatches = (
 };
 
 const sanitize = (itemString: string): string => {
-  // First handle paired matches with | separator
+  // First handle paired matches with | separator - now taking the last part
   let xd = itemString.replace(
-    /\[([^|\]]+)\|[^\]]+\]/g,
-    (_, firstMatch) => firstMatch,
+    /\[([^|\]]+)\|([^\]]+)\]/g,
+    (_, firstMatch, secondMatch) => secondMatch,
   );
 
   // Then handle single word brackets - just remove the brackets

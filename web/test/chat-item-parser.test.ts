@@ -62,7 +62,7 @@ Reality is a puzzle. Ingenuity is power.
   expect(parsedItem.affixs?.length).toBe(4);
 });
 
-test("es chest", async () => {
+test("es chest matching fire/lightning", async () => {
   const input = `Item Class: Body Armours
 Rarity: Rare
 Vengeance Carapace
@@ -100,6 +100,34 @@ Item Level: 81
   expect(parsedItem.stats).toContainEqual(es);
   expect(parsedItem.implicit?.length).toBe(0);
   expect(parsedItem.affixs?.length).toBe(6);
+
+  const a1 = {
+    affix: [
+      {
+        poe_id: "explicit.stat_3372524247",
+        rawText: "+31% to Fire Resistance",
+        regex: /^\+?\d+(?:\.\d+)?% to (Resistances|Fire Resistance)$/g,
+        type: "EXPLICIT",
+      },
+    ],
+    roll: 31,
+    included: false,
+  };
+  const a2 = {
+    affix: [
+      {
+        poe_id: "explicit.stat_1671376347",
+        rawText: "+38% to Lightning Resistance",
+        regex: /^\+?\d+(?:\.\d+)?% to (Resistances|Lightning Resistance)$/g,
+        type: "EXPLICIT",
+      },
+    ],
+    roll: 38,
+    included: false,
+  };
+
+  expect(parsedItem.affixs).toContainEqual(a1);
+  expect(parsedItem.affixs).toContainEqual(a2);
 });
 
 test("ar/ev chest", async () => {
