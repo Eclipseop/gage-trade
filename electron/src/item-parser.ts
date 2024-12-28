@@ -8,6 +8,8 @@ export type ParsedItemData = {
   itemClass: string;
   base?: string;
   quality?: number;
+  areaLevel?: number;
+  itemLevel?: number;
   stats?: ItemStat[];
   implicit?: {
     affix: MappedAffix[];
@@ -90,6 +92,24 @@ const getItemClass = (itemData: string): string | undefined => {
 const getQuality = (itemData: string): number | undefined => {
   for (const line of itemData.split("\n")) {
     if (line.startsWith("Quality: +")) {
+      return Number(line.match(/\d+/)?.[0]);
+    }
+  }
+  return undefined;
+};
+
+const getAreaLevel = (itemData: string): number | undefined => {
+  for (const line of itemData.split("\n")) {
+    if (line.startsWith("Area Level: ")) {
+      return Number(line.match(/\d+/)?.[0]);
+    }
+  }
+  return undefined;
+};
+
+const getItemLevel = (itemData: string): number | undefined => {
+  for (const line of itemData.split("\n")) {
+    if (line.startsWith("Item Level: ")) {
       return Number(line.match(/\d+/)?.[0]);
     }
   }
@@ -199,6 +219,12 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
   const quality = getQuality(itemString);
   if (quality) parseData.quality = quality;
 
+  const areaLevel = getAreaLevel(itemString);
+  if (areaLevel) parseData.areaLevel = areaLevel;
+
+  const itemLevel = getItemLevel(itemString);
+  if (itemLevel) parseData.itemLevel = itemLevel;
+
   parseData.stats = getItemStats(itemString);
 
   if (itemRarity === "Currency") {
@@ -207,6 +233,7 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
       name: lines[lines.length - 1],
       itemClass: itemClass,
       rarity: itemRarity,
+      areaLevel: areaLevel,
     };
   }
 

@@ -55,11 +55,21 @@ type Filter = {
       quality?: {
         min?: number;
       };
+      ilvl?: {
+        min?: number;
+      };
     };
   };
   equipment_filters?: {
     filters: {
       [key in (typeof StatTypes)[number]["term"]]?: {
+        min?: number;
+      };
+    };
+  };
+  misc_filters?: {
+    filters: {
+      area_level?: {
         min?: number;
       };
     };
@@ -214,6 +224,8 @@ const itemClassMap: { [key: string]: string } = {
   Beasts: "beast",
   Crossbows: "weapon.crossbow",
   Quarterstaves: "weapon.warstaff",
+  "Inscribed Ultimatum": "map.ultimatum",
+  "Trial Coins": "map.barya",
 };
 
 type PoeQuery = {
@@ -246,7 +258,11 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
           filters: {
             category: undefined,
             quality: undefined,
+            ilvl: undefined,
           },
+        },
+        misc_filters: {
+          filters: {},
         },
       },
     },
@@ -277,7 +293,7 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
     console.log(item.itemClass);
     const mappedItemClass = itemClassMap[item.itemClass.value];
     if (!mappedItemClass) {
-      throw new Error("Unknown item class? monka!");
+      throw new Error(`Unknown item class? monka! ${item.itemClass.value}`);
     }
     // biome-ignore lint/style/noNonNullAssertion: <explanation>
     query.query.filters.type_filters!.filters.category = {
@@ -293,6 +309,32 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
     };
   }
 
+  if (item.itemLevel?.included) {
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    query.query.filters.type_filters!.filters.ilvl = {
+      min: item.itemLevel.value,
+    };
+  }
+
+  if (item.areaLevel?.included) {
+    // ok for some reason ultimatiums / djinn barya items say area level, but you need to search using item level
+    // ggg fix ur game
+    if (
+      item.itemClass.value === "Inscribed Ultimatum" ||
+      item.itemClass.value === "Trial Coins"
+    ) {
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      query.query.filters.type_filters!.filters.ilvl = {
+        min: item.areaLevel?.value,
+      };
+    } else {
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      query.query.filters.misc_filters!.filters.area_level = {
+        min: item.areaLevel.value,
+      };
+    }
+  }
+
   for (const stat of item.stats?.value ?? []) {
     if (!stat.included) continue;
 
@@ -300,12 +342,17 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
     if (!mappedStatType) continue;
 
     // Ensure the filters structure exists
-    query.query.filters = {
-      equipment_filters: {
-        filters: {
-          [mappedStatType?.term]: { min: stat.value },
-        },
-      },
+    // query.query.filters = {
+    //   equipment_filters: {
+    //     filters: {
+    //       [mappedStatType?.term]: { min: stat.value },
+    //     },
+    //   },
+    // };
+
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    query.query.filters.equipment_filters!.filters[mappedStatType?.term] = {
+      min: stat.value,
     };
   }
 
