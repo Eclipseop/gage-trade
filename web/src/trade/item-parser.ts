@@ -227,7 +227,7 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
     for (const affix of affixInfo.filter((ai) => ai.type === "implicit")) {
       if (affix.mappedRegex.exec(x.replace("\r", "")) != null) {
         console.log(
-          `${x} matched using ${affix.mappedRegex}, poe_id: ${affix.id}`,
+          `${line} matched using ${affix.mappedRegex}, poe_id: ${affix.id}`,
         );
         matchedAffix.push({
           type: "IMPLICIT",
@@ -238,7 +238,7 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
       }
     }
     if (matchedAffix.length === 0) {
-      throw new Error(`COULD NOT MATCH ${x}`);
+      throw new Error(`COULD NOT MATCH ${line}`);
     }
     parseData.implicit?.push({
       roll: roll,
