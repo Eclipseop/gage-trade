@@ -325,7 +325,7 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
     ) {
       // biome-ignore lint/style/noNonNullAssertion: <explanation>
       query.query.filters.type_filters!.filters.ilvl = {
-        min: item.itemLevel?.value,
+        min: item.areaLevel?.value,
       };
     } else {
       // biome-ignore lint/style/noNonNullAssertion: <explanation>
