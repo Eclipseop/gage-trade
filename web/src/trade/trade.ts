@@ -55,6 +55,9 @@ type Filter = {
       quality?: {
         min?: number;
       };
+      ilvl?: {
+        min?: number;
+      };
     };
   };
   equipment_filters?: {
@@ -253,6 +256,7 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
           filters: {
             category: undefined,
             quality: undefined,
+            ilvl: undefined,
           },
         },
         misc_filters: {
@@ -303,7 +307,23 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
     };
   }
 
+  if (item.itemLevel?.included) {
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    query.query.filters.type_filters!.filters.ilvl = {
+      min: item.itemLevel.value,
+    };
+  }
+
   if (item.areaLevel?.included) {
+    // ok for some reason ultimatiums / djinn barya items say area level, but you need to search using item level
+    // ggg fix ur game
+    if (item.itemClass.value === "Inscribed Ultimatum") {
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      query.query.filters.type_filters!.filters.ilvl = {
+        min: item.itemLevel?.value,
+      };
+    }
+
     // biome-ignore lint/style/noNonNullAssertion: <explanation>
     query.query.filters.misc_filters!.filters.area_level = {
       min: item.areaLevel.value,
@@ -317,12 +337,17 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
     if (!mappedStatType) continue;
 
     // Ensure the filters structure exists
-    query.query.filters = {
-      equipment_filters: {
-        filters: {
-          [mappedStatType?.term]: { min: stat.value },
-        },
-      },
+    // query.query.filters = {
+    //   equipment_filters: {
+    //     filters: {
+    //       [mappedStatType?.term]: { min: stat.value },
+    //     },
+    //   },
+    // };
+
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    query.query.filters.equipment_filters!.filters[mappedStatType?.term] = {
+      min: stat.value,
     };
   }
 

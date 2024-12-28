@@ -184,6 +184,30 @@ const PoeItemSearch = ({
             </Badge>
           )}
 
+          {itemData.itemLevel && (
+            <Badge
+              variant={itemData.itemLevel.included ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() =>
+                handleIncludedChange("itemLevel", !itemData.itemLevel?.included)
+              }
+            >
+              iLvl: {itemData.itemLevel?.value}
+            </Badge>
+          )}
+
+          {itemData.areaLevel && (
+            <Badge
+              variant={itemData.areaLevel.included ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() =>
+                handleIncludedChange("areaLevel", !itemData.areaLevel?.included)
+              }
+            >
+              Lvl: {itemData.areaLevel?.value}
+            </Badge>
+          )}
+
           {itemData.stats?.value.map((stat, idx) => (
             <Badge
               key={stat.type}
