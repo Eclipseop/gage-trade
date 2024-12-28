@@ -219,12 +219,6 @@ const PoeItemSearch = ({
             </Badge>
           ))}
         </div>
-
-        {itemData.base && (
-          <p className="text-xs text-muted-foreground">
-            {itemData.base?.value}
-          </p>
-        )}
       </CardHeader>
       <CardContent className="space-y-2">
         {(itemData.implicit?.value.length ?? 0) > 0 && (
