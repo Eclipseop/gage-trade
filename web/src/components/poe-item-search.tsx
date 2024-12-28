@@ -141,9 +141,17 @@ const PoeItemSearch = ({
   return (
     <>
       <CardHeader>
-        <CardTitle className="text-xl font-bold">
-          {itemData.name?.value}
-        </CardTitle>
+        <div className="py-2">
+          <CardTitle className="text-xl font-bold text-center ">
+            {itemData.name?.value}
+          </CardTitle>
+          {itemData.base && (
+            <p className="text-xs text-muted-foreground text-center">
+              {itemData.base?.value}
+            </p>
+          )}
+        </div>
+
         <div className="flex space-x-2">
           <Badge
             variant={itemData.rarity.included ? "default" : "outline"}
@@ -187,11 +195,7 @@ const PoeItemSearch = ({
             </Badge>
           ))}
         </div>
-        {itemData.base && (
-          <p className="text-xs text-muted-foreground">
-            {itemData.base?.value}
-          </p>
-        )}
+
         {itemData.type && (
           <p className="text-xs text-muted-foreground">
             {itemData.type?.value}

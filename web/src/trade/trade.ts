@@ -238,7 +238,17 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
         option: "online",
       },
       stats: [],
-      filters: {} as Filter,
+      filters: {
+        equipment_filters: {
+          filters: {},
+        },
+        type_filters: {
+          filters: {
+            category: undefined,
+            quality: undefined,
+          },
+        },
+      },
     },
     sort: {
       price: "asc",
@@ -263,23 +273,23 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
   }
 
   // Check if itemClass is included
-  if (item.itemClass?.included && item.itemClass.value) {
+  if (item.itemClass?.included) {
+    console.log(item.itemClass);
     const mappedItemClass = itemClassMap[item.itemClass.value];
     if (!mappedItemClass) {
       throw new Error("Unknown item class? monka!");
     }
-    query.query.filters = {
-      type_filters: {
-        filters: { category: { option: mappedItemClass } },
-      },
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    query.query.filters.type_filters!.filters.category = {
+      option: mappedItemClass,
     };
+    console.log("new", query);
   }
 
   if (item.quality?.included) {
-    query.query.filters = {
-      type_filters: {
-        filters: { quality: { min: item.quality.value } },
-      },
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    query.query.filters.type_filters!.filters.quality = {
+      min: item.quality.value,
     };
   }
 
