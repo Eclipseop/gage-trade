@@ -59,7 +59,7 @@ const SearchResultItem: React.FC<{ result: TradeListing }> = ({ result }) => {
   return (
     <div
       className="flex justify-between items-center py-1"
-      title={sanitize(result.item.explicitMods.join("\n"))}
+      title={sanitize(result.item.explicitMods?.join("\n") ?? "")}
     >
       <span className="text-sm">{result.listing.account.name}</span>
       <Badge variant="secondary">{`${result.listing.price.amount} ${result.listing.price.currency}`}</Badge>

@@ -137,7 +137,7 @@ type PoeItem = {
     displayMode: number;
     type: number;
   }>;
-  explicitMods: Array<string>;
+  explicitMods?: Array<string>;
   frameType: number;
   extended: {
     es: number;
