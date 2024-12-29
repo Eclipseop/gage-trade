@@ -176,7 +176,7 @@ const findAffixMatches = (
   return matches;
 };
 
-const sanitize = (itemString: string): string => {
+export const sanitize = (itemString: string): string => {
   // First handle paired matches with | separator - now taking the last part
   let xd = itemString.replace(
     /\[([^|\]]+)\|([^\]]+)\]/g,
