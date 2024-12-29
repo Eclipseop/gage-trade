@@ -253,32 +253,31 @@ const PoeItemSearch = ({
           </ScrollArea>
         )}
 
-        <ScrollArea className="w-full rounded-md border p-2">
-          {(itemData.affixs?.value.length ?? 0) > 0 && ( // Changed to check value array
+        {(itemData.affixs?.value.length ?? 0) > 0 && (
+          <ScrollArea className="w-full rounded-md border p-2">
             <div className="text-sm font-semibold mb-1">Explicits</div>
-          )}
-
-          {itemData.affixs?.value.map((affixGroup, index) => (
-            <div key={`group-${affixGroup.affix[0].poe_id}`}>
-              {affixGroup.affix.map((affix) => (
-                <Affix
-                  key={affix.poe_id}
-                  affix={affix}
-                  roll={affixGroup.roll}
-                  checked={affixGroup.included} // Changed from checked to included
-                  onRollChange={(newRoll) =>
-                    handleRollChange("affixs", index, newRoll)
-                  }
-                  onCheckedChange={
-                    (
-                      included, // Changed parameter name to match
-                    ) => handleIncludedChange("affixs", included, index) // Updated function name
-                  }
-                />
-              ))}
-            </div>
-          ))}
-        </ScrollArea>
+            {itemData.affixs?.value.map((affixGroup, index) => (
+              <div key={`group-${affixGroup.affix[0].poe_id}`}>
+                {affixGroup.affix.map((affix) => (
+                  <Affix
+                    key={affix.poe_id}
+                    affix={affix}
+                    roll={affixGroup.roll}
+                    checked={affixGroup.included} // Changed from checked to included
+                    onRollChange={(newRoll) =>
+                      handleRollChange("affixs", index, newRoll)
+                    }
+                    onCheckedChange={
+                      (
+                        included, // Changed parameter name to match
+                      ) => handleIncludedChange("affixs", included, index) // Updated function name
+                    }
+                  />
+                ))}
+              </div>
+            ))}
+          </ScrollArea>
+        )}
       </CardContent>
       <CardFooter className="flex space-x-2">
         <Button onClick={search} className="w-full">
