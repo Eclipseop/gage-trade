@@ -41,7 +41,7 @@ const createMainWindow = (): BrowserWindow => {
       webSecurity: false,
       preload: path.join(__dirname, "preload.js"),
     },
-  }) as BrowserWindow;
+  });
 
   if (process.env.NODE_ENV === "development") {
     window.loadURL(CONFIG.DEV_SERVER_URL);
