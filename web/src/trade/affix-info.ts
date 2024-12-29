@@ -31,9 +31,11 @@ enum ID {
   Skill = "skill",
 }
 
+export type AffixEntry = Entry & { mappedRegex: RegExp };
+
 class AffixInfoFetcher {
   private static instance: AffixInfoFetcher;
-  private cachedData: (Entry & { mappedRegex: RegExp })[] | null = null;
+  private cachedData: AffixEntry[] | null = null;
   private readonly API_URL =
     "https://www.pathofexile.com/api/trade2/data/stats";
 
@@ -44,7 +46,7 @@ class AffixInfoFetcher {
     return AffixInfoFetcher.instance;
   }
 
-  public async fetchAffixInfo(): Promise<(Entry & { mappedRegex: RegExp })[]> {
+  public async fetchAffixInfo(): Promise<AffixEntry[]> {
     try {
       if (this.cachedData) {
         console.log("Returning affix-info from cache");

@@ -1,2 +1,4 @@
 pnpm lint
 pnpm web:test
+pnpm web:build
+pnpm electron:build

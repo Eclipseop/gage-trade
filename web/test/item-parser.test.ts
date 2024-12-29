@@ -592,5 +592,5 @@ test("sample item 12", async () => {
   expect(parsedSampleItem.areaLevel).toBe(75);
 
   const { affixs } = parsedSampleItem;
-  expect(affixs?.length).toBe(undefined);
+  expect(affixs?.length).toBe(0);
 });
