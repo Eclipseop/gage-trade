@@ -1,3 +1,4 @@
+import { sanitize } from "@/trade/item-parser";
 import type { TradeListing } from "@/trade/trade";
 import type { AffixInfo, SearchableItemData } from "@/types/parser";
 import { Globe, Search } from "lucide-react";
@@ -56,7 +57,10 @@ const Affix = ({
 
 const SearchResultItem: React.FC<{ result: TradeListing }> = ({ result }) => {
   return (
-    <div className="flex justify-between items-center py-1">
+    <div
+      className="flex justify-between items-center py-1"
+      title={sanitize(result.item.explicitMods.join("\n"))}
+    >
       <span className="text-sm">{result.listing.account.name}</span>
       <Badge variant="secondary">{`${result.listing.price.amount} ${result.listing.price.currency}`}</Badge>
     </div>
