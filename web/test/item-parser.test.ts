@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { parse } from "../src/trade/item-parser";
+import { parse } from "../src/parser/item-parser";
 import type { ItemStat } from "../src/types/parser";
 
 const sample_item = `Item Class: Body Armours

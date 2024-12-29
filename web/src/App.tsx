@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Toaster, toast } from "sonner";
 import PoeItemSearch from "./components/poe-item-search";
-import { isPoeItem, parse } from "./trade/item-parser";
+import { isPoeItem, parse } from "./parser/item-parser";
 import { type TradeListing, lookup, openTradeQuery } from "./trade/trade";
 import type { ParsedItemData, SearchableItemData } from "./types/parser";
 import { api } from "./util/electron";

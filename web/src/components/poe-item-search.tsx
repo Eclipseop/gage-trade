@@ -1,4 +1,4 @@
-import { sanitize } from "@/trade/item-parser";
+import { sanitize } from "@/parser/item-parser";
 import type { TradeListing } from "@/trade/trade";
 import type { AffixInfo, SearchableItemData } from "@/types/parser";
 import { Globe, Search } from "lucide-react";
