@@ -2,6 +2,7 @@ import { sanitize } from "@/trade/item-parser";
 import type { TradeListing } from "@/trade/trade";
 import type { AffixInfo, SearchableItemData } from "@/types/parser";
 import { Globe, Search } from "lucide-react";
+import ToggleBadge from "./toggle-badge";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
@@ -159,70 +160,63 @@ const PoeItemSearch = ({
         </div>
 
         <div className="flex space-x-2">
-          <Badge
-            variant={itemData.rarity?.included ? "default" : "outline"}
-            className="cursor-pointer"
+          <ToggleBadge
+            isIncluded={itemData.rarity?.included ?? false}
             onClick={() =>
               handleIncludedChange("rarity", !itemData.rarity?.included)
             }
-          >
-            {itemData.rarity?.value}
-          </Badge>
-          <Badge
-            variant={itemData.itemClass.included ? "default" : "outline"}
-            className="cursor-pointer"
+            value={itemData.rarity?.value ?? ""}
+          />
+
+          <ToggleBadge
+            isIncluded={itemData.itemClass.included}
             onClick={() =>
               handleIncludedChange("itemClass", !itemData.itemClass.included)
             }
-          >
-            {itemData.itemClass?.value}
-          </Badge>
+            value={itemData.itemClass.value}
+          />
 
           {itemData.quality && (
-            <Badge
-              variant={itemData.quality.included ? "default" : "outline"}
-              className="cursor-pointer"
+            <ToggleBadge
+              isIncluded={itemData.quality.included}
               onClick={() =>
                 handleIncludedChange("quality", !itemData.quality?.included)
               }
-            >
-              Q: {itemData.quality?.value}
-            </Badge>
+              prefix="Q"
+              value={itemData.quality.value}
+            />
           )}
 
           {itemData.itemLevel && (
-            <Badge
-              variant={itemData.itemLevel.included ? "default" : "outline"}
-              className="cursor-pointer"
+            <ToggleBadge
+              isIncluded={itemData.itemLevel.included}
               onClick={() =>
                 handleIncludedChange("itemLevel", !itemData.itemLevel?.included)
               }
-            >
-              iLvl: {itemData.itemLevel?.value}
-            </Badge>
+              prefix="iLvl"
+              value={itemData.itemLevel.value}
+            />
           )}
 
           {itemData.areaLevel && (
-            <Badge
-              variant={itemData.areaLevel.included ? "default" : "outline"}
-              className="cursor-pointer"
+            <ToggleBadge
+              isIncluded={itemData.areaLevel.included}
               onClick={() =>
                 handleIncludedChange("areaLevel", !itemData.areaLevel?.included)
               }
-            >
-              Lvl: {itemData.areaLevel?.value}
-            </Badge>
+              prefix="Lvl"
+              value={itemData.areaLevel.value}
+            />
           )}
 
           {itemData.stats?.value.map((stat, idx) => (
-            <Badge
+            <ToggleBadge
               key={stat.type}
-              variant={stat.included ? "default" : "outline"}
-              className="cursor-pointer"
+              isIncluded={stat.included ?? false}
               onClick={() => handleIncludedChange("stats", !stat.included, idx)}
-            >
-              {stat.type}: {stat.value}
-            </Badge>
+              prefix={stat.type}
+              value={stat.value}
+            />
           ))}
         </div>
       </CardHeader>
