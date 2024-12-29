@@ -1,7 +1,7 @@
 name: Build and Release Electron App
 
 on:
-  workflow_dispatch:
+  push:
 
 jobs:
   build-and-release:
