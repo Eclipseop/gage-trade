@@ -642,3 +642,22 @@ Note: ~price 10 exalted`;
 
   expect(parsedSampleItem.enchant).toContainEqual(a1);
 });
+
+test("waystone", async () => {
+  const itemString = `Item Class: Waystones
+Rarity: Normal
+Waystone (Tier 9)
+--------
+Waystone Tier: 9
+--------
+Item Level: 80
+--------
+Can be used in a Map Device, allowing you to enter a Map. Waystones can only be used once.
+`;
+  const parsedSampleItem = await parse(itemString);
+
+  expect(parsedSampleItem.itemClass).toBe("Waystones");
+  expect(parsedSampleItem.rarity).toBe("Normal");
+  expect(parsedSampleItem.name).toBe("Waystone (Tier 9)");
+  expect(parsedSampleItem.waystoneTier).toBe(9);
+});

@@ -209,6 +209,20 @@ const PoeItemSearch = ({
             />
           )}
 
+          {itemData.waystoneTier && (
+            <ToggleBadge
+              isIncluded={itemData.waystoneTier.included}
+              onClick={() =>
+                handleIncludedChange(
+                  "waystoneTier",
+                  !itemData.waystoneTier?.included,
+                )
+              }
+              prefix="Tier"
+              value={itemData.waystoneTier.value}
+            />
+          )}
+
           {itemData.stats?.value.map((stat, idx) => (
             <ToggleBadge
               key={stat.type}

@@ -20,6 +20,9 @@ class BasicInfoVisitor implements ItemVisitor {
     } else if (line.startsWith("Item Level: ")) {
       const matches = line.match(/\d+/);
       if (matches) this.data.itemLevel = Number(matches[0]);
+    } else if (line.startsWith("Waystone Tier: ")) {
+      const matches = line.match(/\d+/);
+      if (matches) this.data.waystoneTier = Number(matches[0]);
     }
   }
 

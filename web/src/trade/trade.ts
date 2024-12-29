@@ -67,6 +67,13 @@ type Filter = {
       };
     };
   };
+  map_filters?: {
+    filters: {
+      map_tier?: {
+        min: number;
+      };
+    };
+  };
   misc_filters?: {
     filters: {
       area_level?: {
@@ -226,6 +233,7 @@ const itemClassMap: { [key: string]: string } = {
   Quarterstaves: "weapon.warstaff",
   "Inscribed Ultimatum": "map.ultimatum",
   "Trial Coins": "map.barya",
+  Waystones: "map.waystone",
 };
 
 type PoeQuery = {
@@ -262,6 +270,9 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
           },
         },
         misc_filters: {
+          filters: {},
+        },
+        map_filters: {
           filters: {},
         },
       },
@@ -308,6 +319,12 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
   if (item.itemLevel?.included) {
     query.query.filters.type_filters!.filters.ilvl = {
       min: item.itemLevel.value,
+    };
+  }
+
+  if (item.waystoneTier?.included) {
+    query.query.filters.map_filters!.filters.map_tier = {
+      min: item.waystoneTier.value,
     };
   }
 

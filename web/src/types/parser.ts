@@ -24,6 +24,7 @@ export type ParsedItemData = {
   quality?: number;
   areaLevel?: number;
   itemLevel?: number;
+  waystoneTier?: number;
   stats?: ItemStat[];
   implicit?: RollableSearchableAffix[];
   affixs?: RollableSearchableAffix[];
