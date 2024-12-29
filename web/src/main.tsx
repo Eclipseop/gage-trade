@@ -4,7 +4,6 @@ import "./index.css";
 import App from "./App.tsx";
 import { ThemeProvider } from "./components/ui/theme-provider.tsx";
 
-// biome-ignore lint/style/noNonNullAssertion: <explanation>
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <>

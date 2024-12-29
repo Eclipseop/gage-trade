@@ -294,21 +294,18 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
     if (!mappedItemClass) {
       throw new Error(`Unknown item class? monka! ${item.itemClass.value}`);
     }
-    // biome-ignore lint/style/noNonNullAssertion: <explanation>
     query.query.filters.type_filters!.filters.category = {
       option: mappedItemClass,
     };
   }
 
   if (item.quality?.included) {
-    // biome-ignore lint/style/noNonNullAssertion: <explanation>
     query.query.filters.type_filters!.filters.quality = {
       min: item.quality.value,
     };
   }
 
   if (item.itemLevel?.included) {
-    // biome-ignore lint/style/noNonNullAssertion: <explanation>
     query.query.filters.type_filters!.filters.ilvl = {
       min: item.itemLevel.value,
     };
@@ -321,12 +318,10 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
       item.itemClass.value === "Inscribed Ultimatum" ||
       item.itemClass.value === "Trial Coins"
     ) {
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
       query.query.filters.type_filters!.filters.ilvl = {
         min: item.areaLevel?.value,
       };
     } else {
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
       query.query.filters.misc_filters!.filters.area_level = {
         min: item.areaLevel.value,
       };
@@ -339,7 +334,6 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
     const mappedStatType = StatTypes.find((st) => st.key === stat.type);
     if (!mappedStatType) continue;
 
-    // biome-ignore lint/style/noNonNullAssertion: <explanation>
     query.query.filters.equipment_filters!.filters[mappedStatType?.term] = {
       min: stat.value,
     };
