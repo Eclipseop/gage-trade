@@ -7,7 +7,7 @@ export type ItemStat = {
 export type AffixInfo = {
   poe_id: string;
   regex: RegExp;
-  type: "EXPLICIT" | "IMPLICIT";
+  type: "EXPLICIT" | "IMPLICIT" | "ENCHANT";
   rawText?: string;
 };
 
@@ -27,6 +27,7 @@ export type ParsedItemData = {
   stats?: ItemStat[];
   implicit?: RollableSearchableAffix[];
   affixs?: RollableSearchableAffix[];
+  enchants?: RollableSearchableAffix[];
 };
 
 type SearchableValue<T> = {

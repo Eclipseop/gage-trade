@@ -594,3 +594,51 @@ test("sample item 12", async () => {
   const { affixs } = parsedSampleItem;
   expect(affixs?.length).toBe(0);
 });
+
+test("corrupt", async () => {
+  const itemString = `Item Class: Bows
+Rarity: Unique
+Widowhail
+Crude Bow
+--------
+Physical Damage: 6-9
+Critical Hit Chance: 5.00%
+Attacks per Second: 1.20
+--------
+Sockets: S S 
+--------
+Item Level: 80
+--------
++13% to Critical Damage Bonus (enchant)
+--------
+238% increased bonuses gained from Equipped Quiver
+--------
+"I loosed a volley of arrows into the heart of the man
+who slew my beloved. There was no satisfaction, no
+healing, no revenge. There was only... emptiness."
+--------
+Corrupted
+--------
+Note: ~price 10 exalted`;
+  const parsedSampleItem = await parse(itemString);
+
+  const a1 = {
+    roll: 13,
+    included: false,
+    affix: [
+      {
+        poe_id: "enchant.stat_2694482655",
+        rawText: "+13% to Critical Damage Bonus",
+        regex:
+          /^\+?\d+(?:\.\d+)?% to (CriticalDamageBonus|Critical Damage Bonus)$/g,
+        type: "ENCHANT",
+      },
+    ],
+  };
+
+  expect(parsedSampleItem.itemClass).toBe("Bows");
+  expect(parsedSampleItem.rarity).toBe("Unique");
+  expect(parsedSampleItem.name).toBe("Widowhail");
+
+  expect(parsedSampleItem.enchants).toContainEqual(a1);
+});
