@@ -84,11 +84,11 @@ const PoeItemSearch = ({
   searchUI: (e: React.MouseEvent<HTMLButtonElement>) => Promise<void>;
 }) => {
   const handleRollChange = (
-    affixType: "affixs" | "implicit",
+    affixType: "affixs" | "implicit" | "enchant",
     affixIndex: number,
     newRoll: number,
   ) => {
-    const updateAffix = (key: "affixs" | "implicit") => {
+    const updateAffix = (key: "affixs" | "implicit" | "enchant") => {
       if (!itemData[key]) return;
 
       const updatedAffixes = [...itemData[key].value];
@@ -221,6 +221,32 @@ const PoeItemSearch = ({
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
+        {(itemData.enchant?.value.length ?? 0) > 0 && (
+          <ScrollArea className="w-full rounded-md border p-2">
+            <div className="text-sm font-semibold mb-1">Enchants</div>
+            {itemData.enchant?.value.map((affixGroup, index) => (
+              <div key={`group-${affixGroup.affix[0].poe_id}`}>
+                {affixGroup.affix.map((affix) => (
+                  <Affix
+                    key={affix.poe_id}
+                    affix={affix}
+                    roll={affixGroup.roll}
+                    checked={affixGroup.included} // Changed from checked to included
+                    onRollChange={(newRoll) =>
+                      handleRollChange("enchant", index, newRoll)
+                    }
+                    onCheckedChange={
+                      (
+                        included, // Changed parameter name to match
+                      ) => handleIncludedChange("enchant", included, index) // Updated function name
+                    }
+                  />
+                ))}
+              </div>
+            ))}
+          </ScrollArea>
+        )}
+
         {(itemData.implicit?.value.length ?? 0) > 0 && (
           <ScrollArea className="w-full rounded-md border p-2">
             <div className="text-sm font-semibold mb-1">Implicits</div>

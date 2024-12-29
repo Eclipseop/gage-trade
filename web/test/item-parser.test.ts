@@ -640,5 +640,5 @@ Note: ~price 10 exalted`;
   expect(parsedSampleItem.rarity).toBe("Unique");
   expect(parsedSampleItem.name).toBe("Widowhail");
 
-  expect(parsedSampleItem.enchants).toContainEqual(a1);
+  expect(parsedSampleItem.enchant).toContainEqual(a1);
 });

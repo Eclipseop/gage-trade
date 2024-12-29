@@ -368,6 +368,10 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
     processAffixes(item.implicit.value);
   }
 
+  if (item.enchant?.value) {
+    processAffixes(item.enchant.value);
+  }
+
   return query;
 };
 

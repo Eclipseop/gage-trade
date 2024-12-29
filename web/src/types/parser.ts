@@ -27,7 +27,7 @@ export type ParsedItemData = {
   stats?: ItemStat[];
   implicit?: RollableSearchableAffix[];
   affixs?: RollableSearchableAffix[];
-  enchants?: RollableSearchableAffix[];
+  enchant?: RollableSearchableAffix[];
 };
 
 type SearchableValue<T> = {

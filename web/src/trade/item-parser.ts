@@ -319,7 +319,7 @@ class EnchantVisitor implements ItemVisitor {
   }
 
   getResult(): Partial<ParsedItemData> {
-    return { enchants: this.enchants };
+    return { enchant: this.enchants };
   }
 }
 
