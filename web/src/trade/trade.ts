@@ -234,6 +234,7 @@ const itemClassMap: { [key: string]: string } = {
   "Inscribed Ultimatum": "map.ultimatum",
   "Trial Coins": "map.barya",
   Waystones: "map.waystone",
+  Tablet: "map.tablet",
 };
 
 type PoeQuery = {
