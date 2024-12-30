@@ -159,7 +159,7 @@ const PoeItemSearch = ({
           )}
         </div>
 
-        <div className="flex space-x-2">
+        <div className="flex gap-2 flex-wrap">
           <ToggleBadge
             isIncluded={itemData.rarity?.included ?? false}
             onClick={() =>
@@ -220,6 +220,20 @@ const PoeItemSearch = ({
               }
               prefix="Tier"
               value={itemData.waystoneTier.value}
+            />
+          )}
+
+          {itemData.numRuneSockets && (
+            <ToggleBadge
+              isIncluded={itemData.numRuneSockets.included}
+              onClick={() =>
+                handleIncludedChange(
+                  "numRuneSockets",
+                  !itemData.numRuneSockets?.included,
+                )
+              }
+              prefix="Runes"
+              value={itemData.numRuneSockets.value}
             />
           )}
 

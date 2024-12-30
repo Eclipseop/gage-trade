@@ -3,15 +3,15 @@ import type {
   SearchableArray,
   SearchableItemData,
 } from "@/types/parser";
+import { getApi } from "@/util/electron";
 import axios, { AxiosError } from "axios";
-import { api } from "../util/electron";
 
 const NORMAL_TRADE_URL =
   "https://www.pathofexile.com/trade2/search/poe2/Standard";
 const TRADE_API = "https://www.pathofexile.com/api/trade2/search/poe2/Standard";
 const FETCH_TRADE_API = "https://www.pathofexile.com/api/trade2/fetch";
 
-type StatFiler = {
+export type StatFiler = {
   type: "and" | "count";
   filters: {
     id: string;
@@ -46,7 +46,7 @@ const StatTypes = [
   },
 ] as const;
 
-type Filter = {
+export type Filter = {
   type_filters?: {
     filters: {
       category?: {
@@ -62,7 +62,7 @@ type Filter = {
   };
   equipment_filters?: {
     filters: {
-      [key in (typeof StatTypes)[number]["term"]]?: {
+      [key in (typeof StatTypes)[number]["term"] | "rune_sockets"]?: {
         min?: number;
       };
     };
@@ -83,7 +83,7 @@ type Filter = {
   };
 };
 
-type PoeBaseSearchResult = {
+export type PoeBaseSearchResult = {
   id: string;
   complexity: number;
   result: string[];
@@ -91,7 +91,7 @@ type PoeBaseSearchResult = {
   inexact: boolean;
 };
 
-type PoeItemListing = {
+export type PoeItemListing = {
   method: string;
   indexed: string;
   stash: {
@@ -117,7 +117,7 @@ type PoeItemListing = {
 };
 
 // probably come up w/ a better name
-type PoeItem = {
+export type PoeItem = {
   realm: string;
   verified: boolean;
   w: number;
@@ -237,7 +237,7 @@ const itemClassMap: { [key: string]: string } = {
   Tablet: "map.tablet",
 };
 
-type PoeQuery = {
+export type PoeQuery = {
   query: {
     name?: string;
     status: {
@@ -252,7 +252,7 @@ type PoeQuery = {
   };
 };
 
-const buildQuery = (item: SearchableItemData): PoeQuery => {
+export const buildQuery = (item: SearchableItemData): PoeQuery => {
   const query: PoeQuery = {
     query: {
       status: {
@@ -329,6 +329,12 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
     };
   }
 
+  if (item.numRuneSockets?.included) {
+    query.query.filters.equipment_filters!.filters.rune_sockets = {
+      min: item.numRuneSockets.value,
+    };
+  }
+
   if (item.areaLevel?.included) {
     // ok for some reason ultimatiums / djinn barya items say area level, but you need to search using item level
     // ggg fix ur game
@@ -399,7 +405,7 @@ export const openTradeQuery = async (item: SearchableItemData) => {
   console.log(JSON.stringify(query));
   const { data } = await axios.post<PoeBaseSearchResult>(TRADE_API, query);
   const url = `${NORMAL_TRADE_URL}/${data.id}`;
-  api.send("trade", { url });
+  getApi().send("trade", { url });
 };
 
 export type TradeListing = PoeItemLookupResult["result"][number];

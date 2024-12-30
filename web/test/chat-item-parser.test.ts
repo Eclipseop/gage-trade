@@ -15,7 +15,7 @@ Can be used in a completed Tower on your Atlas to influence surrounding Maps. Ta
   const parsedItem = await parse(input);
 
   expect(parsedItem.name).toBe("Delirium Precursor Tablet");
-  expect(parsedItem.implicit.length).toBe(1);
+  expect(parsedItem.implicit?.length).toBe(1);
 });
 
 test("unique gloves", async () => {

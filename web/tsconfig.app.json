@@ -23,8 +23,8 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*", "./test/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "test"]
 }

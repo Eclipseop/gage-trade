@@ -661,3 +661,36 @@ Can be used in a Map Device, allowing you to enter a Map. Waystones can only be 
   expect(parsedSampleItem.name).toBe("Waystone (Tier 9)");
   expect(parsedSampleItem.waystoneTier).toBe(9);
 });
+
+test("rune sockets", async () => {
+  const itemString = `Item Class: Body Armours
+Rarity: Rare
+Vengeance Carapace
+Expert Hexer's Robe
+--------
+Quality: +14% (augmented)
+Energy Shield: 523 (augmented)
+--------
+Requirements:
+Level: 65
+Int: 157
+--------
+Sockets: S S 
+--------
+Item Level: 81
+--------
++14% to Chaos Resistance (rune)
+--------
++81 to maximum Energy Shield
+73% increased Energy Shield
++195 to maximum Life
++27 to Intelligence
++31% to Fire Resistance
++38% to Lightning Resistance`;
+  const parsedSampleItem = await parse(itemString);
+
+  expect(parsedSampleItem.itemClass).toBe("Body Armours");
+  expect(parsedSampleItem.rarity).toBe("Rare");
+  expect(parsedSampleItem.name).toBe("Vengeance Carapace");
+  expect(parsedSampleItem.numRuneSockets).toBe(2);
+});
