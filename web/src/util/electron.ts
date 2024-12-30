@@ -9,5 +9,13 @@ declare global {
   }
 }
 
-const w = window;
-export const api = w.api;
+export const getApi = (): IpcComms => {
+  if (typeof window !== "undefined" && window.api) {
+    return window.api;
+  }
+
+  return {
+    send: () => {},
+    receive: () => {},
+  };
+};

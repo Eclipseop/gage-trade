@@ -4,7 +4,7 @@ import PoeItemSearch from "./components/poe-item-search";
 import { isPoeItem, parse } from "./parser/item-parser";
 import { type TradeListing, lookup, openTradeQuery } from "./trade/trade";
 import type { ParsedItemData, SearchableItemData } from "./types/parser";
-import { api } from "./util/electron";
+import { getApi } from "./util/electron";
 
 const toSearchableItemData = (item: ParsedItemData): SearchableItemData => {
   const result = {} as SearchableItemData;
@@ -41,6 +41,8 @@ const App = () => {
 
   useEffect(() => {
     if (!isSetup.current) {
+      const api = getApi();
+
       api.receive("item-check", async (data: string) => {
         console.log("item-check triggered");
         api.send("item-check", isPoeItem(data[0]));
