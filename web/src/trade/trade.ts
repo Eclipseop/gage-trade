@@ -62,7 +62,7 @@ type Filter = {
   };
   equipment_filters?: {
     filters: {
-      [key in (typeof StatTypes)[number]["term"]]?: {
+      [key in (typeof StatTypes)[number]["term"] | "rune_sockets"]?: {
         min?: number;
       };
     };
@@ -326,6 +326,12 @@ const buildQuery = (item: SearchableItemData): PoeQuery => {
   if (item.waystoneTier?.included) {
     query.query.filters.map_filters!.filters.map_tier = {
       min: item.waystoneTier.value,
+    };
+  }
+
+  if (item.numRuneSockets?.included) {
+    query.query.filters.equipment_filters!.filters.rune_sockets = {
+      min: item.numRuneSockets.value,
     };
   }
 
