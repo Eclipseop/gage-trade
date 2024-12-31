@@ -154,7 +154,7 @@ const PoeItemSearch = ({
   } as const;
 
   const exclusionRules = {
-    "total-edps": ["cold-", "fire-", "lightning-"],
+    "total-edps": ["cold-", "fire-", "lightning-", "elemental-"],
     "physical-damage-dps": ["physical-damage"],
   };
 
