@@ -1,6 +1,6 @@
 import { sanitize } from "@/parser/item-parser";
 import type { TradeListing } from "@/trade/trade";
-import type { AffixInfo, SearchableItemData } from "@/types/parser";
+import type { AffixInfo, ItemStat, SearchableItemData } from "@/types/parser";
 import { Globe, Search } from "lucide-react";
 import ToggleBadge from "./toggle-badge";
 import { Badge } from "./ui/badge";
@@ -145,7 +145,36 @@ const PoeItemSearch = ({
     }
   };
 
-  console.log(itemData);
+  const exclusionRules = {
+    "total-edps": ["cold-", "fire-", "lightning-"],
+    "physical-damage-dps": ["physical-damage"],
+    // Add more rules as needed, for example:
+    // 'total-resist': ['fire-resist', 'cold-resist', 'lightning-resist'],
+  };
+
+  const shouldShowStat = (currentStat: ItemStat, allStats: ItemStat[]) => {
+    // Check if any stat that would exclude this one is present
+    for (const [exclusionTrigger, excludedPrefixes] of Object.entries(
+      exclusionRules,
+    )) {
+      const triggerExists = allStats.some(
+        (stat) => stat.type === exclusionTrigger,
+      );
+
+      if (triggerExists) {
+        if (currentStat.type === exclusionTrigger) {
+          return true;
+        }
+
+        // Check if current stat starts with any excluded prefix
+        const isExcluded = excludedPrefixes.some((prefix) =>
+          currentStat.type.startsWith(prefix),
+        );
+        if (isExcluded) return false;
+      }
+    }
+    return true;
+  };
 
   return (
     <>
@@ -239,15 +268,24 @@ const PoeItemSearch = ({
             />
           )}
 
-          {itemData.stats?.value.map((stat, idx) => (
-            <ToggleBadge
-              key={stat.type}
-              isIncluded={stat.included ?? false}
-              onClick={() => handleIncludedChange("stats", !stat.included, idx)}
-              prefix={stat.type}
-              value={stat.value}
-            />
-          ))}
+          {itemData.stats?.value.map((stat, idx) => {
+            if (!shouldShowStat(stat, itemData.stats?.value ?? [])) {
+              console.log("FILTERING OUT!", stat);
+              return null;
+            }
+
+            return (
+              <ToggleBadge
+                key={stat.type}
+                isIncluded={stat.included ?? false}
+                onClick={() =>
+                  handleIncludedChange("stats", !stat.included, idx)
+                }
+                prefix={stat.type}
+                value={stat.value}
+              />
+            );
+          })}
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
