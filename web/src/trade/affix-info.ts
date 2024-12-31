@@ -76,7 +76,7 @@ class AffixInfoFetcher {
             .replace("increased", "(increased|reduced)")
             .replaceAll("#", "\\+?\\d+(?:\\.\\d+)?");
 
-          const mappedRegex = new RegExp(`^${transformedText}$`, "g");
+          const mappedRegex = new RegExp(`^${transformedText}(s?)$`, "g");
 
           return {
             ...entry,

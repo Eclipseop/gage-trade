@@ -74,6 +74,7 @@ class ExplicitVisitor implements ItemVisitor {
     let attempts = 0;
     while (remainingText.length > 0 && attempts < 20) {
       attempts++;
+      console.log("lol", remainingText);
       for (const affix of this.affixInfo) {
         const regex = new RegExp(affix.mappedRegex.source, "gm");
         const match = regex.exec(remainingText);
