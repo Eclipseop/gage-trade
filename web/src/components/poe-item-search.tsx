@@ -151,6 +151,7 @@ const PoeItemSearch = ({
     "total-edps": "eDPS",
     "attacks-per-second": "APS",
     "crit-chance": "Crit %",
+    "reload-time": "Reload",
   } as const;
 
   const exclusionRules = {
