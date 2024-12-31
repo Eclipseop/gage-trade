@@ -1,6 +1,6 @@
+import { parse } from "@/parser/item-parser";
+import type { ItemStat, ParsedItemData } from "@/types/parser";
 import { expect, test } from "vitest";
-import { parse } from "../src/parser/item-parser";
-import type { ItemStat, ParsedItemData } from "../src/types/parser";
 
 test("precursor", async () => {
   const input = `Item Class: Tablet

@@ -1,10 +1,6 @@
+import { buildQuery } from "@/trade/trade";
+import type { AffixInfo, ItemStat, SearchableItemData } from "@/types/parser";
 import { describe, expect, test } from "vitest";
-import { buildQuery } from "../src/trade/trade";
-import type {
-  AffixInfo,
-  ItemStat,
-  SearchableItemData,
-} from "../src/types/parser";
 
 describe("buildQuery", () => {
   test("handles currency items correctly", () => {
