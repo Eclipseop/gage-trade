@@ -694,3 +694,111 @@ Item Level: 81
   expect(parsedSampleItem.name).toBe("Vengeance Carapace");
   expect(parsedSampleItem.numRuneSockets).toBe(2);
 });
+
+test("combined edps item", async () => {
+  const itemString = `Item Class: Crossbows
+Rarity: Rare
+Beast Core
+Advanced Dyad Crossbow
+--------
+Physical Damage: 30-87 (augmented)
+Elemental Damage: 13-18 (augmented), 3-54 (augmented)
+Critical Hit Chance: 5.00%
+Attacks per Second: 1.60
+Reload Time: 1.10
+--------
+Requirements:
+Level: 55
+Str: 69 (unmet)
+Dex: 69 (unmet)
+--------
+Sockets: S S 
+--------
+Item Level: 80
+--------
+Loads an additional bolt (implicit)
+--------
+Adds 13 to 21 Physical Damage
+Adds 13 to 18 Cold Damage
+Adds 3 to 54 Lightning Damage
+Gain 46 Life per Enemy Killed
+Leeches 6.17% of Physical Damage as Mana`;
+
+  const parsedSampleItem = await parse(itemString);
+
+  expect(parsedSampleItem.itemClass).toBe("Crossbows");
+  expect(parsedSampleItem.rarity).toBe("Rare");
+  expect(parsedSampleItem.name).toBe("Beast Core");
+
+  expect(
+    parsedSampleItem.stats?.find((f) => f.type === "physical-damage")?.value,
+  ).toBe(58.5);
+  expect(
+    parsedSampleItem.stats?.find((f) => f.type === "elemental-damage")?.value,
+  ).toBe(44);
+  expect(
+    parsedSampleItem.stats?.find((f) => f.type === "physical-damage-dps")
+      ?.value,
+  ).toBe(93.6);
+  expect(
+    parsedSampleItem.stats?.find((f) => f.type === "elemental-damage-dps")
+      ?.value,
+  ).toBe(70.4);
+  expect(
+    parsedSampleItem.stats?.find((f) => f.type === "total-edps")?.value,
+  ).toBe(70.4);
+  expect(
+    parsedSampleItem.stats?.find((f) => f.type === "total-dps")?.value,
+  ).toBe(164);
+});
+
+test("seperated edps item", async () => {
+  const itemString = `Item Class: Two Hand Maces
+Rarity: Rare
+Spirit Blast
+Advanced Oak Greathammer
+--------
+Physical Damage: 106-196 (augmented)
+Cold Damage: 23-27 (augmented)
+Critical Hit Chance: 5.00%
+Attacks per Second: 1.05
+--------
+Requirements:
+Level: 48
+Str: 104 (unmet)
+--------
+Item Level: 80
+--------
+Causes 32% increased Stun Buildup (implicit)
+--------
+80% increased Physical Damage
+Adds 23 to 27 Cold Damage
+102% increased Elemental Damage with Attacks
+Causes 51% increased Stun Buildup`;
+
+  const parsedSampleItem = await parse(itemString);
+
+  expect(parsedSampleItem.itemClass).toBe("Two Hand Maces");
+  expect(parsedSampleItem.rarity).toBe("Rare");
+  expect(parsedSampleItem.name).toBe("Spirit Blast");
+
+  expect(
+    parsedSampleItem.stats?.find((f) => f.type === "physical-damage")?.value,
+  ).toBe(151);
+  expect(
+    parsedSampleItem.stats?.find((f) => f.type === "elemental-damage")?.value,
+  ).toBe(undefined);
+  expect(
+    parsedSampleItem.stats?.find((f) => f.type === "cold-damage")?.value,
+  ).toBe(25);
+  expect(
+    parsedSampleItem.stats?.find((f) => f.type === "physical-damage-dps")
+      ?.value,
+  ).toBe(158.6);
+  expect(
+    parsedSampleItem.stats?.find((f) => f.type === "total-edps")?.value,
+  ).toBe(26.3);
+  expect(
+    parsedSampleItem.stats?.find((f) => f.type === "total-dps")?.value,
+  ).toBe(184.9);
+});

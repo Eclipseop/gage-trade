@@ -68,6 +68,16 @@ export const isPoeItem = (itemData: string): boolean => {
   return itemData.split("--------").length >= 3;
 };
 
+const isStatElemental = (itemStat: ItemStat): boolean => {
+  const { type } = itemStat;
+  return (
+    type.startsWith("cold") ||
+    type.startsWith("fire") ||
+    type.startsWith("lightning") ||
+    type.startsWith("elemental")
+  );
+};
+
 const calcDamageStats = (itemData: ParsedItemData): ItemStat[] => {
   const attackSpeed = itemData.stats?.find(
     (p) => p.type === "attacks-per-second",
@@ -85,28 +95,24 @@ const calcDamageStats = (itemData: ParsedItemData): ItemStat[] => {
     physicalStats.forEach((stat) => {
       stats.push({
         type: `${stat.type}-dps`,
-        value: stat.value * aps,
-        included: false,
+        value: Number((stat.value * aps).toFixed(1)),
       });
     });
   }
-  const elementalStats = itemData.stats?.filter(
-    (p) => p.type.includes("-damage") && p.type !== "physical-damage",
-  );
+  const elementalStats = itemData.stats?.filter((p) => isStatElemental(p));
   if (elementalStats) {
     // biome-ignore lint/complexity/noForEach: <explanation>
     elementalStats.forEach((stat) => {
       stats.push({
         type: `${stat.type}-dps`,
-        value: stat.value * aps,
-        included: false,
+        value: Number((stat.value * aps).toFixed(1)),
       });
     });
   }
 
   // Calculate total damage from all damage stats
   const totalDamage = stats.reduce((sum, stat) => {
-    if (stat.type.includes("-damage")) {
+    if (stat.type.endsWith("-dps")) {
       return sum + stat.value;
     }
     return sum;
@@ -116,12 +122,11 @@ const calcDamageStats = (itemData: ParsedItemData): ItemStat[] => {
   stats.push({
     type: "total-dps",
     value: totalDamage,
-    included: false,
   });
 
   // Calculate total damage from all damage stats
   const etotalDamage = stats
-    .filter((p) => p.type.includes("-damage") && p.type !== "physical-damage")
+    .filter((p) => isStatElemental(p) && p.type.endsWith("-dps"))
     .reduce((sum, stat) => {
       if (stat.type.includes("-damage")) {
         return sum + stat.value;
@@ -133,7 +138,6 @@ const calcDamageStats = (itemData: ParsedItemData): ItemStat[] => {
   stats.push({
     type: "total-edps",
     value: etotalDamage,
-    included: false,
   });
 
   return stats;
@@ -156,8 +160,6 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
 
   const parsedItemData = parser.process(sanitizedItemString);
   const updatedDamageStats = calcDamageStats(parsedItemData);
-
-  console.log("yp", updatedDamageStats);
 
   // Create a map of the updated damage stats by their type for easy lookup
   const updatedStatsMap = new Map(
