@@ -145,11 +145,17 @@ const PoeItemSearch = ({
     }
   };
 
+  const statTypePrefixMap = {
+    "physical-damage-dps": "pDPS",
+    "total-dps": "DPS",
+    "total-edps": "eDPS",
+    "attacks-per-second": "APS",
+    "crit-chance": "Crit %",
+  } as const;
+
   const exclusionRules = {
     "total-edps": ["cold-", "fire-", "lightning-"],
     "physical-damage-dps": ["physical-damage"],
-    // Add more rules as needed, for example:
-    // 'total-resist': ['fire-resist', 'cold-resist', 'lightning-resist'],
   };
 
   const shouldShowStat = (currentStat: ItemStat, allStats: ItemStat[]) => {
@@ -281,7 +287,11 @@ const PoeItemSearch = ({
                 onClick={() =>
                   handleIncludedChange("stats", !stat.included, idx)
                 }
-                prefix={stat.type}
+                prefix={
+                  statTypePrefixMap[
+                    stat.type as keyof typeof statTypePrefixMap
+                  ] ?? stat.type
+                }
                 value={stat.value}
               />
             );
