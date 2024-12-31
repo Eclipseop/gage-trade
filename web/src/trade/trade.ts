@@ -44,6 +44,22 @@ const StatTypes = [
     key: "spirit",
     term: "spirit",
   },
+  {
+    key: "physical-damage-dps",
+    term: "pdps",
+  },
+  {
+    key: "total-dps",
+    term: "dps",
+  },
+  {
+    key: "total-edps",
+    term: "edps",
+  },
+  {
+    key: "attacks-per-second",
+    term: "aps",
+  },
 ] as const;
 
 export type Filter = {
