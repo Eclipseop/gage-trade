@@ -145,6 +145,8 @@ const PoeItemSearch = ({
     }
   };
 
+  console.log(itemData);
+
   return (
     <>
       <CardHeader>

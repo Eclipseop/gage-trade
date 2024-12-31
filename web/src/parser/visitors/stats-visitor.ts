@@ -37,8 +37,6 @@ class StatsVisitor implements ItemVisitor {
     }
   }
 
-  visitSectionStart(_section: string, _index: number) {}
-
   getResult(): Partial<ParsedItemData> {
     return { stats: this.stats };
   }
