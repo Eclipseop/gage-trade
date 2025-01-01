@@ -251,6 +251,7 @@ const itemClassMap: { [key: string]: string } = {
   "Trial Coins": "map.barya",
   Waystones: "map.waystone",
   Tablet: "map.tablet",
+  Foci: "armour.focus",
 };
 
 export type PoeQuery = {
