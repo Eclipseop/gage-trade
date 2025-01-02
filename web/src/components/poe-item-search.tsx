@@ -1,6 +1,7 @@
 import { sanitize } from "@/parser/item-parser";
 import type { TradeListing } from "@/trade/trade";
 import type { AffixInfo, ItemStat, SearchableItemData } from "@/types/parser";
+import dayjs from "dayjs";
 import { Globe, Search } from "lucide-react";
 import ToggleBadge from "./toggle-badge";
 import { Badge } from "./ui/badge";
@@ -56,6 +57,23 @@ const Affix = ({
   );
 };
 
+function getTimeDifference(dateString: string) {
+  const now = dayjs();
+  const compareDate = dayjs(dateString);
+  const diffMs = now.diff(compareDate, "millisecond");
+
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (days > 0) return `${days}d`;
+
+  const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  if (hours > 0) return `${hours}hr`;
+
+  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+  if (minutes > 0) return `${minutes}m`;
+
+  return "0m";
+}
+
 const SearchResultItem: React.FC<{ result: TradeListing }> = ({ result }) => {
   return (
     <div
@@ -63,7 +81,14 @@ const SearchResultItem: React.FC<{ result: TradeListing }> = ({ result }) => {
       title={sanitize(result.item.explicitMods?.join("\n") ?? "")}
     >
       <span className="text-sm">{result.listing.account.name}</span>
-      <Badge variant="secondary">{`${result.listing.price.amount} ${result.listing.price.currency}`}</Badge>
+
+      <div className="space-x-2">
+        <Badge variant="outline">{`${getTimeDifference(
+          result.listing.indexed,
+        )}`}</Badge>
+
+        <Badge variant="secondary">{`${result.listing.price.amount} ${result.listing.price.currency}`}</Badge>
+      </div>
     </div>
   );
 };
