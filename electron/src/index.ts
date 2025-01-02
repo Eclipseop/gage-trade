@@ -96,7 +96,11 @@ const setupTray = () => {
     },
     {
       label: "Exit",
-      click: () => app.quit(),
+      click: () => {
+        console.log("exit!");
+        app.quit();
+        process.exit();
+      },
     },
   ]);
 
