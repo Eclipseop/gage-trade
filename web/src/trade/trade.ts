@@ -74,6 +74,9 @@ export type Filter = {
       ilvl?: {
         min?: number;
       };
+      rarity?: {
+        option?: string;
+      };
     };
   };
   equipment_filters?: {
@@ -300,20 +303,16 @@ export const buildQuery = (item: SearchableItemData): PoeQuery => {
     },
   };
 
-  // Check if rarity is included and is Currency
-  if (item.rarity?.included && item.rarity.value === "Currency") {
-    query.query = {
-      ...query.query,
-      type: item.name?.value.replace("\r", ""),
-    };
-    return query;
+  if (item.rarity?.value === "Currency") {
+    query.query.type = item.name.value;
+  }
+  if (item.rarity?.value === "Unique") {
+    query.query.name = item.name.value;
   }
 
-  // Check if rarity is included and is Unique
-  if (item.rarity?.included && item.rarity.value === "Unique") {
-    query.query = {
-      ...query.query,
-      name: item.name?.value,
+  if (item.rarity?.included) {
+    query.query.filters.type_filters!.filters.rarity = {
+      option: item.rarity.value.toLowerCase(),
     };
   }
 
