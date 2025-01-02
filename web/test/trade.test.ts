@@ -33,10 +33,72 @@ describe("buildQuery", () => {
     expect(query.query.name).toBeUndefined();
   });
 
+  test("handles currency items correctly rarity not explicity included", () => {
+    const currencyItem: SearchableItemData = {
+      rarity: {
+        included: false,
+        value: "Currency",
+      },
+      name: {
+        included: true,
+        value: "Divine Orb",
+      },
+      itemClass: {
+        included: true,
+        value: "Currency",
+      },
+      quality: { included: false, value: 0 },
+      itemLevel: { included: false, value: 0 },
+      areaLevel: { included: false, value: 0 },
+      waystoneTier: { included: false, value: 0 },
+      numRuneSockets: { included: false, value: 0 },
+      stats: { included: false, value: [] },
+      implicit: { included: false, value: [] },
+      affixs: { included: false, value: [] },
+      enchant: { included: false, value: [] },
+    };
+
+    const query = buildQuery(currencyItem);
+    expect(query.query.type).toBe("Divine Orb");
+    expect(query.query.name).toBeUndefined();
+  });
+
   test("handles unique items with name correctly", () => {
     const uniqueItem: SearchableItemData = {
       rarity: {
         included: true,
+        value: "Unique",
+      },
+      name: {
+        included: true,
+        value: "Headhunter",
+      },
+      itemClass: {
+        included: true,
+        value: "Belts",
+      },
+      quality: { included: false, value: 0 },
+      itemLevel: { included: false, value: 0 },
+      areaLevel: { included: false, value: 0 },
+      waystoneTier: { included: false, value: 0 },
+      numRuneSockets: { included: false, value: 0 },
+      stats: { included: false, value: [] },
+      implicit: { included: false, value: [] },
+      affixs: { included: false, value: [] },
+      enchant: { included: false, value: [] },
+    };
+
+    const query = buildQuery(uniqueItem);
+    expect(query.query.name).toBe("Headhunter");
+    expect(query.query.filters.type_filters?.filters.category?.option).toBe(
+      "accessory.belt",
+    );
+  });
+
+  test("handles unique items with name correctly rarity not explicity included", () => {
+    const uniqueItem: SearchableItemData = {
+      rarity: {
+        included: false,
         value: "Unique",
       },
       name: {
