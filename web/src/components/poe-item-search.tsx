@@ -27,6 +27,7 @@ const Affix = ({
   onRollChange,
   onCheckedChange,
 }: AffixProps) => {
+  console.log("affix", affix, roll);
   return (
     <div className="flex items-center justify-between py-1">
       <div className="flex items-center space-x-2 flex-grow">
@@ -44,7 +45,7 @@ const Affix = ({
           {affix.rawText}
         </label>
       </div>
-      {roll && (
+      {roll !== undefined && (
         <Input
           type="number"
           value={roll}
@@ -121,6 +122,7 @@ const PoeItemSearch = ({
         ...updatedAffixes[affixIndex],
         roll: newRoll,
       };
+      console.log("updating to ", newRoll);
 
       setItemData({
         ...itemData,
