@@ -108,12 +108,17 @@ const setupTray = () => {
   tray.setContextMenu(contextMenu);
 };
 
-const setupAutoUpdater = () => {
-  setInterval(
-    () => autoUpdater.checkForUpdatesAndNotify(),
-    CONFIG.UPDATE_CHECK_INTERVAL,
+const checkForUpdates = async () => {
+  const updateStatus = await autoUpdater.checkForUpdates();
+  if (!updateStatus) return;
+  mainWindow?.setTitle(
+    `${CONFIG.WINDOW.TITLE_PREFIX} - ${app.getVersion()} - Update Available`,
   );
-  autoUpdater.checkForUpdatesAndNotify();
+};
+
+const setupAutoUpdater = async () => {
+  setInterval(async () => checkForUpdates(), CONFIG.UPDATE_CHECK_INTERVAL);
+  await checkForUpdates();
 };
 
 const init = () => {
@@ -161,9 +166,9 @@ ipcMain.on("item-check", (_, args) => {
   }
 });
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   setupTray();
-  setupAutoUpdater();
+  await setupAutoUpdater();
 });
 
 app.on("ready", init);
