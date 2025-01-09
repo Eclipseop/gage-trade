@@ -1,4 +1,7 @@
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
 import {
   BrowserWindow,
   Menu,
@@ -10,8 +13,16 @@ import {
   nativeImage,
   shell,
 } from "electron";
-import { autoUpdater } from "electron-updater";
+import pkg from "electron-updater";
+const { autoUpdater } = pkg;
+import Store from "electron-store";
 import { UiohookKey, uIOhook } from "uiohook-napi";
+const store = new Store({
+  defaults: {
+    league: "Standard",
+    keybind: "D",
+  },
+});
 
 const CONFIG = {
   WINDOW: {
@@ -64,6 +75,7 @@ const setupClipboardWatcher = () => {
 };
 
 const toggleWindow = async () => {
+  console.log("sigma..");
   if (!mainWindow) {
     console.error("Main Window not initialized");
     return;
@@ -140,6 +152,14 @@ const init = () => {
 
   setupClipboardWatcher();
 };
+
+ipcMain.on("get-settings", (event) => {
+  event.reply("settings-data", JSON.stringify(store.store));
+});
+
+ipcMain.on("save-settings", (_, data) => {
+  store.set(data);
+});
 
 ipcMain.on("trade", (_, args) => {
   shell.openExternal(args.url);

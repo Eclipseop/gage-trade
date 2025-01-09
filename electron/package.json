@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
@@ -27,6 +28,7 @@
   },
   "dependencies": {
     "axios": "^1.7.9",
+    "electron-store": "^10.0.0",
     "electron-updater": "^6.3.9",
     "uiohook-napi": "^1.5.4"
   }
