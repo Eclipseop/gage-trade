@@ -141,7 +141,6 @@ const init = () => {
   uIOhook.start();
 
   mainWindow = createMainWindow();
-  mainWindow.webContents.openDevTools();
 
   mainWindow.on("page-title-updated", (evt) => evt.preventDefault());
   mainWindow.on("close", (event) => {
