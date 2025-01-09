@@ -1,7 +1,4 @@
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
-const __dirname = path.dirname(__filename); // get the name of the directory
 import {
   BrowserWindow,
   Menu,
@@ -13,16 +10,11 @@ import {
   nativeImage,
   shell,
 } from "electron";
-import pkg from "electron-updater";
-const { autoUpdater } = pkg;
-import Store from "electron-store";
+import { autoUpdater } from "electron-updater";
 import { UiohookKey, uIOhook } from "uiohook-napi";
-const store = new Store({
-  defaults: {
-    league: "Standard",
-    keybind: "D",
-  },
-});
+import { SettingsManager } from "./settings";
+
+const settings = new SettingsManager(app.getPath("userData"));
 
 const CONFIG = {
   WINDOW: {
@@ -81,6 +73,13 @@ const toggleWindow = async () => {
     return;
   }
 
+  if (process.env.NODE_ENV === "development") {
+    mainWindow?.loadURL(`${CONFIG.DEV_SERVER_URL}`);
+  } else {
+    const indexPath = path.join(__dirname, "web/dist/index.html");
+    mainWindow?.loadFile(indexPath);
+  }
+
   try {
     uIOhook.keyToggle(UiohookKey.Ctrl, "down");
     uIOhook.keyTap(UiohookKey.C);
@@ -105,6 +104,20 @@ const setupTray = () => {
     {
       label: "Check for updates",
       click: () => autoUpdater.checkForUpdatesAndNotify(),
+    },
+    {
+      label: "Settings",
+      click: () => {
+        if (process.env.NODE_ENV === "development") {
+          mainWindow?.loadURL(`${CONFIG.DEV_SERVER_URL}/settings`);
+        } else {
+          const indexPath = path.join(__dirname, "web/dist/index.html");
+          mainWindow?.loadFile(indexPath, {
+            hash: "/settings",
+          });
+        }
+        mainWindow?.show();
+      },
     },
     {
       label: "Exit",
@@ -137,6 +150,7 @@ const init = () => {
   uIOhook.start();
 
   mainWindow = createMainWindow();
+  mainWindow.webContents.openDevTools();
 
   mainWindow.on("page-title-updated", (evt) => evt.preventDefault());
   mainWindow.on("close", (event) => {
@@ -154,11 +168,11 @@ const init = () => {
 };
 
 ipcMain.on("get-settings", (event) => {
-  event.reply("settings-data", JSON.stringify(store.store));
+  event.reply("settings-data", JSON.stringify(settings.getSettings()));
 });
 
 ipcMain.on("save-settings", (_, data) => {
-  store.set(data);
+  settings.updateSettings(data);
 });
 
 ipcMain.on("trade", (_, args) => {
@@ -167,6 +181,7 @@ ipcMain.on("trade", (_, args) => {
 
 ipcMain.on("item-check", (_, args) => {
   const currentTime = Date.now();
+  console.log("lmao???");
 
   if (currentTime - lastTriggerTime < CONFIG.THROTTLE_DELAY) {
     console.log("Throttled: Please wait before checking again");
