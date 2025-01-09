@@ -33,6 +33,15 @@ let tray: Tray | undefined;
 let pastClipboard = "";
 let lastTriggerTime = 0;
 
+const loadPage = (route?: string) => {
+  if (process.env.NODE_ENV === "development") {
+    mainWindow?.loadURL(`${CONFIG.DEV_SERVER_URL}${route ? `/${route}` : ""}`);
+  } else {
+    const indexPath = path.join(__dirname, "web/dist/index.html");
+    mainWindow?.loadFile(indexPath, { hash: route });
+  }
+};
+
 const createMainWindow = (): BrowserWindow => {
   const window = new BrowserWindow({
     title: `${CONFIG.WINDOW.TITLE_PREFIX} - ${app.getVersion()}`,
@@ -46,12 +55,7 @@ const createMainWindow = (): BrowserWindow => {
     },
   });
 
-  if (process.env.NODE_ENV === "development") {
-    window.loadURL(CONFIG.DEV_SERVER_URL);
-  } else {
-    const indexPath = path.join(__dirname, "web/dist/index.html");
-    window.loadFile(indexPath);
-  }
+  loadPage();
 
   return window;
 };
@@ -67,18 +71,12 @@ const setupClipboardWatcher = () => {
 };
 
 const toggleWindow = async () => {
-  console.log("sigma..");
   if (!mainWindow) {
     console.error("Main Window not initialized");
     return;
   }
 
-  if (process.env.NODE_ENV === "development") {
-    mainWindow?.loadURL(`${CONFIG.DEV_SERVER_URL}`);
-  } else {
-    const indexPath = path.join(__dirname, "web/dist/index.html");
-    mainWindow?.loadFile(indexPath);
-  }
+  loadPage();
 
   try {
     uIOhook.keyToggle(UiohookKey.Ctrl, "down");
@@ -108,14 +106,7 @@ const setupTray = () => {
     {
       label: "Settings",
       click: () => {
-        if (process.env.NODE_ENV === "development") {
-          mainWindow?.loadURL(`${CONFIG.DEV_SERVER_URL}/settings`);
-        } else {
-          const indexPath = path.join(__dirname, "web/dist/index.html");
-          mainWindow?.loadFile(indexPath, {
-            hash: "/settings",
-          });
-        }
+        loadPage("settings");
         mainWindow?.show();
       },
     },
@@ -181,7 +172,6 @@ ipcMain.on("trade", (_, args) => {
 
 ipcMain.on("item-check", (_, args) => {
   const currentTime = Date.now();
-  console.log("lmao???");
 
   if (currentTime - lastTriggerTime < CONFIG.THROTTLE_DELAY) {
     console.log("Throttled: Please wait before checking again");
