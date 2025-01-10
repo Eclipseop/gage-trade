@@ -1,20 +1,23 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, createHashRouter } from "react-router-dom";
 import { Toaster } from "sonner";
+import ErrorPage from "./ErrorPage.tsx";
 import Search from "./Search.tsx";
 import Settings from "./Settings.tsx";
 import { ThemeProvider } from "./components/ui/theme-provider.tsx";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: <Search />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/settings",
     element: <Settings />,
+    errorElement: <ErrorPage />,
   },
 ]);
 
