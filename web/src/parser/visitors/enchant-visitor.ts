@@ -8,6 +8,8 @@ class EnchantVisitor implements ItemVisitor {
 
   visitLine(line: string, _sectionIndex: number) {
     if (!line.includes("(enchant)")) return;
+    // There is not currently (01/10/25) a way to query by the annoint, only by the number of annoints the amulet has.
+    if (line.startsWith("Allocates ")) return;
 
     const enchantText = line.replace(" (enchant)", "").trim();
     if (!enchantText) return;

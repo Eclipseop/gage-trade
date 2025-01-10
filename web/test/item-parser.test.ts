@@ -846,3 +846,31 @@ Item Level: 80
 
   expect(parsedSampleItem.affixs).toContainEqual(a1);
 });
+
+test("Allocates", async () => {
+  const itemString = `Item Class: Amulets
+Rarity: Unique
+The Everlasting Gaze
+Azure Amulet
+--------
+Quality (Mana Modifiers): +20% (augmented)
+--------
+Item Level: 81
+--------
+Allocates Piercing Shot (enchant)
+--------
+24% increased Mana Regeneration Rate (implicit)
+--------
++60 to maximum Mana
+60% increased Mana Regeneration Rate
+Gain 28% of Maximum Mana as Extra Maximum Energy Shield
+--------
+What they saw was what they believed, and
+they believed Lunaris had not abandoned them.`;
+
+  const parsedSampleItem = await parse(itemString);
+
+  expect(parsedSampleItem.itemClass).toBe("Amulets");
+  expect(parsedSampleItem.rarity).toBe("Unique");
+  expect(parsedSampleItem.name).toBe("The Everlasting Gaze");
+});
