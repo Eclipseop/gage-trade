@@ -12,6 +12,9 @@ import {
 } from "electron";
 import { autoUpdater } from "electron-updater";
 import { UiohookKey, uIOhook } from "uiohook-napi";
+import { SettingsManager } from "./settings";
+
+const settings = new SettingsManager(app.getPath("userData"));
 
 const CONFIG = {
   WINDOW: {
@@ -30,6 +33,15 @@ let tray: Tray | undefined;
 let pastClipboard = "";
 let lastTriggerTime = 0;
 
+const loadPage = (route?: string) => {
+  if (process.env.NODE_ENV === "development") {
+    mainWindow?.loadURL(`${CONFIG.DEV_SERVER_URL}${route ? `/${route}` : ""}`);
+  } else {
+    const indexPath = path.join(__dirname, "web/dist/index.html");
+    mainWindow?.loadFile(indexPath, { hash: route });
+  }
+};
+
 const createMainWindow = (): BrowserWindow => {
   const window = new BrowserWindow({
     title: `${CONFIG.WINDOW.TITLE_PREFIX} - ${app.getVersion()}`,
@@ -43,12 +55,7 @@ const createMainWindow = (): BrowserWindow => {
     },
   });
 
-  if (process.env.NODE_ENV === "development") {
-    window.loadURL(CONFIG.DEV_SERVER_URL);
-  } else {
-    const indexPath = path.join(__dirname, "web/dist/index.html");
-    window.loadFile(indexPath);
-  }
+  loadPage();
 
   return window;
 };
@@ -68,6 +75,8 @@ const toggleWindow = async () => {
     console.error("Main Window not initialized");
     return;
   }
+
+  loadPage();
 
   try {
     uIOhook.keyToggle(UiohookKey.Ctrl, "down");
@@ -93,6 +102,13 @@ const setupTray = () => {
     {
       label: "Check for updates",
       click: () => autoUpdater.checkForUpdatesAndNotify(),
+    },
+    {
+      label: "Settings",
+      click: () => {
+        loadPage("settings");
+        mainWindow?.show();
+      },
     },
     {
       label: "Exit",
@@ -136,10 +152,21 @@ const init = () => {
     mainWindow.on("blur", () => mainWindow?.hide());
   }
 
-  globalShortcut.register("CommandOrControl+D", toggleWindow);
+  globalShortcut.register(
+    `CommandOrControl+${settings.getSettings().keybind}`,
+    toggleWindow,
+  );
 
   setupClipboardWatcher();
 };
+
+ipcMain.on("get-settings", (event) => {
+  event.reply("settings-data", JSON.stringify(settings.getSettings()));
+});
+
+ipcMain.on("save-settings", (_, data) => {
+  settings.updateSettings(data);
+});
 
 ipcMain.on("trade", (_, args) => {
   shell.openExternal(args.url);

@@ -39,6 +39,7 @@ type SearchableValue<T> = {
 
 export type SearchableArray<T> = {
   value: T[];
+  include: boolean;
 };
 
 // The main mapped type
