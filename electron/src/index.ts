@@ -152,7 +152,10 @@ const init = () => {
     mainWindow.on("blur", () => mainWindow?.hide());
   }
 
-  globalShortcut.register("CommandOrControl+D", toggleWindow);
+  globalShortcut.register(
+    `CommandOrControl+${settings.getSettings().keybind}`,
+    toggleWindow,
+  );
 
   setupClipboardWatcher();
 };

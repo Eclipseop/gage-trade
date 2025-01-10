@@ -63,7 +63,9 @@ const Settings = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="keybind">Keybind</Label>
+            <Label htmlFor="keybind">
+              Keybind (ctrl + key) (Requires restart)
+            </Label>
             <Input
               id="keybind"
               value={keybind}
