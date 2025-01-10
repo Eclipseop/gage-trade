@@ -1,6 +1,6 @@
 import { useRouteError } from "react-router-dom";
 
-function ErrorPage() {
+const ErrorPage = () => {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const error: any = useRouteError();
 
@@ -11,6 +11,6 @@ function ErrorPage() {
       <p className="text-gray-600">{error.statusText || error.message}</p>
     </div>
   );
-}
+};
 
 export default ErrorPage;
