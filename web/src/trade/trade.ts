@@ -6,9 +6,6 @@ import type {
 import { getApi } from "@/util/electron";
 import axios, { AxiosError } from "axios";
 
-const NORMAL_TRADE_URL =
-  "https://www.pathofexile.com/trade2/search/poe2/Standard";
-const TRADE_API = "https://www.pathofexile.com/api/trade2/search/poe2/Standard";
 const FETCH_TRADE_API = "https://www.pathofexile.com/api/trade2/fetch";
 
 export type StatFiler = {
@@ -415,42 +412,63 @@ export const buildQuery = (item: SearchableItemData): PoeQuery => {
   return query;
 };
 
-export const openTradeQuery = async (item: SearchableItemData) => {
-  const query = buildQuery(item);
-
-  console.log(JSON.stringify(query));
-  const { data } = await axios.post<PoeBaseSearchResult>(TRADE_API, query);
-  const url = `${NORMAL_TRADE_URL}/${data.id}`;
-  getApi().send("trade", { url });
-};
-
 export type TradeListing = PoeItemLookupResult["result"][number];
 
-export const lookup = async (
-  item: SearchableItemData,
-): Promise<TradeListing[]> => {
-  try {
+class TradeAPI {
+  private TRADE_API_URL: string;
+  private TRADE_QUERY_URL: string;
+
+  constructor(private league: string) {
+    this.TRADE_API_URL = `https://www.pathofexile.com/api/trade2/search/poe2/${this.league}`;
+    this.TRADE_QUERY_URL = `https://www.pathofexile.com/trade2/search/poe2/${this.league}`;
+  }
+
+  setLeague(league: string) {
+    this.TRADE_API_URL = `https://www.pathofexile.com/api/trade2/search/poe2/${league}`;
+    this.TRADE_QUERY_URL = `https://www.pathofexile.com/trade2/search/poe2/${league}`;
+  }
+
+  async lookup(item: SearchableItemData): Promise<TradeListing[]> {
+    try {
+      const query = buildQuery(item);
+
+      console.log(JSON.stringify(query));
+      const { data } = await axios.post<PoeBaseSearchResult>(
+        this.TRADE_API_URL,
+        query,
+      );
+      console.log(`[DEBUG] Found ${data.result.length} items`);
+      if (data.result.length === 0) {
+        return [];
+      }
+      const itemLookupRes = await axios.get<PoeItemLookupResult>(
+        `${FETCH_TRADE_API}/${data.result.slice(0, 10).join(",")}`,
+      );
+      return itemLookupRes.data.result;
+    } catch (err) {
+      console.log(err);
+      let msg = "Error...";
+      if (err instanceof AxiosError) {
+        const axiosErr = err as AxiosError;
+        if (Number(axiosErr.status) === 429) {
+          msg = "Rate limited";
+        }
+      }
+      return Promise.reject(msg);
+    }
+  }
+
+  async openTradeQuery(item: SearchableItemData) {
     const query = buildQuery(item);
 
     console.log(JSON.stringify(query));
-    const { data } = await axios.post<PoeBaseSearchResult>(TRADE_API, query);
-    console.log(`[DEBUG] Found ${data.result.length} items`);
-    if (data.result.length === 0) {
-      return [];
-    }
-    const itemLookupRes = await axios.get<PoeItemLookupResult>(
-      `${FETCH_TRADE_API}/${data.result.slice(0, 10).join(",")}`,
+    const { data } = await axios.post<PoeBaseSearchResult>(
+      this.TRADE_API_URL,
+      query,
     );
-    return itemLookupRes.data.result;
-  } catch (err) {
-    console.log(err);
-    let msg = "Error...";
-    if (err instanceof AxiosError) {
-      const axiosErr = err as AxiosError;
-      if (Number(axiosErr.status) === 429) {
-        msg = "Rate limited";
-      }
-    }
-    return Promise.reject(msg);
+    const url = `${this.TRADE_QUERY_URL}/${data.id}`;
+    getApi().send("trade", { url });
   }
-};
+}
+
+export const tradeApi = new TradeAPI("standard");

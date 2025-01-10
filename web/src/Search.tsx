@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import PoeItemSearch from "./components/poe-item-search";
 import { isPoeItem, parse } from "./parser/item-parser";
-import { type TradeListing, lookup, openTradeQuery } from "./trade/trade";
+import { type TradeListing, tradeApi } from "./trade/trade";
 import type { ParsedItemData, SearchableItemData } from "./types/parser";
 import { getApi } from "./util/electron";
 
@@ -43,6 +43,12 @@ const Search = () => {
     if (!isSetup.current) {
       const api = getApi();
 
+      api.send("get-settings", {});
+      api.receive("settings-data", (data: string) => {
+        console.log("settings", data, JSON.parse(data).league);
+        tradeApi.setLeague(JSON.parse(data).league);
+      });
+
       api.receive("item-check", async (data: string) => {
         console.log("item-check triggered");
         api.send("item-check", isPoeItem(data[0]));
@@ -67,7 +73,7 @@ const Search = () => {
     if (!itemData) return;
 
     setItemRes([]);
-    const pendingData = toast.promise(lookup(itemData), {
+    const pendingData = toast.promise(tradeApi.lookup(itemData), {
       loading: "Loading...",
       success: "Done!",
       error: (data) => data,
@@ -80,7 +86,7 @@ const Search = () => {
     e.preventDefault();
     if (!itemData) return;
 
-    await openTradeQuery(itemData);
+    await tradeApi.openTradeQuery(itemData);
   };
 
   return (

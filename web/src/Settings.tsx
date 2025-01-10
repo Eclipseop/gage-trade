@@ -21,7 +21,7 @@ const Settings = () => {
     api.send("get-settings", {});
     api.receive("settings-data", (data: string) => {
       const settings = JSON.parse(data);
-      setLeague(settings.league || "standard");
+      setLeague(settings.league || "Standard");
       setKeybind(settings.keybind || "D");
     });
   }, [api]);
@@ -56,8 +56,8 @@ const Settings = () => {
                 <SelectValue placeholder="Select league" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="standard">Standard</SelectItem>
-                <SelectItem value="standard-hc">Standard HC</SelectItem>
+                <SelectItem value="Standard">Standard</SelectItem>
+                <SelectItem value="Hardcore">Standard HC</SelectItem>
               </SelectContent>
             </Select>
           </div>
