@@ -125,11 +125,7 @@ const setupTray = () => {
 };
 
 const checkForUpdates = async () => {
-  const updateStatus = await autoUpdater.checkForUpdates();
-  if (!updateStatus) return;
-  mainWindow?.setTitle(
-    `${CONFIG.WINDOW.TITLE_PREFIX} - ${app.getVersion()} - Update Available`,
-  );
+  await autoUpdater.checkForUpdates();
 };
 
 const setupAutoUpdater = async () => {
@@ -156,6 +152,11 @@ const init = () => {
     `CommandOrControl+${settings.getSettings().keybind}`,
     toggleWindow,
   );
+  autoUpdater.on("update-available", (info) => {
+    mainWindow?.setTitle(
+      `${CONFIG.WINDOW.TITLE_PREFIX} - ${app.getVersion()} - ${info.version} Available`,
+    );
+  });
 
   setupClipboardWatcher();
 };
