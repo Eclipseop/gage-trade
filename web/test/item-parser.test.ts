@@ -236,13 +236,15 @@ in knowing the answer: all of them.
 Take this item to The Temple of Chaos to participate in a Trial of Chaos.`;
 
 test("blank clipboard", async () => {
-  expect(async () => await parse("")).rejects.toThrowError("Not a Poe Item");
+  await expect(async () => await parse("")).rejects.toThrowError(
+    "Not a Poe Item",
+  );
 });
 
 test("nonsense clipboard", async () => {
-  expect(async () => await parse("ajf932bnfa32fb8abf")).rejects.toThrowError(
-    "Not a Poe Item",
-  );
+  await expect(
+    async () => await parse("ajf932bnfa32fb8abf"),
+  ).rejects.toThrowError("Not a Poe Item");
 });
 
 // passes the scuffed isPoeItem check, should still error
@@ -255,7 +257,7 @@ test("nonsense clipboard 2", async () => {
   ------
   asdfasdfasdf`;
 
-  expect(async () => await parse(payload)).rejects.toThrowError(
+  await expect(async () => await parse(payload)).rejects.toThrowError(
     "Not a Poe Item",
   );
 });
