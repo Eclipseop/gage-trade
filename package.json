@@ -29,7 +29,7 @@
     "@biomejs/biome": "^1.9.4",
     "concurrently": "^9.1.0",
     "cross-env": "^7.0.3",
-    "electron": "^33.2.1",
+    "electron": "^34.0.0",
     "electron-builder": "^25.1.8",
     "husky": "^9.1.7",
     "vitest": "^2.1.8"
