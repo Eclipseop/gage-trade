@@ -32,7 +32,7 @@
     "electron": "^34.0.0",
     "electron-builder": "^25.1.8",
     "husky": "^9.1.7",
-    "vitest": "^2.1.8"
+    "vitest": "^3.0.0"
   },
   "build": {
     "appId": "com.yourapp.id",
