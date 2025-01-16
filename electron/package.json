@@ -23,7 +23,7 @@
     "nodemon": "^3.1.9",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "vitest": "^3.0.0"
   },
   "dependencies": {
     "axios": "^1.7.9",
