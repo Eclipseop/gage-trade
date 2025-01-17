@@ -111,7 +111,6 @@ Item Level: 81
       },
     ],
     roll: 31,
-    included: false,
   };
   const a2 = {
     affix: [
@@ -123,7 +122,6 @@ Item Level: 81
       },
     ],
     roll: 38,
-    included: false,
   };
 
   expect(parsedItem.affixs).toContainEqual(a1);

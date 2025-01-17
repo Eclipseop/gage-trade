@@ -285,7 +285,6 @@ test("sample item 1", async () => {
       },
     ],
     roll: 212,
-    included: false,
   };
 
   const { affixs } = parsedSampleItem;
@@ -303,7 +302,6 @@ test("sample item 2", async () => {
 
   const a1 = {
     roll: 38,
-    included: false,
     affix: [
       {
         poe_id: "explicit.stat_803737631",
@@ -328,7 +326,6 @@ test("sample item 3", async () => {
 
   const a1 = {
     roll: 15,
-    included: false,
     affix: [
       {
         poe_id: "explicit.stat_3141070085",
@@ -358,7 +355,6 @@ test("sample item 4", async () => {
   expect(parsedSampleItem.stats).toContainEqual(s1);
 
   const a1 = {
-    included: false,
     roll: 15,
     affix: [
       {
@@ -404,12 +400,10 @@ test("sample item 6", async () => {
         type: "EXPLICIT",
       },
     ],
-    included: false,
     roll: 28,
   };
 
   const a2 = {
-    included: false,
     roll: 5.5,
     affix: [
       {
@@ -450,7 +444,6 @@ test("sample item 7", async () => {
         type: "EXPLICIT",
       },
     ],
-    included: false,
     roll: 67,
   };
 
@@ -464,7 +457,6 @@ test("sample item 7", async () => {
         type: "EXPLICIT",
       },
     ],
-    included: false,
     roll: 16,
   };
 
@@ -522,7 +514,6 @@ test("sample item 8", async () => {
         type: "IMPLICIT",
       },
     ],
-    included: false,
     roll: 4,
   };
 
@@ -549,7 +540,6 @@ test("sample item 9", async () => {
         type: "IMPLICIT",
       },
     ],
-    included: false,
     roll: 5,
   };
 
@@ -576,7 +566,6 @@ test("sample item 11", async () => {
         type: "EXPLICIT",
       },
     ],
-    included: false,
     roll: 20,
   };
 
@@ -624,7 +613,6 @@ Note: ~price 10 exalted`;
 
   const a1 = {
     roll: 13,
-    included: false,
     affix: [
       {
         poe_id: "enchant.stat_2694482655",
@@ -832,7 +820,6 @@ Item Level: 80
 
   const a1 = {
     roll: 2,
-    included: false,
     affix: [
       {
         poe_id: "explicit.stat_1416292992",

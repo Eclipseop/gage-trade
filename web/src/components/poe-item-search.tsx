@@ -15,19 +15,22 @@ import { Separator } from "./ui/separator";
 type AffixProps = {
   affix: AffixInfo;
   roll: number | undefined;
+  min: number | undefined;
+  max: number | undefined;
   checked: boolean;
-  onRollChange: (newRoll: number) => void;
+  onRollChange: (newRoll: number, type: "min" | "max") => void;
   onCheckedChange: (checked: boolean) => void;
 };
 
 const Affix = ({
   affix,
   roll,
+  min,
+  max,
   checked,
   onRollChange,
   onCheckedChange,
 }: AffixProps) => {
-  console.log("affix", affix, roll);
   return (
     <div className="flex items-center justify-between py-1">
       <div className="flex items-center space-x-2 flex-grow">
@@ -46,13 +49,22 @@ const Affix = ({
         </label>
       </div>
       {roll !== undefined && (
-        <Input
-          type="number"
-          value={roll}
-          onChange={(e) => onRollChange(Number(e.target.value))}
-          className="w-16 h-6 text-xs"
-          disabled={!checked}
-        />
+        <div className="flex">
+          <Input
+            type="number"
+            value={min}
+            onChange={(e) => onRollChange(Number(e.target.value), "min")}
+            className="w-16 h-6 text-xs rounded-r-none"
+            disabled={!checked}
+          />
+          <Input
+            type="number"
+            value={max}
+            onChange={(e) => onRollChange(Number(e.target.value), "max")}
+            className="w-16 h-6 text-xs rounded-l-none"
+            disabled={!checked}
+          />
+        </div>
       )}
     </div>
   );
@@ -113,6 +125,7 @@ const PoeItemSearch = ({
     affixType: "affixs" | "implicit" | "enchant",
     affixIndex: number,
     newRoll: number,
+    type: "min" | "max",
   ) => {
     const updateAffix = (key: "affixs" | "implicit" | "enchant") => {
       if (!itemData[key]) return;
@@ -120,7 +133,10 @@ const PoeItemSearch = ({
       const updatedAffixes = [...itemData[key].value];
       updatedAffixes[affixIndex] = {
         ...updatedAffixes[affixIndex],
-        roll: newRoll,
+        range: {
+          ...updatedAffixes[affixIndex].range,
+          [type]: newRoll,
+        },
       };
       console.log("updating to ", newRoll);
 
@@ -337,9 +353,11 @@ const PoeItemSearch = ({
                     key={affix.poe_id}
                     affix={affix}
                     roll={affixGroup.roll}
+                    min={affixGroup.range.min}
+                    max={affixGroup.range.max}
                     checked={affixGroup.included} // Changed from checked to included
-                    onRollChange={(newRoll) =>
-                      handleRollChange("enchant", index, newRoll)
+                    onRollChange={(newRoll, type: "min" | "max") =>
+                      handleRollChange("enchant", index, newRoll, type)
                     }
                     onCheckedChange={
                       (
@@ -363,9 +381,11 @@ const PoeItemSearch = ({
                     key={affix.poe_id}
                     affix={affix}
                     roll={affixGroup.roll}
+                    min={affixGroup.range.min}
+                    max={affixGroup.range.max}
                     checked={affixGroup.included} // Changed from checked to included
-                    onRollChange={(newRoll) =>
-                      handleRollChange("implicit", index, newRoll)
+                    onRollChange={(newRoll, type: "min" | "max") =>
+                      handleRollChange("implicit", index, newRoll, type)
                     }
                     onCheckedChange={
                       (
@@ -389,9 +409,11 @@ const PoeItemSearch = ({
                     key={affix.poe_id}
                     affix={affix}
                     roll={affixGroup.roll}
+                    min={affixGroup.range.min}
+                    max={affixGroup.range.max}
                     checked={affixGroup.included} // Changed from checked to included
-                    onRollChange={(newRoll) =>
-                      handleRollChange("affixs", index, newRoll)
+                    onRollChange={(newRoll, type: "min" | "max") =>
+                      handleRollChange("affixs", index, newRoll, type)
                     }
                     onCheckedChange={
                       (

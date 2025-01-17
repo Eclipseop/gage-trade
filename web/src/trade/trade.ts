@@ -1,23 +1,24 @@
-import type {
-  RollableSearchableAffix,
-  SearchableArray,
-  SearchableItemData,
-} from "@/types/parser";
+import type { SearchableAffix, SearchableItemData } from "@/types/parser";
 import { getApi } from "@/util/electron";
 import axios, { AxiosError } from "axios";
 
 const FETCH_TRADE_API = "https://www.pathofexile.com/api/trade2/fetch";
 
-export type StatFiler = {
+type StatFilter = {
+  id: string;
+  value?: {
+    min?: number;
+    max?: number;
+  };
+  disabled: boolean;
+};
+
+type StatGroup = {
   type: "and" | "count";
-  filters: {
-    id: string;
-    disabled: boolean;
-    value?: {
-      min?: number;
-      max?: number;
-    };
-  }[];
+  value?: {
+    min: number;
+  };
+  filters: StatFilter[];
 };
 
 const StatTypes = [
@@ -65,21 +66,22 @@ export type Filter = {
       category?: {
         option: string;
       };
+      rarity?: {
+        option: string;
+      };
       quality?: {
         min?: number;
       };
       ilvl?: {
         min?: number;
       };
-      rarity?: {
-        option?: string;
-      };
     };
   };
   equipment_filters?: {
     filters: {
-      [key in (typeof StatTypes)[number]["term"] | "rune_sockets"]?: {
+      [key: string]: {
         min?: number;
+        max?: number;
       };
     };
   };
@@ -257,82 +259,80 @@ const itemClassMap: { [key: string]: string } = {
 export type PoeQuery = {
   query: {
     name?: string;
+    type?: string;
     status: {
       option: string;
     };
-    stats: StatFiler[];
+    stats: StatGroup[];
     filters: Filter;
-    type?: string;
   };
   sort: {
     price: "asc" | "desc";
   };
 };
 
+export type TradeListing = PoeItemLookupResult["result"][number];
+
+const processAffixes = (affixes: SearchableAffix[]): StatGroup[] => {
+  return affixes
+    .filter((affix) => affix.included)
+    .map((affix) => ({
+      type: affix.affix.length === 1 ? "and" : "count",
+      filters: affix.affix.map((a) => ({
+        id: a.poe_id,
+        disabled: false,
+        value: affix.range,
+      })),
+      ...(affix.affix.length > 1 && { value: { min: 1 } }),
+    }));
+};
+
 export const buildQuery = (item: SearchableItemData): PoeQuery => {
   const query: PoeQuery = {
     query: {
-      status: {
-        option: "online",
-      },
+      status: { option: "online" },
       stats: [],
       filters: {
-        equipment_filters: {
-          filters: {},
-        },
-        type_filters: {
-          filters: {
-            category: undefined,
-            quality: undefined,
-            ilvl: undefined,
-          },
-        },
-        misc_filters: {
-          filters: {},
-        },
-        map_filters: {
-          filters: {},
-        },
+        type_filters: { filters: {} },
+        equipment_filters: { filters: {} },
+        misc_filters: { filters: {} },
+        map_filters: { filters: {} },
       },
     },
-    sort: {
-      price: "asc",
-    },
+    sort: { price: "asc" },
   };
 
-  if (item.rarity?.value === "Currency") {
+  if (item.rarity.value === "Currency") {
     query.query.type = item.name.value;
   }
-  if (item.rarity?.value === "Unique") {
+  if (item.rarity.value === "Unique") {
     query.query.name = item.name.value;
   }
 
-  if (item.rarity?.included) {
+  if (item.rarity.included) {
     query.query.filters.type_filters!.filters.rarity = {
       option: item.rarity.value.toLowerCase(),
     };
   }
 
-  // Check if itemClass is included
-  if (item.itemClass?.included) {
-    const mappedItemClass = itemClassMap[item.itemClass.value];
-    if (!mappedItemClass) {
-      throw new Error(`Unknown item class? monka! ${item.itemClass.value}`);
-    }
+  if (item.itemClass.included) {
+    const mappedClass = itemClassMap[item.itemClass.value];
+    if (!mappedClass)
+      throw new Error(`Unknown item class: ${item.itemClass.value}`);
     query.query.filters.type_filters!.filters.category = {
-      option: mappedItemClass,
+      option: mappedClass,
     };
   }
 
   if (item.quality?.included) {
     query.query.filters.type_filters!.filters.quality = {
-      min: item.quality.value,
+      min: item.quality.range.min,
     };
   }
 
   if (item.itemLevel?.included) {
     query.query.filters.type_filters!.filters.ilvl = {
-      min: item.itemLevel.value,
+      min: item.itemLevel.range.min,
     };
   }
 
@@ -349,14 +349,12 @@ export const buildQuery = (item: SearchableItemData): PoeQuery => {
   }
 
   if (item.areaLevel?.included) {
-    // ok for some reason ultimatiums / djinn barya items say area level, but you need to search using item level
-    // ggg fix ur game
-    if (
-      item.itemClass.value === "Inscribed Ultimatum" ||
-      item.itemClass.value === "Trial Coins"
-    ) {
+    const isSpecialItem = ["Inscribed Ultimatum", "Trial Coins"].includes(
+      item.itemClass.value,
+    );
+    if (isSpecialItem) {
       query.query.filters.type_filters!.filters.ilvl = {
-        min: item.areaLevel?.value,
+        min: item.areaLevel.value,
       };
     } else {
       query.query.filters.misc_filters!.filters.area_level = {
@@ -365,54 +363,32 @@ export const buildQuery = (item: SearchableItemData): PoeQuery => {
     }
   }
 
-  for (const stat of item.stats?.value ?? []) {
-    if (!stat.included) continue;
-
-    const mappedStatType = StatTypes.find((st) => st.key === stat.type);
-    if (!mappedStatType) continue;
-
-    query.query.filters.equipment_filters!.filters[mappedStatType?.term] = {
-      min: stat.value,
-    };
-  }
-
-  const processAffixes = (
-    affixes: SearchableArray<RollableSearchableAffix>["value"],
-  ) => {
-    for (const affix of affixes) {
-      // Only process if this affix is included in the search
-      if (!affix.included) continue;
-
-      query.query.stats.push({
-        type: affix.affix.length === 1 ? "and" : "count",
-        filters: affix.affix.map((a) => ({
-          id: a.poe_id,
-          disabled: false, // Since we're only processing included affixes, this is always false
-          value: { min: affix.roll },
-        })),
-        ...(affix.affix.length > 1 && { value: { min: 1 } }),
-      });
+  // Process stats
+  const includedStats = item.stats?.value.filter((stat) => stat.included);
+  for (const stat of includedStats ?? []) {
+    const mappedStat = StatTypes.find((st) => st.key === stat.type);
+    if (mappedStat) {
+      query.query.filters.equipment_filters!.filters[mappedStat.term] = {
+        min: stat.range.min,
+      };
     }
-  };
-
-  // Process affixes if they exist
-  if (item.affixs?.value) {
-    processAffixes(item.affixs.value);
   }
 
-  // Process implicit if they exist
+  // Process affixes
+  if (item.affixs?.value) {
+    query.query.stats.push(...processAffixes(item.affixs.value));
+  }
+
   if (item.implicit?.value) {
-    processAffixes(item.implicit.value);
+    query.query.stats.push(...processAffixes(item.implicit.value));
   }
 
   if (item.enchant?.value) {
-    processAffixes(item.enchant.value);
+    query.query.stats.push(...processAffixes(item.enchant.value));
   }
 
   return query;
 };
-
-export type TradeListing = PoeItemLookupResult["result"][number];
 
 class TradeAPI {
   private TRADE_API_URL: string;
@@ -430,6 +406,7 @@ class TradeAPI {
 
   async lookup(item: SearchableItemData): Promise<TradeListing[]> {
     try {
+      console.log("incoming itemdata", JSON.stringify(item));
       const query = buildQuery(item);
 
       console.log(JSON.stringify(query));
