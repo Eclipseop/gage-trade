@@ -32,8 +32,7 @@ const Search = () => {
         setItemRes([]);
 
         const parsedData = await parse(data[0]);
-        const l = makeSearchable(parsedData);
-        setItemData(l);
+        setItemData(makeSearchable(parsedData));
       });
 
       isSetup.current = true;

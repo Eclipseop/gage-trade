@@ -273,7 +273,7 @@ export type PoeQuery = {
 
 export type TradeListing = PoeItemLookupResult["result"][number];
 
-function processAffixes(affixes: SearchableAffix[]): StatGroup[] {
+const processAffixes = (affixes: SearchableAffix[]): StatGroup[] => {
   return affixes
     .filter((affix) => affix.included)
     .map((affix) => ({
@@ -285,9 +285,9 @@ function processAffixes(affixes: SearchableAffix[]): StatGroup[] {
       })),
       ...(affix.affix.length > 1 && { value: { min: 1 } }),
     }));
-}
+};
 
-export function buildQuery(item: SearchableItemData): PoeQuery {
+export const buildQuery = (item: SearchableItemData): PoeQuery => {
   const query: PoeQuery = {
     query: {
       status: { option: "online" },
@@ -388,7 +388,7 @@ export function buildQuery(item: SearchableItemData): PoeQuery {
   }
 
   return query;
-}
+};
 
 class TradeAPI {
   private TRADE_API_URL: string;

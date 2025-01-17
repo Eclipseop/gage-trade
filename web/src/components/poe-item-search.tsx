@@ -129,12 +129,10 @@ const PoeItemSearch = ({
   ) => {
     const updateAffix = (key: "affixs" | "implicit" | "enchant") => {
       if (!itemData[key]) return;
-      console.log("hello!!!");
 
       const updatedAffixes = [...itemData[key].value];
       updatedAffixes[affixIndex] = {
         ...updatedAffixes[affixIndex],
-        // roll: newRoll,
         range: {
           ...updatedAffixes[affixIndex].range,
           [type]: newRoll,

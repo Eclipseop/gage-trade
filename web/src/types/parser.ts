@@ -83,7 +83,7 @@ export type SearchableItemData = {
   };
 };
 
-export function makeSearchable(parsed: ParsedItemData): SearchableItemData {
+export const makeSearchable = (parsed: ParsedItemData): SearchableItemData => {
   const searchable: SearchableItemData = {
     name: { value: parsed.name, included: false },
     rarity: { value: parsed.rarity || "", included: false },
@@ -179,4 +179,4 @@ export function makeSearchable(parsed: ParsedItemData): SearchableItemData {
   }
 
   return searchable;
-}
+};
