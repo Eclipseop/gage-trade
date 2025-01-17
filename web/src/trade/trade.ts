@@ -364,28 +364,26 @@ export function buildQuery(item: SearchableItemData): PoeQuery {
   }
 
   // Process stats
-  if (item.stats?.included) {
-    const includedStats = item.stats.value.filter((stat) => stat.included);
-    for (const stat of includedStats) {
-      const mappedStat = StatTypes.find((st) => st.key === stat.type);
-      if (mappedStat) {
-        query.query.filters.equipment_filters!.filters[mappedStat.term] = {
-          min: stat.range.min,
-        };
-      }
+  const includedStats = item.stats?.value.filter((stat) => stat.included);
+  for (const stat of includedStats ?? []) {
+    const mappedStat = StatTypes.find((st) => st.key === stat.type);
+    if (mappedStat) {
+      query.query.filters.equipment_filters!.filters[mappedStat.term] = {
+        min: stat.range.min,
+      };
     }
   }
 
   // Process affixes
-  if (item.affixs?.included) {
+  if (item.affixs?.value) {
     query.query.stats.push(...processAffixes(item.affixs.value));
   }
 
-  if (item.implicit?.included) {
+  if (item.implicit?.value) {
     query.query.stats.push(...processAffixes(item.implicit.value));
   }
 
-  if (item.enchant?.included) {
+  if (item.enchant?.value) {
     query.query.stats.push(...processAffixes(item.enchant.value));
   }
 
@@ -408,6 +406,7 @@ class TradeAPI {
 
   async lookup(item: SearchableItemData): Promise<TradeListing[]> {
     try {
+      console.log("incoming itemdata", JSON.stringify(item));
       const query = buildQuery(item);
 
       console.log(JSON.stringify(query));
