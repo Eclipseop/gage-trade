@@ -1,10 +1,10 @@
 import type { AffixEntry } from "@/trade/affix-info";
-import type { ParsedItemData, RollableSearchableAffix } from "@/types/parser";
+import type { ParsedAffix, ParsedItemData } from "@/types/parser";
 import type { ItemVisitor } from "../item-parser";
 
 class ImplicitVisitor implements ItemVisitor {
   constructor(private affixInfo: AffixEntry[]) {}
-  private implicits: RollableSearchableAffix[] = [];
+  private implicits: ParsedAffix[] = [];
 
   visitLine(line: string, _sectionIndex: number) {
     if (!line.includes("(implicit)")) return;
@@ -34,7 +34,6 @@ class ImplicitVisitor implements ItemVisitor {
     this.implicits.push({
       roll,
       affix: matchedAffixes,
-      included: false,
     });
   }
 

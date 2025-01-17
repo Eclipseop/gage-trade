@@ -1,5 +1,9 @@
 import { buildQuery } from "@/trade/trade";
-import type { AffixInfo, ItemStat, SearchableItemData } from "@/types/parser";
+import type {
+  AffixInfo,
+  SearchableItemData,
+  SearchableStat,
+} from "@/types/parser";
 import { describe, expect, test } from "vitest";
 
 describe("buildQuery", () => {
@@ -17,11 +21,11 @@ describe("buildQuery", () => {
         included: true,
         value: "Currency",
       },
-      quality: { included: false, value: 0 },
-      itemLevel: { included: false, value: 0 },
-      areaLevel: { included: false, value: 0 },
-      waystoneTier: { included: false, value: 0 },
-      numRuneSockets: { included: false, value: 0 },
+      // quality: { included: false, value: 0 },
+      // itemLevel: { included: false, value: 0 },
+      // areaLevel: { included: false, value: 0 },
+      // waystoneTier: { included: false, value: 0 },
+      // numRuneSockets: { included: false, value: 0 },
       stats: { included: false, value: [] },
       implicit: { included: false, value: [] },
       affixs: { included: false, value: [] },
@@ -47,11 +51,11 @@ describe("buildQuery", () => {
         included: true,
         value: "Currency",
       },
-      quality: { included: false, value: 0 },
-      itemLevel: { included: false, value: 0 },
-      areaLevel: { included: false, value: 0 },
-      waystoneTier: { included: false, value: 0 },
-      numRuneSockets: { included: false, value: 0 },
+      // quality: { included: false, value: 0 },
+      // itemLevel: { included: false, value: 0 },
+      // areaLevel: { included: false, value: 0 },
+      // waystoneTier: { included: false, value: 0 },
+      // numRuneSockets: { included: false, value: 0 },
       stats: { included: false, value: [] },
       implicit: { included: false, value: [] },
       affixs: { included: false, value: [] },
@@ -77,11 +81,11 @@ describe("buildQuery", () => {
         included: true,
         value: "Belts",
       },
-      quality: { included: false, value: 0 },
-      itemLevel: { included: false, value: 0 },
-      areaLevel: { included: false, value: 0 },
-      waystoneTier: { included: false, value: 0 },
-      numRuneSockets: { included: false, value: 0 },
+      // quality: { included: false, value: 0 },
+      // itemLevel: { included: false, value: 0 },
+      // areaLevel: { included: false, value: 0 },
+      // waystoneTier: { included: false, value: 0 },
+      // numRuneSockets: { included: false, value: 0 },
       stats: { included: false, value: [] },
       implicit: { included: false, value: [] },
       affixs: { included: false, value: [] },
@@ -109,11 +113,11 @@ describe("buildQuery", () => {
         included: true,
         value: "Belts",
       },
-      quality: { included: false, value: 0 },
-      itemLevel: { included: false, value: 0 },
-      areaLevel: { included: false, value: 0 },
-      waystoneTier: { included: false, value: 0 },
-      numRuneSockets: { included: false, value: 0 },
+      // quality: { included: false, value: 0 },
+      // itemLevel: { included: false, value: 0 },
+      // areaLevel: { included: false, value: 0 },
+      // waystoneTier: { included: false, value: 0 },
+      // numRuneSockets: { included: false, value: 0 },
       stats: { included: false, value: [] },
       implicit: { included: false, value: [] },
       affixs: { included: false, value: [] },
@@ -121,6 +125,7 @@ describe("buildQuery", () => {
     };
 
     const query = buildQuery(uniqueItem);
+    console.log(JSON.stringify(query));
     expect(query.query.name).toBe("Headhunter");
     expect(query.query.filters.type_filters?.filters.category?.option).toBe(
       "accessory.belt",
@@ -128,11 +133,14 @@ describe("buildQuery", () => {
   });
 
   test("handles equipment stats filters", () => {
-    const stats: ItemStat[] = [
+    const stats: SearchableStat[] = [
       {
+        included: true,
         type: "energy-shield",
         value: 523,
-        included: true,
+        range: {
+          min: 523,
+        },
       },
     ];
 
@@ -147,11 +155,11 @@ describe("buildQuery", () => {
       },
       name: { included: false, value: "" },
       rarity: { included: false, value: "Normal" },
-      quality: { included: false, value: 0 },
-      itemLevel: { included: false, value: 0 },
-      areaLevel: { included: false, value: 0 },
-      waystoneTier: { included: false, value: 0 },
-      numRuneSockets: { included: false, value: 0 },
+      // quality: { included: false, value: 0 },
+      // itemLevel: { included: false, value: 0 },
+      // areaLevel: { included: false, value: 0 },
+      // waystoneTier: { included: false, value: 0 },
+      // numRuneSockets: { included: false, value: 0 },
       implicit: { included: false, value: [] },
       affixs: { included: false, value: [] },
       enchant: { included: false, value: [] },
@@ -179,18 +187,21 @@ describe("buildQuery", () => {
         value: [
           {
             included: true,
-            roll: 80,
+            // roll: 80,
+            range: {
+              min: 80,
+            },
             affix: [affixInfo],
           },
         ],
       },
       name: { included: false, value: "" },
       rarity: { included: false, value: "Normal" },
-      quality: { included: false, value: 0 },
-      itemLevel: { included: false, value: 0 },
-      areaLevel: { included: false, value: 0 },
-      waystoneTier: { included: false, value: 0 },
-      numRuneSockets: { included: false, value: 0 },
+      // quality: { included: false, value: 0 },
+      // itemLevel: { included: false, value: 0 },
+      // areaLevel: { included: false, value: 0 },
+      // waystoneTier: { included: false, value: 0 },
+      // numRuneSockets: { included: false, value: 0 },
       stats: { included: false, value: [] },
       implicit: { included: false, value: [] },
       enchant: { included: false, value: [] },
@@ -235,18 +246,21 @@ describe("buildQuery", () => {
         value: [
           {
             included: true,
-            roll: 30,
+            // roll: 30,
+            range: {
+              min: 30,
+            },
             affix: affixes,
           },
         ],
       },
       name: { included: false, value: "" },
       rarity: { included: false, value: "Normal" },
-      quality: { included: false, value: 0 },
-      itemLevel: { included: false, value: 0 },
-      areaLevel: { included: false, value: 0 },
-      waystoneTier: { included: false, value: 0 },
-      numRuneSockets: { included: false, value: 0 },
+      // quality: { included: false, value: 0 },
+      // itemLevel: { included: false, value: 0 },
+      // areaLevel: { included: false, value: 0 },
+      // waystoneTier: { included: false, value: 0 },
+      // numRuneSockets: { included: false, value: 0 },
       stats: { included: false, value: [] },
       implicit: { included: false, value: [] },
       enchant: { included: false, value: [] },
@@ -280,13 +294,16 @@ describe("buildQuery", () => {
       areaLevel: {
         included: true,
         value: 75,
+        range: {
+          min: 75,
+        },
       },
       name: { included: false, value: "" },
       rarity: { included: false, value: "Normal" },
-      quality: { included: false, value: 0 },
-      itemLevel: { included: false, value: 0 },
-      waystoneTier: { included: false, value: 0 },
-      numRuneSockets: { included: false, value: 0 },
+      // quality: { included: false, value: 0 },
+      // itemLevel: { included: false, value: 0 },
+      // waystoneTier: { included: false, value: 0 },
+      // numRuneSockets: { included: false, value: 0 },
       stats: { included: false, value: [] },
       implicit: { included: false, value: [] },
       affixs: { included: false, value: [] },
@@ -308,17 +325,19 @@ describe("buildQuery", () => {
       },
       name: { included: false, value: "" },
       rarity: { included: false, value: "Normal" },
-      quality: { included: false, value: 0 },
-      itemLevel: { included: false, value: 0 },
-      areaLevel: { included: false, value: 0 },
-      waystoneTier: { included: false, value: 0 },
-      numRuneSockets: { included: false, value: 0 },
+      // quality: { included: false, value: 0 },
+      // itemLevel: { included: false, value: 0 },
+      // areaLevel: { included: false, value: 0 },
+      // waystoneTier: { included: false, value: 0 },
+      // numRuneSockets: { included: false, value: 0 },
       stats: { included: false, value: [] },
       implicit: { included: false, value: [] },
       affixs: { included: false, value: [] },
       enchant: { included: false, value: [] },
     };
 
-    expect(() => buildQuery(invalidItem)).toThrow("Unknown item class?");
+    expect(() => buildQuery(invalidItem)).toThrow(
+      "Unknown item class: Invalid Class",
+    );
   });
 });

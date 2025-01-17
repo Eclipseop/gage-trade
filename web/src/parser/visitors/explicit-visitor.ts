@@ -1,9 +1,9 @@
 import type { AffixEntry } from "@/trade/affix-info";
-import type { ParsedItemData, RollableSearchableAffix } from "@/types/parser";
+import type { ParsedAffix, ParsedItemData } from "@/types/parser";
 import type { ItemVisitor, MatchedAffix } from "../item-parser";
 
 class ExplicitVisitor implements ItemVisitor {
-  private explicitMods: RollableSearchableAffix[] = [];
+  private explicitMods: ParsedAffix[] = [];
   private explicitSectionIndex = -1;
 
   constructor(
@@ -33,7 +33,6 @@ class ExplicitVisitor implements ItemVisitor {
             rawText: match.text,
           },
         ],
-        included: false,
       });
     }
   }

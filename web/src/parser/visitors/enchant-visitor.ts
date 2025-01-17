@@ -1,10 +1,10 @@
 import type { AffixEntry } from "@/trade/affix-info";
-import type { ParsedItemData, RollableSearchableAffix } from "@/types/parser";
+import type { ParsedAffix, ParsedItemData } from "@/types/parser";
 import type { ItemVisitor } from "../item-parser";
 
 class EnchantVisitor implements ItemVisitor {
   constructor(private affixInfo: AffixEntry[]) {}
-  private enchants: RollableSearchableAffix[] = [];
+  private enchants: ParsedAffix[] = [];
 
   visitLine(line: string, _sectionIndex: number) {
     if (!line.includes("(enchant)")) return;
@@ -36,7 +36,6 @@ class EnchantVisitor implements ItemVisitor {
     this.enchants.push({
       roll,
       affix: matchedAffixes,
-      included: false,
     });
   }
 

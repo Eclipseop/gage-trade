@@ -3,36 +3,8 @@ import { toast } from "sonner";
 import PoeItemSearch from "./components/poe-item-search";
 import { isPoeItem, parse } from "./parser/item-parser";
 import { type TradeListing, tradeApi } from "./trade/trade";
-import type { ParsedItemData, SearchableItemData } from "./types/parser";
+import { type SearchableItemData, makeSearchable } from "./types/parser";
 import { getApi } from "./util/electron";
-
-const toSearchableItemData = (item: ParsedItemData): SearchableItemData => {
-  const result = {} as SearchableItemData;
-
-  for (const key of Object.keys(item) as (keyof ParsedItemData)[]) {
-    const value = item[key];
-
-    if (value === undefined) continue;
-
-    if (Array.isArray(value)) {
-      //@ts-expect-error
-      result[key] = {
-        value: value.map((item) => ({
-          ...item,
-          included: false,
-        })),
-      } as SearchableItemData[keyof ParsedItemData];
-    } else {
-      //@ts-expect-error
-      result[key] = {
-        value,
-        included: false,
-      } as SearchableItemData[keyof ParsedItemData];
-    }
-  }
-
-  return result;
-};
 
 const Search = () => {
   const [itemData, setItemData] = useState<SearchableItemData>();
@@ -60,7 +32,7 @@ const Search = () => {
         setItemRes([]);
 
         const parsedData = await parse(data[0]);
-        const l = toSearchableItemData(parsedData);
+        const l = makeSearchable(parsedData);
         setItemData(l);
       });
 
