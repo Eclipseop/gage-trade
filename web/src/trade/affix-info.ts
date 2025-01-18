@@ -64,7 +64,11 @@ class AffixInfoFetcher {
 
       const parsedStats = response.data.result.flatMap((result) =>
         result.entries.map((entry) => {
-          const transformedText = entry.text
+          const baseText = entry.text.endsWith("s")
+            ? entry.text.slice(0, -1)
+            : entry.text;
+
+          const transformedText = baseText
             .replace(/\[([^\]]+)\]/g, (_match, group: string) => {
               const sortedElements = group
                 .split(",")
@@ -74,7 +78,7 @@ class AffixInfoFetcher {
             })
             .replaceAll("+", "\\+")
             .replace("increased", "(increased|reduced)")
-            .replaceAll("#", "\\+?\\d+(?:\\.\\d+)?");
+            .replaceAll("#", "(?:an|\\+?\\d+(?:\\.\\d+)?)");
 
           const mappedRegex = new RegExp(`^${transformedText}(s?)$`, "g");
 
