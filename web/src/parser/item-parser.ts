@@ -29,14 +29,11 @@ class ItemParser {
   process(itemString: string) {
     const sections = itemString.split(SECTION_MARKER);
     sections.forEach((section, idx) => {
-      // biome-ignore lint/complexity/noForEach: <explanation>
       this.visitors.forEach((v) => v.visitSectionStart?.(section, idx));
 
       const lines = section.split("\n");
-      // biome-ignore lint/complexity/noForEach: <explanation>
       lines.forEach((line) => {
         if (line.trim()) {
-          // biome-ignore lint/complexity/noForEach: <explanation>
           this.visitors.forEach((v) => v.visitLine?.(line, idx));
         }
       });
@@ -91,7 +88,6 @@ const calcDamageStats = (itemData: ParsedItemData): ItemStat[] => {
     (p) => p.type === "physical-damage",
   );
   if (physicalStats) {
-    // biome-ignore lint/complexity/noForEach: <explanation>
     physicalStats.forEach((stat) => {
       stats.push({
         type: `${stat.type}-dps`,
@@ -101,7 +97,6 @@ const calcDamageStats = (itemData: ParsedItemData): ItemStat[] => {
   }
   const elementalStats = itemData.stats?.filter((p) => isStatElemental(p));
   if (elementalStats) {
-    // biome-ignore lint/complexity/noForEach: <explanation>
     elementalStats.forEach((stat) => {
       stats.push({
         type: `${stat.type}-dps`,
@@ -172,7 +167,6 @@ export const parse = async (itemString: string): Promise<ParsedItemData> => {
   );
 
   // Add any new stats that didn't exist before
-  // biome-ignore lint/complexity/noForEach: <explanation>
   updatedDamageStats.forEach((stat) => {
     if (!mergedStats.some((existingStat) => existingStat.type === stat.type)) {
       mergedStats.push(stat);
