@@ -280,7 +280,7 @@ test("sample item 1", async () => {
       {
         poe_id: "explicit.stat_3299347043",
         rawText: "+212 to maximum Life",
-        regex: /^\+?\d+(?:\.\d+)? to maximum Life(s?)$/g,
+        regex: /^(?:an|\+?\d+(?:\.\d+)?) to maximum Life(s?)$/g,
         type: "EXPLICIT",
       },
     ],
@@ -306,7 +306,7 @@ test("sample item 2", async () => {
       {
         poe_id: "explicit.stat_803737631",
         rawText: "+38 to Accuracy Rating",
-        regex: /^\+?\d+(?:\.\d+)? to Accuracy Rating(s?)$/g,
+        regex: /^(?:an|\+?\d+(?:\.\d+)?) to Accuracy Rating(s?)$/g,
         type: "EXPLICIT",
       },
     ],
@@ -330,7 +330,8 @@ test("sample item 3", async () => {
       {
         poe_id: "explicit.stat_3141070085",
         rawText: "15% increased Elemental Damage",
-        regex: /^\+?\d+(?:\.\d+)?% (increased|reduced) Elemental Damage(s?)$/g,
+        regex:
+          /^(?:an|\+?\d+(?:\.\d+)?)% (increased|reduced) Elemental Damage(s?)$/g,
         type: "EXPLICIT",
       },
     ],
@@ -361,7 +362,7 @@ test("sample item 4", async () => {
         poe_id: "explicit.stat_3917489142",
         rawText: "15% increased Rarity of Items found",
         regex:
-          /^\+?\d+(?:\.\d+)?% (increased|reduced) Rarity of Items found(s?)$/g,
+          /^(?:an|\+?\d+(?:\.\d+)?)% (increased|reduced) Rarity of Items found(s?)$/g,
         type: "EXPLICIT",
       },
     ],
@@ -396,7 +397,7 @@ test("sample item 6", async () => {
         poe_id: "explicit.stat_770672621",
         rawText: "Minions have 28% increased maximum Life",
         regex:
-          /^Minions have \+?\d+(?:\.\d+)?% (increased|reduced) maximum Life(s?)$/g,
+          /^Minions have (?:an|\+?\d+(?:\.\d+)?)% (increased|reduced) maximum Life(s?)$/g,
         type: "EXPLICIT",
       },
     ],
@@ -409,7 +410,7 @@ test("sample item 6", async () => {
       {
         type: "EXPLICIT",
         regex:
-          /^Allies in your Presence deal \+?\d+(?:\.\d+)? to \+?\d+(?:\.\d+)? additional Attack Lightning Damage(s?)$/g,
+          /^Allies in your Presence deal (?:an|\+?\d+(?:\.\d+)?) to (?:an|\+?\d+(?:\.\d+)?) additional Attack Lightning Damage(s?)$/g,
         poe_id: "explicit.stat_2854751904",
         rawText:
           "Allies in your Presence deal 1 to 10 additional Attack Lightning Damage",
@@ -440,7 +441,7 @@ test("sample item 7", async () => {
         poe_id: "explicit.stat_3169585282",
         rawText: "Allies in your Presence have +67 to Accuracy Rating",
         regex:
-          /^Allies in your Presence have \+?\d+(?:\.\d+)? to Accuracy Rating(s?)$/g,
+          /^Allies in your Presence have (?:an|\+?\d+(?:\.\d+)?) to Accuracy Rating(s?)$/g,
         type: "EXPLICIT",
       },
     ],
@@ -453,7 +454,7 @@ test("sample item 7", async () => {
         poe_id: "explicit.stat_1998951374",
         rawText: "Allies in your Presence have 16% increased Attack Speed",
         regex:
-          /^Allies in your Presence have \+?\d+(?:\.\d+)?% (increased|reduced) Attack Speed(s?)$/g,
+          /^Allies in your Presence have (?:an|\+?\d+(?:\.\d+)?)% (increased|reduced) Attack Speed(s?)$/g,
         type: "EXPLICIT",
       },
     ],
@@ -510,7 +511,7 @@ test("sample item 8", async () => {
         poe_id: "implicit.stat_1573130764",
         rawText: "Adds 3 to 5 Fire damage to Attacks",
         regex:
-          /^Adds \+?\d+(?:\.\d+)? to \+?\d+(?:\.\d+)? Fire damage to Attacks(s?)$/g,
+          /^Adds (?:an|\+?\d+(?:\.\d+)?) to (?:an|\+?\d+(?:\.\d+)?) Fire damage to Attack(s?)$/g,
         type: "IMPLICIT",
       },
     ],
@@ -536,7 +537,7 @@ test("sample item 9", async () => {
       {
         poe_id: "implicit.stat_2219129443",
         rawText: "5 Maps in Range contain Breaches",
-        regex: /^\+?\d+(?:\.\d+)? Maps in Range contain Breaches(s?)$/g,
+        regex: /^(?:an|\+?\d+(?:\.\d+)?) Maps in Range contain Breache(s?)$/g,
         type: "IMPLICIT",
       },
     ],
@@ -562,7 +563,7 @@ test("sample item 11", async () => {
         rawText:
           "When a Party Member in your Presence Casts a Spell, you\nSacrifice 20% of Mana and they Leech that Mana",
         regex:
-          /^When a Party Member in your Presence Casts a Spell, you\nSacrifice \+?\d+(?:\.\d+)?% of Mana and they Leech that Mana(s?)$/g,
+          /^When a Party Member in your Presence Casts a Spell, you\nSacrifice (?:an|\+?\d+(?:\.\d+)?)% of Mana and they Leech that Mana(s?)$/g,
         type: "EXPLICIT",
       },
     ],
@@ -617,7 +618,7 @@ Note: ~price 10 exalted`;
       {
         poe_id: "enchant.stat_2694482655",
         rawText: "+13% to Critical Damage Bonus",
-        regex: /^\+?\d+(?:\.\d+)?% to Critical Damage Bonus(s?)$/g,
+        regex: /^(?:an|\+?\d+(?:\.\d+)?)% to Critical Damage Bonu(s?)$/g,
         type: "ENCHANT",
       },
     ],
@@ -824,7 +825,7 @@ Item Level: 80
       {
         poe_id: "explicit.stat_1416292992",
         rawText: "+2 Charm Slots",
-        regex: /^\+?\d+(?:\.\d+)? Charm Slot(s?)$/g,
+        regex: /^(?:an|\+?\d+(?:\.\d+)?) Charm Slot(s?)$/g,
         type: "EXPLICIT",
       },
     ],
@@ -859,4 +860,37 @@ they believed Lunaris had not abandoned them.`;
   expect(parsedSampleItem.itemClass).toBe("Amulets");
   expect(parsedSampleItem.rarity).toBe("Unique");
   expect(parsedSampleItem.name).toBe("The Everlasting Gaze");
+});
+
+// The mod in the affix list is 'Bow Attacks fire # additional Arrows' however GGG will put 'an' instead of a number
+test("Bows fire an additional", async () => {
+  const itemString = `Item Class: Bows
+Rarity: Rare
+Bramble Nock
+Expert Dualstring Bow
+--------
+Physical Damage: 39-73
+Lightning Damage: 1-15 (augmented)
+Critical Hit Chance: 5.00%
+Attacks per Second: 1.26 (augmented)
+--------
+Requirements:
+Level: 78
+Dex: 212 (unmet)
+--------
+Item Level: 82
+--------
+Bow Attacks fire an additional Arrow (implicit)
+--------
+Adds 1 to 15 Lightning Damage
+55% increased Elemental Damage with Attacks
+5% increased Attack Speed
+Leeches 4.46% of Physical Damage as Mana
+`;
+
+  const parsedSampleItem = await parse(itemString);
+
+  expect(parsedSampleItem.itemClass).toBe("Bows");
+  expect(parsedSampleItem.rarity).toBe("Rare");
+  expect(parsedSampleItem.name).toBe("Bramble Nock");
 });
