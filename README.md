@@ -7,3 +7,13 @@ Gage (가게 Korean for "shop", pronounced gah-gae) Trade is a price checking ap
 ## Hotkeys
 
 - `control+D` - Start a query on the item under your mouse.
+
+## Development
+
+```
+git clone https://github.com/Eclipseop/gage-trade.git
+cd gage-trade
+pnpm install
+pnpm web:dev
+pnpm electron:dev
+```
