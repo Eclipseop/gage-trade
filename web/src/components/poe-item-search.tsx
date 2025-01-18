@@ -190,6 +190,7 @@ const PoeItemSearch = ({
 
   const statTypePrefixMap = {
     "physical-damage-dps": "pDPS",
+    "energy-shield": "ES",
     "total-dps": "DPS",
     "total-edps": "eDPS",
     "attacks-per-second": "APS",
