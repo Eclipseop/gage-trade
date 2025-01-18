@@ -1,5 +1,5 @@
 import type { AffixInfo } from "@/types/parser";
-import { Checkbox } from "@radix-ui/react-checkbox";
+import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
 
 type AffixProps = {
