@@ -266,7 +266,7 @@ test("sample item 1", async () => {
       {
         poe_id: "explicit.stat_3299347043",
         rawText: "+212 to maximum Life",
-        regex: /^(?:an|\+?\d+(?:\.\d+)?) to maximum Life(s?)$/g,
+        regex: /^(?:an|\+?\d+(?:\.\d+)?) to maximum Life(s?)( in your Maps)?$/g,
         type: "EXPLICIT",
       },
     ],
@@ -292,7 +292,8 @@ test("sample item 2", async () => {
       {
         poe_id: "explicit.stat_803737631",
         rawText: "+38 to Accuracy Rating",
-        regex: /^(?:an|\+?\d+(?:\.\d+)?) to Accuracy Rating(s?)$/g,
+        regex:
+          /^(?:an|\+?\d+(?:\.\d+)?) to Accuracy Rating(s?)( in your Maps)?$/g,
         type: "EXPLICIT",
       },
     ],
@@ -317,7 +318,7 @@ test("sample item 3", async () => {
         poe_id: "explicit.stat_3141070085",
         rawText: "15% increased Elemental Damage",
         regex:
-          /^(?:an|\+?\d+(?:\.\d+)?)% (increased|reduced) Elemental Damage(s?)$/g,
+          /^(?:an|\+?\d+(?:\.\d+)?)% (increased|reduced) Elemental Damage(s?)( in your Maps)?$/g,
         type: "EXPLICIT",
       },
     ],
@@ -348,7 +349,7 @@ test("sample item 4", async () => {
         poe_id: "explicit.stat_3917489142",
         rawText: "15% increased Rarity of Items found",
         regex:
-          /^(?:an|\+?\d+(?:\.\d+)?)% (increased|reduced) Rarity of Items found(s?)$/g,
+          /^(?:an|\+?\d+(?:\.\d+)?)% (increased|reduced) Rarity of Items found(s?)( in your Maps)?$/g,
         type: "EXPLICIT",
       },
     ],
@@ -383,7 +384,7 @@ test("sample item 6", async () => {
         poe_id: "explicit.stat_770672621",
         rawText: "Minions have 28% increased maximum Life",
         regex:
-          /^Minions have (?:an|\+?\d+(?:\.\d+)?)% (increased|reduced) maximum Life(s?)$/g,
+          /^Minions have (?:an|\+?\d+(?:\.\d+)?)% (increased|reduced) maximum Life(s?)( in your Maps)?$/g,
         type: "EXPLICIT",
       },
     ],
@@ -396,7 +397,7 @@ test("sample item 6", async () => {
       {
         type: "EXPLICIT",
         regex:
-          /^Allies in your Presence deal (?:an|\+?\d+(?:\.\d+)?) to (?:an|\+?\d+(?:\.\d+)?) additional Attack Lightning Damage(s?)$/g,
+          /^Allies in your Presence deal (?:an|\+?\d+(?:\.\d+)?) to (?:an|\+?\d+(?:\.\d+)?) additional Attack Lightning Damage(s?)( in your Maps)?$/g,
         poe_id: "explicit.stat_2854751904",
         rawText:
           "Allies in your Presence deal 1 to 10 additional Attack Lightning Damage",
@@ -427,7 +428,7 @@ test("sample item 7", async () => {
         poe_id: "explicit.stat_3169585282",
         rawText: "Allies in your Presence have +67 to Accuracy Rating",
         regex:
-          /^Allies in your Presence have (?:an|\+?\d+(?:\.\d+)?) to Accuracy Rating(s?)$/g,
+          /^Allies in your Presence have (?:an|\+?\d+(?:\.\d+)?) to Accuracy Rating(s?)( in your Maps)?$/g,
         type: "EXPLICIT",
       },
     ],
@@ -440,7 +441,7 @@ test("sample item 7", async () => {
         poe_id: "explicit.stat_1998951374",
         rawText: "Allies in your Presence have 16% increased Attack Speed",
         regex:
-          /^Allies in your Presence have (?:an|\+?\d+(?:\.\d+)?)% (increased|reduced) Attack Speed(s?)$/g,
+          /^Allies in your Presence have (?:an|\+?\d+(?:\.\d+)?)% (increased|reduced) Attack Speed(s?)( in your Maps)?$/g,
         type: "EXPLICIT",
       },
     ],
@@ -497,7 +498,7 @@ test("sample item 8", async () => {
         poe_id: "implicit.stat_1573130764",
         rawText: "Adds 3 to 5 Fire damage to Attacks",
         regex:
-          /^Adds (?:an|\+?\d+(?:\.\d+)?) to (?:an|\+?\d+(?:\.\d+)?) Fire damage to Attack(s?)$/g,
+          /^Adds (?:an|\+?\d+(?:\.\d+)?) to (?:an|\+?\d+(?:\.\d+)?) Fire damage to Attack(s?)( in your Maps)?$/g,
         type: "IMPLICIT",
       },
     ],
@@ -523,7 +524,7 @@ test("sample item 11", async () => {
         rawText:
           "When a Party Member in your Presence Casts a Spell, you\nSacrifice 20% of Mana and they Leech that Mana",
         regex:
-          /^When a Party Member in your Presence Casts a Spell, you\nSacrifice (?:an|\+?\d+(?:\.\d+)?)% of Mana and they Leech that Mana(s?)$/g,
+          /^When a Party Member in your Presence Casts a Spell, you\nSacrifice (?:an|\+?\d+(?:\.\d+)?)% of Mana and they Leech that Mana(s?)( in your Maps)?$/g,
         type: "EXPLICIT",
       },
     ],
@@ -578,7 +579,8 @@ Note: ~price 10 exalted`;
       {
         poe_id: "enchant.stat_2694482655",
         rawText: "+13% to Critical Damage Bonus",
-        regex: /^(?:an|\+?\d+(?:\.\d+)?)% to Critical Damage Bonu(s?)$/g,
+        regex:
+          /^(?:an|\+?\d+(?:\.\d+)?)% to Critical Damage Bonu(s?)( in your Maps)?$/g,
         type: "ENCHANT",
       },
     ],
@@ -785,7 +787,7 @@ Item Level: 80
       {
         poe_id: "explicit.stat_1416292992",
         rawText: "+2 Charm Slots",
-        regex: /^(?:an|\+?\d+(?:\.\d+)?) Charm Slot(s?)$/g,
+        regex: /^(?:an|\+?\d+(?:\.\d+)?) Charm Slot(s?)( in your Maps)?$/g,
         type: "EXPLICIT",
       },
     ],

@@ -24,7 +24,8 @@ Can be used in a completed Tower on your Atlas to influence surrounding Maps. Ta
       affix: [
         {
           poe_id: "implicit.stat_2219129443",
-          regex: /^(?:an|\+?\d+(?:\.\d+)?) Maps in Range contain Breache(s?)$/g,
+          regex:
+            /^(?:an|\+?\d+(?:\.\d+)?) Maps in Range contain Breache(s?)( in your Maps)?$/g,
           type: "IMPLICIT",
           rawText: "9 Maps in Range contain Breaches",
         },
@@ -57,7 +58,7 @@ Can be used in a completed Tower on your Atlas to influence surrounding Maps. Ta
         {
           poe_id: "implicit.stat_1714888636",
           regex:
-            /^(?:an|\+?\d+(?:\.\d+)?) Maps in Range contain Expedition Encounter(s?)$/g,
+            /^(?:an|\+?\d+(?:\.\d+)?) Maps in Range contain Expedition Encounter(s?)( in your Maps)?$/g,
           type: "IMPLICIT",
           rawText: "7 Maps in Range contain Expedition Encounters",
         },

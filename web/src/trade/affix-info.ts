@@ -77,7 +77,9 @@ class AffixInfoFetcher {
               return `(${sortedElements.join("|")})`;
             })
             .replaceAll("+", "\\+")
+            .replaceAll("increased number of", "increased")
             .replaceAll("increased", "(increased|reduced)")
+
             .replaceAll("#", "(?:an|\\+?\\d+(?:\\.\\d+)?)")
             // Next are specific to precursors
             .replaceAll(
@@ -85,9 +87,14 @@ class AffixInfoFetcher {
               "(Areas which contain|Your Maps which contain)",
             )
             .replaceAll("in Area", "(in your Maps|in Area)")
-            .replaceAll("in this Area", "(in your Maps|in this Area)");
+            .replaceAll("in this Area", "(in your Maps|in this Area)")
+            // Radiu on purpose since 's' gets cut off, probably rethink how to solve the appendage some other way
+            .replaceAll("Explosive Radiu", "Explosive Radius( in your Maps)?");
 
-          const mappedRegex = new RegExp(`^${transformedText}(s?)$`, "g");
+          const mappedRegex = new RegExp(
+            `^${transformedText}(s?)( in your Maps)?$`,
+            "g",
+          );
 
           return {
             ...entry,

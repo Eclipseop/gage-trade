@@ -16,6 +16,10 @@ class ExplicitVisitor implements ItemVisitor {
   visitSectionStart(section: string, idx: number): void {
     if (idx !== this.explicitSectionIndex) return;
 
+    // this.affixInfo
+    // .filter((i) => i.text.includes("Rare Monster"))
+    // .forEach((i) => console.log(i));
+
     const matches = this.findAffixMatches(section);
     for (const match of matches) {
       const rolls = match.text.match(/\d+(?:\.\d+)?/g);
