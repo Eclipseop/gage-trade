@@ -77,10 +77,25 @@ class AffixInfoFetcher {
               return `(${sortedElements.join("|")})`;
             })
             .replaceAll("+", "\\+")
-            .replace("increased", "(increased|reduced)")
-            .replaceAll("#", "(?:an|\\+?\\d+(?:\\.\\d+)?)");
+            .replaceAll("increased number of", "increased")
+            .replaceAll("increased", "(increased|reduced)")
+            .replaceAll("#", "(?:an|\\+?\\d+(?:\\.\\d+)?)")
+            // Next are specific to precursors
+            .replaceAll(
+              "Areas which contain",
+              "(Areas which contain|Your Maps which contain)",
+            )
+            .replaceAll(
+              "Rare Monsters have a ",
+              "Rare Monsters in your Maps have a ",
+            )
+            .replaceAll("in Area", "(in your Maps|in Area)")
+            .replaceAll("in this Area", "(in your Maps|in this Area)");
 
-          const mappedRegex = new RegExp(`^${transformedText}(s?)$`, "g");
+          const mappedRegex = new RegExp(
+            `^${transformedText}(s?)( in your Maps)?$`,
+            "g",
+          );
 
           return {
             ...entry,

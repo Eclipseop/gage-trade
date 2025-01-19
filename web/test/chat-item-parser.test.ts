@@ -106,7 +106,8 @@ Item Level: 81
       {
         poe_id: "explicit.stat_3372524247",
         rawText: "+31% to Fire Resistance",
-        regex: /^(?:an|\+?\d+(?:\.\d+)?)% to Fire Resistance(s?)$/g,
+        regex:
+          /^(?:an|\+?\d+(?:\.\d+)?)% to Fire Resistance(s?)( in your Maps)?$/g,
         type: "EXPLICIT",
       },
     ],
@@ -117,7 +118,8 @@ Item Level: 81
       {
         poe_id: "explicit.stat_1671376347",
         rawText: "+38% to Lightning Resistance",
-        regex: /^(?:an|\+?\d+(?:\.\d+)?)% to Lightning Resistance(s?)$/g,
+        regex:
+          /^(?:an|\+?\d+(?:\.\d+)?)% to Lightning Resistance(s?)( in your Maps)?$/g,
         type: "EXPLICIT",
       },
     ],
