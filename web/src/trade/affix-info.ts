@@ -87,9 +87,7 @@ class AffixInfoFetcher {
               "(Areas which contain|Your Maps which contain)",
             )
             .replaceAll("in Area", "(in your Maps|in Area)")
-            .replaceAll("in this Area", "(in your Maps|in this Area)")
-            // Radiu on purpose since 's' gets cut off, probably rethink how to solve the appendage some other way
-            .replaceAll("Explosive Radiu", "Explosive Radius( in your Maps)?");
+            .replaceAll("in this Area", "(in your Maps|in this Area)");
 
           const mappedRegex = new RegExp(
             `^${transformedText}(s?)( in your Maps)?$`,
