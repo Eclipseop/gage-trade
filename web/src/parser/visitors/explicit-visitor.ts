@@ -43,7 +43,7 @@ class ExplicitVisitor implements ItemVisitor {
     const itemString = this.allSections.join();
 
     if (itemString.includes("Item Class: Tablet")) {
-      return -1;
+      return 3;
     }
     for (let i = 0; i < this.allSections.length; i++) {
       const section = this.allSections[i];

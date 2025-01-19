@@ -77,7 +77,11 @@ class AffixInfoFetcher {
               return `(${sortedElements.join("|")})`;
             })
             .replaceAll("+", "\\+")
-            .replace("increased", "(increased|reduced)")
+            .replaceAll("increased", "(increased|reduced)")
+            .replaceAll(
+              "Areas which contain",
+              "(Areas which contain|Your Maps which contain)",
+            )
             .replaceAll("#", "(?:an|\\+?\\d+(?:\\.\\d+)?)");
 
           const mappedRegex = new RegExp(`^${transformedText}(s?)$`, "g");

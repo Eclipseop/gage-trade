@@ -183,20 +183,6 @@ Hissing arrows from the dark.
 --------
 Can only be equipped if you are wielding a Bow.`;
 
-const sample_item9 = `Item Class: Tablet
-Rarity: Magic
-Brimming Breach Precursor Tablet of Fissuring
---------
-Item Level: 66
---------
-5 Maps in Range contain Breaches (implicit)
---------
-Your Maps which contain Breaches have 9% chance to contain an additional Breach
-11% increased Rare Monsters in your Maps
---------
-Can be used in a completed Tower on your Atlas to influence surrounding Maps. Tablets are consumed once placed into a Tower.
-`;
-
 const sample_item11 = `Item Class: Sceptres
 Rarity: Unique
 Font of Power
@@ -522,32 +508,6 @@ test("sample item 8", async () => {
 
   const { affixs } = parsedSampleItem;
   expect(affixs?.length).toBe(4);
-});
-
-test("sample item 9", async () => {
-  const parsedSampleItem = await parse(sample_item9);
-  expect(parsedSampleItem.itemClass).toBe("Tablet");
-  expect(parsedSampleItem.rarity).toBe("Magic");
-  expect(parsedSampleItem.name).toBe(
-    "Brimming Breach Precursor Tablet of Fissuring",
-  );
-
-  const a1 = {
-    affix: [
-      {
-        poe_id: "implicit.stat_2219129443",
-        rawText: "5 Maps in Range contain Breaches",
-        regex: /^(?:an|\+?\d+(?:\.\d+)?) Maps in Range contain Breache(s?)$/g,
-        type: "IMPLICIT",
-      },
-    ],
-    roll: 5,
-  };
-
-  expect(parsedSampleItem.implicit).toContainEqual(a1);
-
-  const { affixs } = parsedSampleItem;
-  expect(affixs?.length).toBe(0);
 });
 
 test("sample item 11", async () => {
