@@ -79,12 +79,15 @@ class AffixInfoFetcher {
             .replaceAll("+", "\\+")
             .replaceAll("increased number of", "increased")
             .replaceAll("increased", "(increased|reduced)")
-
             .replaceAll("#", "(?:an|\\+?\\d+(?:\\.\\d+)?)")
             // Next are specific to precursors
             .replaceAll(
               "Areas which contain",
               "(Areas which contain|Your Maps which contain)",
+            )
+            .replaceAll(
+              "Rare Monsters have a ",
+              "Rare Monsters in your Maps have a ",
             )
             .replaceAll("in Area", "(in your Maps|in Area)")
             .replaceAll("in this Area", "(in your Maps|in this Area)");
