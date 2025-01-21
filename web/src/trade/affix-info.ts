@@ -91,6 +91,7 @@ class AffixInfoFetcher {
               "Rare Monsters in your Maps have a ",
             )
             .replaceAll("in Area", "(in your Maps|in Area)")
+            .replaceAll("Pack size", "(Pack size|Pack Size)")
             .replaceAll("in this Area", "(in your Maps|in this Area)");
 
           const mappedRegex = new RegExp(
