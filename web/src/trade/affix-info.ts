@@ -85,6 +85,7 @@ class AffixInfoFetcher {
               "Areas which contain",
               "(Areas which contain|Your Maps which contain)",
             )
+            .replaceAll("Area has ", "(Area has |Your Maps have )")
             .replaceAll(
               "Rare Monsters have a ",
               "Rare Monsters in your Maps have a ",
@@ -94,7 +95,7 @@ class AffixInfoFetcher {
 
           const mappedRegex = new RegExp(
             `^${transformedText}(s?)( in your Maps)?$`,
-            "g",
+            "",
           );
 
           return {
