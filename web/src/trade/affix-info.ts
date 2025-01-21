@@ -87,6 +87,10 @@ class AffixInfoFetcher {
             )
             .replaceAll("Area has ", "(Area has |Your Maps have )")
             .replaceAll(
+              "Breaches have ",
+              "(Breaches have |Breaches in your Maps have )",
+            )
+            .replaceAll(
               "Rare Monsters have a ",
               "Rare Monsters in your Maps have a ",
             )
