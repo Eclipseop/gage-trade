@@ -43,7 +43,7 @@ class ExplicitVisitor implements ItemVisitor {
     const itemString = this.allSections.join();
 
     if (itemString.includes("Item Class: Tablet")) {
-      return -1;
+      return 3;
     }
     for (let i = 0; i < this.allSections.length; i++) {
       const section = this.allSections[i];
@@ -73,7 +73,6 @@ class ExplicitVisitor implements ItemVisitor {
     let attempts = 0;
     while (remainingText.length > 0 && attempts < 20) {
       attempts++;
-      console.log("lol", remainingText);
       for (const affix of this.affixInfo) {
         const regex = new RegExp(affix.mappedRegex.source, "gm");
         const match = regex.exec(remainingText);

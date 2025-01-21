@@ -28,7 +28,7 @@ class ImplicitVisitor implements ItemVisitor {
       }));
 
     if (matchedAffixes.length === 0) {
-      throw new Error(`Could not match implicit: ${line}`);
+      throw new Error(`Could not match implicit: ${implicitText}`);
     }
 
     this.implicits.push({
