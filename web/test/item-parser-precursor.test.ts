@@ -234,4 +234,37 @@ Can be used in a completed Tower on your Atlas to influence surrounding Maps. Ta
     expect(parsedItem.implicit).toContainEqual(i1);
     expect(parsedItem.affixs?.length).toEqual(2);
   });
+
+  test("breach density + quant", async () => {
+    const itemString = `Item Class: Tablet
+Rarity: Magic
+Plundering Breach Precursor Tablet of the Invasion
+--------
+Item Level: 79
+--------
+8 Maps in Range contain Breaches (implicit)
+--------
+Breaches in your Maps have 5% increased Monster density
+15% increased Quantity of Items found in your Maps
+--------
+Can be used in a completed Tower on your Atlas to influence surrounding Maps. Tablets are consumed once placed into a Tower.
+`;
+    const parsedItem = await parse(itemString);
+
+    const i1: ParsedAffix = {
+      roll: 8,
+      affix: [
+        {
+          poe_id: "implicit.stat_2219129443",
+          regex:
+            /^(?:an|\+?\d+(?:\.\d+)?) Maps in Range contain Breache(s?)( in your Maps)?$/,
+          type: "IMPLICIT",
+          rawText: "8 Maps in Range contain Breaches",
+        },
+      ],
+    };
+
+    expect(parsedItem.implicit).toContainEqual(i1);
+    expect(parsedItem.affixs?.length).toEqual(2);
+  });
 });
