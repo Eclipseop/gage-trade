@@ -1,6 +1,6 @@
 {
   "name": "gage-trade",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "",
   "main": "electron/dist/index.js",
   "scripts": {
