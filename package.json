@@ -26,7 +26,7 @@
     "url": "https://github.com/Eclipseop/gage-trade.git"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.0.0",
     "concurrently": "^9.1.0",
     "cross-env": "^7.0.3",
     "electron": "^34.0.0",
